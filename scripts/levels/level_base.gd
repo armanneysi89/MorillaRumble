@@ -1,0 +1,193 @@
+class_name LevelBase
+extends Node2D
+
+## Gemeinsamer Aufbau aller Level. Unterklassen füllen in _init() die Datenfelder und überschreiben _build_extras().
+## Level bestehen aus Daten (Plattformen, Dekor, Gegner ...) statt aus von Hand platzierten Knoten.
+
+const PLAYER_SCENE: PackedScene = preload("res://scenes/player/morilla.tscn")
+const ENEMY_SCENE: PackedScene = preload("res://scenes/enemies/white_belt_recruit.tscn")
+const COACH_SCENE: PackedScene = preload("res://scenes/coaches/coach_mo.tscn")
+
+const K_WOOD := PlatformBlock.Kind.WOOD
+const K_STONE := PlatformBlock.Kind.STONE
+const K_SHELF := PlatformBlock.Kind.SHELF
+
+var level_id := "level"
+var level_title := ""
+var level_subtitle := ""
+var level_width := 8000.0
+var room_top := -700
+var room_bottom := 1080
+var start := Vector2(300, 800)
+var music := "dojo"
+var far_background := "res://assets/environments/dojo/bg_dojo.png"
+## [Art, x, y (Oberkante), Breite]
+var platforms := []
+## [Art, x, y (Fußpunkt), Höhe, gespiegelt, z]
+var decor := []
+## [x, y (Fußpunkt), Text]
+var hints := []
+## [x, y (Fußpunkt), Patrouillenradius]
+var enemies := []
+## [id, x, y (Fußpunkt)]
+var checkpoints := []
+## [id, x, y (Mitte)]
+var pickups := []
+## [x, y (Fußpunkt)]
+var dummies := []
+
+var player: Morilla
+var hud: Hud
+var camera: GameCamera
+var dialogue: DialogueBox
+
+var _completed := false
+
+
+func _ready() -> void:
+	Sound.play_music(music)
+	var bg := LevelBackground.new()
+	bg.level_width = level_width
+	bg.far_path = far_background
+	add_child(bg)
+	_build_platforms()
+	_build_walls()
+	_build_decor()
+	_build_props()
+	_build_enemies()
+	_build_extras()
+	_build_player()
+	_build_ui()
+	_after_ready()
+
+
+## Für levelspezifische Objekte (Coaches, Arena, Ausgang) überschreiben. Läuft vor dem Erstellen des Spielers.
+func _build_extras() -> void:
+	pass
+
+
+## Läuft, wenn Spieler, Kamera und UI stehen.
+func _after_ready() -> void:
+	pass
+
+
+func _build_platforms() -> void:
+	for p in platforms:
+		var block := PlatformBlock.new()
+		block.kind = p[0]
+		block.position = Vector2(p[1], p[2])
+		block.size = Vector2(p[3], 700)
+		add_child(block)
+
+
+func _build_walls() -> void:
+	for x in [-30.0, level_width]:
+		var wall := StaticBody2D.new()
+		wall.collision_layer = Layers.WORLD
+		wall.position = Vector2(x, -1000)
+		var shape := RectangleShape2D.new()
+		shape.size = Vector2(30, 5000)
+		var cs := CollisionShape2D.new()
+		cs.shape = shape
+		cs.position = Vector2(15, 2500)
+		wall.add_child(cs)
+		add_child(wall)
+
+
+func _build_decor() -> void:
+	for d in decor:
+		var node := Decor.new()
+		node.kind = d[0]
+		node.position = Vector2(d[1], d[2])
+		node.height = d[3]
+		node.flip = d[4]
+		node.z_index = d[5]
+		add_child(node)
+
+
+func _build_props() -> void:
+	for h in hints:
+		var sign_node := HintSign.new()
+		sign_node.position = Vector2(h[0], h[1])
+		sign_node.text = h[2]
+		add_child(sign_node)
+	for c in checkpoints:
+		var cp := Checkpoint.new()
+		cp.level_id = level_id
+		cp.checkpoint_id = c[0]
+		cp.position = Vector2(c[1], c[2])
+		add_child(cp)
+	for p in pickups:
+		var pickup := ScrollPickup.new()
+		pickup.pickup_id = p[0]
+		pickup.position = Vector2(p[1], p[2])
+		add_child(pickup)
+	for d in dummies:
+		var dummy := TrainingDummy.new()
+		dummy.position = Vector2(d[0], d[1])
+		add_child(dummy)
+
+
+func _build_enemies() -> void:
+	for e in enemies:
+		var enemy := ENEMY_SCENE.instantiate() as Enemy
+		enemy.position = Vector2(e[0], e[1])
+		enemy.patrol_range = e[2]
+		add_child(enemy)
+
+
+func _spawn_position() -> Vector2:
+	var cp_id := Progression.checkpoint_for(level_id)
+	for c in checkpoints:
+		if c[0] == cp_id:
+			return Vector2(c[1], c[2])
+	return start
+
+
+func _build_player() -> void:
+	player = PLAYER_SCENE.instantiate() as Morilla
+	player.position = _spawn_position()
+	player.spawn_point = player.position
+	player.fall_limit = float(room_bottom) + 500.0
+	player.z_index = 2
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--x="):
+			player.position = Vector2(arg.trim_prefix("--x=").to_float(), 300.0)
+	add_child(player)
+	player.died.connect(_on_player_died)
+
+	camera = GameCamera.new()
+	camera.target = player
+	player.add_child(camera)
+	camera.set_room(Rect2i(0, room_top, int(level_width), room_bottom - room_top))
+
+
+func _build_ui() -> void:
+	hud = Hud.new()
+	hud.title = level_title
+	hud.subtitle = level_subtitle
+	add_child(hud)
+	hud.bind_player(player)
+	dialogue = DialogueBox.new()
+	add_child(dialogue)
+	add_child(PauseMenu.new())
+	var touch := TouchControls.new()
+	touch.player = player
+	add_child(touch)
+
+
+func _on_player_died() -> void:
+	await hud.fade_to(1.0, 0.6)
+	Game.reload_scene(0.3)
+
+
+func complete_level(banner: String, sub: String) -> void:
+	if _completed:
+		return
+	_completed = true
+	Progression.set_flag("level_%s_cleared" % level_id)
+	Sound.sfx("fanfare")
+	player.freeze()
+	hud.show_banner(banner, sub, 3.5)
+	await get_tree().create_timer(5.0).timeout
+	Game.change_scene(Game.MENU_SCENE, 0.8)

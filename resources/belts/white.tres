@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BeltData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/progression/belt_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "white"
+display_name = "Weißgurt"
+color = Color(0.94, 0.94, 0.92, 1)
+max_hp_bonus = 0
+damage_multiplier = 1.0

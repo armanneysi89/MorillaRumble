@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/systems/character_sprite.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/combat/health.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="5"]
+[ext_resource type="Resource" path="res://resources/enemies/white_belt_recruit.tres" id="6"]
+
+[sub_resource type="RectangleShape2D" id="body"]
+size = Vector2(64, 140)
+
+[sub_resource type="RectangleShape2D" id="hurt"]
+size = Vector2(64, 140)
+
+[sub_resource type="RectangleShape2D" id="hit"]
+size = Vector2(140, 110)
+
+[node name="WhiteBeltRecruit" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+data = ExtResource("6")
+
+[node name="Visual" type="AnimatedSprite2D" parent="."]
+script = ExtResource("2")
+
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -70)
+shape = SubResource("body")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("3")
+max_hp = 3
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("4")
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -70)
+shape = SubResource("hurt")
+
+[node name="AttackHitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+script = ExtResource("5")
+
+[node name="Shape" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("hit")
+
+[node name="LedgeCheck" type="RayCast2D" parent="."]
+position = Vector2(55, -10)
+target_position = Vector2(0, 80)
+collision_mask = 1

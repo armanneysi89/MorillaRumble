@@ -1,0 +1,10 @@
+# Godot 4+
+.godot/
+/android/
+
+# Export-Ausgaben, Roh-Generierungen und Logs
+/builds/
+/tools/raw/
+/tools/__pycache__/
+*.log
+.vscode/

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AbilityData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/abilities/ability_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "kimura"
+display_name = "Kimura"
+description = "Greife einen Gegner und hebele seinen Arm auf den Rücken. Hoher Schaden, lange Betäubung."
+damage = 2
+stun_time = 1.6
+reach = 150.0
+max_size_class = 1
+cooldown = 0.9

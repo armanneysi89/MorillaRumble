@@ -1,0 +1,219 @@
+class_name Morilla
+extends CharacterBody2D
+
+## Spielfigur. Bewegungsphysik liegt hier, das Verhalten in den Zuständen unter StateMachine,
+## Treffer/Blocken in PlayerCombat und Griffe in PlayerGrapple.
+
+signal died
+signal interactable_changed(prompt: String)
+
+const SPEED := 480.0
+const ACCEL := 3600.0
+const FRICTION := 4400.0
+const AIR_ACCEL := 2800.0
+const GRAVITY := 2500.0
+const FALL_GRAVITY_MULT := 1.25
+const MAX_FALL := 1500.0
+const JUMP_VELOCITY := -980.0
+const COYOTE_TIME := 0.1
+const JUMP_BUFFER := 0.12
+const INPUT_BUFFER := 0.15
+const DASH_COOLDOWN := 0.55
+const BUFFERED_ACTIONS: Array[String] = ["jump", "light_attack", "heavy_attack", "dash", "grab"]
+
+@onready var visual: CharacterSprite = $Visual
+@onready var health: Health = $Health
+@onready var hurtbox: Hurtbox = $Hurtbox
+@onready var hitbox: Hitbox = $AttackHitbox
+@onready var grab_sensor: Area2D = $GrabSensor
+@onready var interact_sensor: Area2D = $InteractSensor
+@onready var combat: PlayerCombat = $Combat
+@onready var grapple: PlayerGrapple = $Grapple
+@onready var machine: StateMachine = $StateMachine
+
+var facing := 1
+var input_dir := 0.0
+var spawn_point := Vector2.ZERO
+var fall_limit := 2200.0
+var coyote := 0.0
+var air_dash_available := true
+var dash_cooldown := 0.0
+var combo_step := 0
+var combo_timer := 0.0
+var last_hit: HitInfo
+
+var _buffers := {}
+var _interactables: Array[Area2D] = []
+var _prompt := ""
+
+
+func _ready() -> void:
+	add_to_group("player")
+	collision_layer = Layers.PLAYER
+	collision_mask = Layers.WORLD
+	hurtbox.collision_layer = Layers.PLAYER_HURT
+	hurtbox.collision_mask = 0
+	hitbox.collision_layer = 0
+	hitbox.collision_mask = Layers.ENEMY_HURT
+	grab_sensor.collision_layer = 0
+	grab_sensor.collision_mask = Layers.ENEMY
+	interact_sensor.collision_layer = 0
+	interact_sensor.collision_mask = Layers.INTERACT
+	interact_sensor.area_entered.connect(func(a: Area2D) -> void: _interactables.append(a))
+	interact_sensor.area_exited.connect(func(a: Area2D) -> void: _interactables.erase(a))
+
+	_add_shadow()
+	visual.setup("morilla", true)
+	visual.footstep.connect(func() -> void: Sound.sfx("step", -6.0, 1.0, 0.12))
+	health.set_max(Progression.max_hp(), true)
+	health.died.connect(func() -> void: machine.change(&"dead"))
+	Progression.belt_changed.connect(_on_belt_changed)
+	combat.setup(self)
+	grapple.setup(self)
+	machine.setup(self)
+	machine.start(&"locomotion")
+
+
+func _exit_tree() -> void:
+	if Progression.belt_changed.is_connected(_on_belt_changed):
+		Progression.belt_changed.disconnect(_on_belt_changed)
+
+
+func _add_shadow() -> void:
+	var shadow := Effects.glow(self, Vector2(0, 2), 70.0, Color(0, 0, 0, 0.55))
+	shadow.scale = Vector2(1.5, 0.28)
+	shadow.z_index = -1
+	var mat := CanvasItemMaterial.new()
+	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_MIX
+	shadow.material = mat
+
+
+func _on_belt_changed(_belt_id: String) -> void:
+	var diff := Progression.max_hp() - health.max_hp
+	health.set_max(Progression.max_hp())
+	if diff > 0:
+		health.heal(diff)
+
+
+func _physics_process(delta: float) -> void:
+	_tick(delta)
+	_read_input()
+	machine.physics_update(delta)
+	_update_prompt()
+	if global_position.y > fall_limit and not health.is_dead():
+		_fall_reset()
+
+
+func _tick(delta: float) -> void:
+	dash_cooldown = maxf(dash_cooldown - delta, 0.0)
+	combo_timer = maxf(combo_timer - delta, 0.0)
+	if combo_timer <= 0.0:
+		combo_step = 0
+	if is_on_floor():
+		coyote = COYOTE_TIME
+		air_dash_available = true
+	else:
+		coyote -= delta
+	for action: String in _buffers:
+		_buffers[action] = maxf(_buffers[action] - delta, 0.0)
+
+
+func _read_input() -> void:
+	input_dir = Input.get_axis("move_left", "move_right")
+	for action in BUFFERED_ACTIONS:
+		if Input.is_action_just_pressed(action):
+			_buffers[action] = JUMP_BUFFER if action == "jump" else INPUT_BUFFER
+
+
+func buffered(action: String) -> bool:
+	return _buffers.get(action, 0.0) > 0.0
+
+
+func consume(action: String) -> bool:
+	if buffered(action):
+		_buffers[action] = 0.0
+		return true
+	return false
+
+
+func clear_buffers() -> void:
+	_buffers.clear()
+
+
+func apply_gravity(delta: float) -> void:
+	if not is_on_floor():
+		var mult := FALL_GRAVITY_MULT if velocity.y > 0.0 else 1.0
+		velocity.y = minf(velocity.y + GRAVITY * mult * delta, MAX_FALL)
+
+
+func apply_horizontal(delta: float, speed_mult := 1.0, accel_mult := 1.0) -> void:
+	var target := input_dir * SPEED * speed_mult
+	var rate := AIR_ACCEL
+	if is_on_floor():
+		rate = ACCEL if absf(input_dir) > 0.0 else FRICTION
+	velocity.x = move_toward(velocity.x, target, rate * accel_mult * delta)
+	if absf(input_dir) > 0.0:
+		facing = 1 if input_dir > 0.0 else -1
+
+
+func can_dash() -> bool:
+	return dash_cooldown <= 0.0 and (is_on_floor() or air_dash_available)
+
+
+func is_busy() -> bool:
+	return not machine.is_in(&"locomotion")
+
+
+func freeze() -> void:
+	machine.change(&"frozen")
+
+
+func unfreeze() -> void:
+	if machine.is_in(&"frozen"):
+		clear_buffers()
+		machine.change(&"locomotion")
+
+
+func respawn_at(pos: Vector2) -> void:
+	global_position = pos
+	velocity = Vector2.ZERO
+	health.make_invulnerable(1.5)
+	if not machine.is_in(&"locomotion"):
+		machine.change(&"locomotion")
+
+
+func current_interactable() -> Area2D:
+	var best: Area2D = null
+	var best_d := INF
+	for a in _interactables:
+		if not is_instance_valid(a) or not a.has_method("can_interact") or not a.can_interact():
+			continue
+		var d := global_position.distance_to(a.global_position)
+		if d < best_d:
+			best_d = d
+			best = a
+	return best
+
+
+func try_interact() -> bool:
+	var target := current_interactable()
+	if target == null:
+		return false
+	target.interact(self)
+	return true
+
+
+func _update_prompt() -> void:
+	var target := current_interactable()
+	var text: String = target.get_prompt() if target and not is_busy() else ""
+	if text != _prompt:
+		_prompt = text
+		interactable_changed.emit(text)
+
+
+func _fall_reset() -> void:
+	Sound.sfx("hurt")
+	if not health.take_damage(1, true):
+		return
+	if not health.is_dead():
+		respawn_at(spawn_point)

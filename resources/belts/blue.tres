@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BeltData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/progression/belt_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "blue"
+display_name = "Blaugurt"
+color = Color(0.12, 0.36, 0.88, 1)
+max_hp_bonus = 1
+damage_multiplier = 1.1
