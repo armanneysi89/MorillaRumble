@@ -15,10 +15,13 @@ var _faces := 1
 var _squash := Vector2.ONE
 var _mat: ShaderMaterial
 var _breathe_t := 0.0
+var _lean := 0.0
+var _body: CharacterBody2D
 
 
 func setup(spec_key: String, belt_key := false) -> void:
 	spec = CharacterSpecs.get_spec(spec_key)
+	_body = get_parent() as CharacterBody2D
 	sprite_frames = SpriteLibrary.build(spec)
 	var canvas: Vector2 = spec["canvas"]
 	centered = true
@@ -105,12 +108,19 @@ func spawn_ghost(color := Color(1.0, 0.8, 0.4, 0.55)) -> void:
 
 
 func _process(delta: float) -> void:
-	_squash = _squash.lerp(Vector2.ONE, minf(delta * 12.0, 1.0))
+	_squash = _squash.lerp(Vector2.ONE, minf(delta * 9.0, 1.0))
 	_breathe_t += delta
 	var breathe := Vector2.ONE
 	if animation == &"idle":
 		breathe = Vector2(1.0 - sin(_breathe_t * 2.6) * 0.01, 1.0 + sin(_breathe_t * 2.6) * 0.018)
 	scale = Vector2.ONE * base_scale * _squash * breathe
+	var want_lean := 0.0
+	if _body:
+		want_lean = clampf(_body.velocity.x / 1100.0, -1.0, 1.0) * 0.1
+		if not _body.is_on_floor():
+			want_lean *= 0.5
+	_lean = lerpf(_lean, want_lean, minf(delta * 7.0, 1.0))
+	rotation = _lean
 
 
 func _on_frame_changed() -> void:

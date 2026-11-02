@@ -7,18 +7,23 @@ extends CharacterBody2D
 signal died
 signal interactable_changed(prompt: String)
 
-const SPEED := 480.0
-const ACCEL := 3600.0
-const FRICTION := 4400.0
-const AIR_ACCEL := 2800.0
-const GRAVITY := 2500.0
-const FALL_GRAVITY_MULT := 1.25
-const MAX_FALL := 1500.0
-const JUMP_VELOCITY := -980.0
-const COYOTE_TIME := 0.1
-const JUMP_BUFFER := 0.12
-const INPUT_BUFFER := 0.15
-const DASH_COOLDOWN := 0.55
+const SPEED := 580.0
+const ACCEL := 5600.0
+const FRICTION := 6400.0
+const AIR_ACCEL := 4200.0
+## Beim Richtungswechsel beschleunigt die Figur stärker, damit sie nicht träge wirkt.
+const TURN_BOOST := 2.1
+const GRAVITY := 2950.0
+const FALL_GRAVITY_MULT := 1.3
+## Kurzes Schweben am Sprungscheitel.
+const APEX_WINDOW := 220.0
+const APEX_GRAVITY_MULT := 0.55
+const MAX_FALL := 1750.0
+const JUMP_VELOCITY := -1180.0
+const COYOTE_TIME := 0.12
+const JUMP_BUFFER := 0.14
+const INPUT_BUFFER := 0.16
+const DASH_COOLDOWN := 0.5
 const BUFFERED_ACTIONS: Array[String] = ["jump", "light_attack", "heavy_attack", "dash", "grab"]
 
 @onready var visual: CharacterSprite = $Visual
@@ -80,7 +85,7 @@ func _exit_tree() -> void:
 
 
 func _add_shadow() -> void:
-	var shadow := Effects.glow(self, Vector2(0, 2), 70.0, Color(0, 0, 0, 0.55))
+	var shadow := Effects.glow(self, Vector2(0, 2), 86.0, Color(0, 0, 0, 0.55))
 	shadow.scale = Vector2(1.5, 0.28)
 	shadow.z_index = -1
 	var mat := CanvasItemMaterial.new()
@@ -141,9 +146,12 @@ func clear_buffers() -> void:
 
 
 func apply_gravity(delta: float) -> void:
-	if not is_on_floor():
-		var mult := FALL_GRAVITY_MULT if velocity.y > 0.0 else 1.0
-		velocity.y = minf(velocity.y + GRAVITY * mult * delta, MAX_FALL)
+	if is_on_floor():
+		return
+	var mult := FALL_GRAVITY_MULT if velocity.y > 0.0 else 1.0
+	if absf(velocity.y) < APEX_WINDOW:
+		mult *= APEX_GRAVITY_MULT
+	velocity.y = minf(velocity.y + GRAVITY * mult * delta, MAX_FALL)
 
 
 func apply_horizontal(delta: float, speed_mult := 1.0, accel_mult := 1.0) -> void:
@@ -151,6 +159,8 @@ func apply_horizontal(delta: float, speed_mult := 1.0, accel_mult := 1.0) -> voi
 	var rate := AIR_ACCEL
 	if is_on_floor():
 		rate = ACCEL if absf(input_dir) > 0.0 else FRICTION
+	if absf(input_dir) > 0.0 and target * velocity.x < 0.0:
+		rate *= TURN_BOOST
 	velocity.x = move_toward(velocity.x, target, rate * accel_mult * delta)
 	if absf(input_dir) > 0.0:
 		facing = 1 if input_dir > 0.0 else -1

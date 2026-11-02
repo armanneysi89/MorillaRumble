@@ -24,9 +24,9 @@ func _ready() -> void:
 	collision_mask = 0
 	var cs := CollisionShape2D.new()
 	var shape := RectangleShape2D.new()
-	shape.size = Vector2(220, 220)
+	shape.size = Vector2(260, 300)
 	cs.shape = shape
-	cs.position = Vector2(0, -110)
+	cs.position = Vector2(0, -150)
 	add_child(cs)
 	_visual = CharacterSprite.new()
 	add_child(_visual)

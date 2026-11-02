@@ -1,7 +1,7 @@
-"""Synthetisiert alle Soundeffekte und Musikstücke für Morilla Rumble (numpy/scipy, keine Fremdsamples).
+"""Synthetisiert alle Soundeffekte für Morilla Rumble (numpy/scipy, keine Fremdsamples). Musik: tools/get_music.sh.
 
 Aufruf: python3 gen_audio.py [name ...]   (ohne Namen wird alles erzeugt)
-Ausgabe: assets/audio/sfx/*.wav und assets/audio/music/*.ogg (ffmpeg nötig)
+Ausgabe: assets/audio/sfx/*.wav
 """
 import subprocess
 import sys
@@ -223,112 +223,6 @@ SFX = {
 }
 
 
-# ------------------------------------------------------------------ Musik (Trap)
-
-def bass808(m, sec, slide=0):
-    """808 mit kurzem Pitch-Punch, langem Sustain und Sättigung; slide: Halbtöne, in die am Ende geglitten wird."""
-    f = hz(m)
-    t = tt(sec)
-    freq = f * (1 + 1.0 * np.exp(-t / 0.025)) * 2 ** (slide / 12 * np.clip((t - sec * 0.6) / (sec * 0.4), 0, 1))
-    ph = TAU * np.cumsum(freq) / SR
-    x = (np.sin(ph) + 0.35 * np.sin(2 * ph)) * np.minimum(t / 0.004, 1) * np.exp(-t / (sec * 0.8))
-    return np.tanh(3.5 * x) * 0.8
-
-
-def kick808():
-    return mix(thump(130, 0.25, 0.07) * 1.2, bp(noise(0.02), 2000, 6000) * env(tt(0.02), 0.005) * 0.5)
-
-
-def snare():
-    t = tt(0.3)
-    clap = mix(*[at(bp(noise(0.12), 900, 3500) * env(tt(0.12), 0.025), d) for d in (0, 0.012, 0.025)])
-    clap = np.pad(clap, (0, int(0.3 * SR) - len(clap)))
-    body = bp(noise(0.3), 1800, 9000) * env(t, 0.09) * 0.7 + np.sin(TAU * 200 * t) * env(t, 0.05) * 0.4
-    return (clap * 0.5 + body) * 0.9
-
-
-def hat(open_=False, vel=1.0):
-    sec = 0.22 if open_ else 0.045
-    return hp(noise(sec), 8000) * env(tt(sec), 0.1 if open_ else 0.015) * 0.3 * vel
-
-
-def pluck(f, sec, tau=0.35):
-    t = tt(sec)
-    return sum(a * np.sin(TAU * f * k * t) for k, a in ((1, 1.0), (2, 0.4), (3, 0.25), (4, 0.1))) * env(t, tau)
-
-
-def dark_pad(freqs, sec):
-    t = tt(sec)
-    x = sum(np.sin(TAU * f * t) + 0.5 * np.sin(TAU * f * 1.004 * t) for f in freqs)
-    a = np.minimum(t / 0.8, 1) * np.minimum((sec - t) / 0.8, 1)
-    return lp(x, 700) * a / len(freqs)
-
-
-def trap(bpm, bars, roots, chords, melody, hard):
-    """Halftime-Trap: 808-Bass, Clap auf Schlag 3, 16tel-Hihats mit Rolls. roots/chords: je Takt MIDI-Töne,
-    melody: (Takt, 16tel-Schritt, MIDI, Länge in 16teln)."""
-    step = 60.0 / bpm / 4
-    bar = step * 16
-    total = bar * bars
-    out = np.zeros(int((total + 3.0) * SR))
-
-    def put(x, start):
-        i = int(start * SR)
-        out[i:i + len(x)] += x[: len(out) - i]
-
-    kick_pats = [[0, 7, 10], [0, 6, 10, 13], [0, 7, 11], [0, 3, 10, 14]] if hard else [[0, 7, 10], [0, 10], [0, 7, 10], [0, 6, 10, 14]]
-    for b in range(bars):
-        t0 = b * bar
-        put(dark_pad([hz(m) for m in chords[b % len(chords)]], bar + 0.5) * 0.18, t0)
-        pat = kick_pats[b % 4]
-        for i, s in enumerate(pat):
-            end = pat[i + 1] if i + 1 < len(pat) else 16
-            slide = -2 if (i == len(pat) - 1 and b % 4 == 3) else 0
-            put(kick808() * 0.7, t0 + s * step)
-            put(bass808(roots[b % len(roots)], max(end - s, 2) * step * 1.05, slide), t0 + s * step)
-        put(snare(), t0 + 8 * step)
-        if hard and b % 4 == 3:
-            put(snare() * 0.4, t0 + 14 * step)
-        for s in range(16):
-            if s % 2 == 1 and rng.random() < (0.25 if hard else 0.5):
-                continue
-            put(hat(vel=(1.0 if s % 4 == 0 else 0.55 if s % 2 == 0 else 0.35)), t0 + s * step)
-        put(hat(True, 0.9), t0 + 6 * step)
-        if b % 2 == 1:
-            put(hat(True, 0.7), t0 + 14 * step)
-        if b % 4 == 3:
-            for k in range(6):
-                put(hat(vel=0.35 + 0.1 * k), t0 + (12 + k * 2 / 3) * step)
-            for k in range(8):
-                put(hat(vel=0.5 + 0.06 * k), t0 + (14 + k / 4) * step)
-    for bar_i, s, m, ln in melody:
-        put(pluck(hz(m), ln * step + 0.3, 0.3) * 0.28, bar_i * bar + s * step)
-    n = int(total * SR)
-    out[: len(out) - n] += out[n:]
-    out = np.tanh(out[:n] * 1.4)
-    return out / max(np.abs(out).max(), 1e-6) * 0.8
-
-
-def music_menu():
-    roots = [33, 29, 36, 31]
-    chords = [[57, 60, 64], [53, 57, 60], [60, 64, 67], [55, 59, 62]]
-    mel = [(0, 0, 81, 3), (0, 4, 79, 2), (0, 8, 76, 4), (1, 0, 77, 3), (1, 4, 76, 2), (1, 8, 72, 4),
-           (2, 0, 79, 3), (2, 4, 76, 2), (2, 8, 72, 4), (3, 0, 74, 3), (3, 4, 71, 2), (3, 8, 67, 6)]
-    return trap(128, 16, roots, chords, [(b + o, s, m, ln) for o in (0, 4, 8, 12) for b, s, m, ln in mel], hard=False)
-
-
-def music_dojo():
-    roots = [33, 33, 29, 31]
-    chords = [[57, 60, 64], [57, 60, 64], [53, 57, 60], [55, 59, 62]]
-    mel = [(0, 0, 76, 2), (0, 3, 76, 1), (0, 6, 79, 2), (0, 10, 76, 2), (0, 13, 72, 2),
-           (1, 0, 74, 2), (1, 3, 74, 1), (1, 6, 76, 2), (1, 10, 72, 2), (1, 13, 69, 2),
-           (2, 0, 72, 2), (2, 3, 72, 1), (2, 6, 77, 2), (2, 10, 76, 2), (2, 13, 72, 2),
-           (3, 0, 74, 2), (3, 3, 71, 1), (3, 6, 74, 2), (3, 10, 79, 4)]
-    return trap(140, 16, roots, chords, [(b + o, s, m, ln) for o in (0, 4, 8, 12) for b, s, m, ln in mel], hard=True)
-
-
-MUSIC = {"menu": music_menu, "dojo": music_dojo}
-
 
 def write_wav(path, x):
     x16 = (np.clip(x, -1, 1) * 32767).astype("<i2")
@@ -349,17 +243,6 @@ def main() -> None:
         x = fn()
         write_wav(OUT / "sfx" / f"{name}.wav", x / max(np.abs(x).max(), 1e-6) * 0.8)
         print("sfx", name, flush=True)
-    for name, fn in MUSIC.items():
-        if only and name not in only:
-            continue
-        x = fn()
-        with tempfile.TemporaryDirectory() as tmp:
-            wav = Path(tmp) / "m.wav"
-            write_wav(wav, x)
-            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(wav), "-c:a", "libvorbis", "-q:a", "5",
-                            str(OUT / "music" / f"{name}.ogg")], check=True)
-        print("music", name, f"{len(x) / SR:.1f}s", flush=True)
-
 
 if __name__ == "__main__":
     main()

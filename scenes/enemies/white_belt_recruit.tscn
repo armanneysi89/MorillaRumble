@@ -8,13 +8,13 @@
 [ext_resource type="Resource" path="res://resources/enemies/white_belt_recruit.tres" id="6"]
 
 [sub_resource type="RectangleShape2D" id="body"]
-size = Vector2(64, 140)
+size = Vector2(84, 185)
 
 [sub_resource type="RectangleShape2D" id="hurt"]
-size = Vector2(64, 140)
+size = Vector2(84, 185)
 
 [sub_resource type="RectangleShape2D" id="hit"]
-size = Vector2(140, 110)
+size = Vector2(185, 145)
 
 [node name="WhiteBeltRecruit" type="CharacterBody2D"]
 collision_layer = 4
@@ -26,7 +26,7 @@ data = ExtResource("6")
 script = ExtResource("2")
 
 [node name="BodyShape" type="CollisionShape2D" parent="."]
-position = Vector2(0, -70)
+position = Vector2(0, -92)
 shape = SubResource("body")
 
 [node name="Health" type="Node" parent="."]
@@ -39,7 +39,7 @@ collision_mask = 0
 script = ExtResource("4")
 
 [node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, -70)
+position = Vector2(0, -92)
 shape = SubResource("hurt")
 
 [node name="AttackHitbox" type="Area2D" parent="."]
@@ -51,6 +51,6 @@ script = ExtResource("5")
 shape = SubResource("hit")
 
 [node name="LedgeCheck" type="RayCast2D" parent="."]
-position = Vector2(55, -10)
+position = Vector2(72, -10)
 target_position = Vector2(0, 80)
 collision_mask = 1

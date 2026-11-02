@@ -55,10 +55,16 @@ func end_attack() -> void:
 
 func _on_hit_landed(hurtbox: Hurtbox, info: HitInfo) -> void:
 	var parent := player.get_parent()
-	Effects.hit_spark(parent, hurtbox.global_position + Vector2(0, -20), info.heavy)
+	var pos := hurtbox.global_position + Vector2(0, -20)
+	Effects.hit_spark(parent, pos, info.heavy)
+	if info.heavy:
+		Effects.slash(parent, pos, player.facing, true)
+		Effects.float_text(parent, hurtbox.global_position + Vector2(0, -260), "KO!" if info.damage >= 4 else "BAM!", Color("ff7a45"))
 	Sound.sfx("heavy_hit" if info.heavy else "hit")
 	Game.hit_stop(info.hit_stop)
 	Game.shake(info.shake)
+	# Der Treffer schiebt Morilla leicht zurück: Der Schlag bekommt Gewicht.
+	player.velocity.x -= player.facing * (170.0 if info.heavy else 70.0)
 
 
 func _on_hit_received(info: HitInfo) -> void:

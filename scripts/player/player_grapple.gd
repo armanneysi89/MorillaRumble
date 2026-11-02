@@ -18,13 +18,13 @@ func setup(p: Morilla) -> void:
 	var ab := ability()
 	var reach := ab.reach if ab else DEFAULT_REACH
 	var shape := (player.grab_sensor.get_node("Shape") as CollisionShape2D).shape as RectangleShape2D
-	shape.size = Vector2(reach + 80.0, 190.0)
+	shape.size = Vector2(reach + 80.0, 238.0)
 
 
 func _physics_process(delta: float) -> void:
 	cooldown = maxf(cooldown - delta, 0.0)
 	var reach := ability().reach if ability() else DEFAULT_REACH
-	player.grab_sensor.position = Vector2(player.facing * (reach * 0.5 + 10.0), -95.0)
+	player.grab_sensor.position = Vector2(player.facing * (reach * 0.5 + 10.0), -119.0)
 
 
 func ability() -> AbilityData:

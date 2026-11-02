@@ -18,19 +18,19 @@
 [ext_resource type="Script" path="res://scripts/player/states/frozen.gd" id="16"]
 
 [sub_resource type="RectangleShape2D" id="body"]
-size = Vector2(72, 190)
+size = Vector2(90, 238)
 
 [sub_resource type="RectangleShape2D" id="hurt"]
-size = Vector2(70, 180)
+size = Vector2(88, 226)
 
 [sub_resource type="RectangleShape2D" id="hit"]
-size = Vector2(160, 110)
+size = Vector2(200, 138)
 
 [sub_resource type="RectangleShape2D" id="grab"]
-size = Vector2(280, 190)
+size = Vector2(350, 238)
 
 [sub_resource type="RectangleShape2D" id="interact"]
-size = Vector2(110, 190)
+size = Vector2(138, 238)
 
 [node name="Morilla" type="CharacterBody2D"]
 collision_layer = 2
@@ -41,7 +41,7 @@ script = ExtResource("1")
 script = ExtResource("2")
 
 [node name="BodyShape" type="CollisionShape2D" parent="."]
-position = Vector2(0, -95)
+position = Vector2(0, -119)
 shape = SubResource("body")
 
 [node name="Health" type="Node" parent="."]
@@ -54,7 +54,7 @@ collision_mask = 0
 script = ExtResource("4")
 
 [node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, -95)
+position = Vector2(0, -119)
 shape = SubResource("hurt")
 
 [node name="AttackHitbox" type="Area2D" parent="."]
@@ -77,7 +77,7 @@ collision_layer = 0
 collision_mask = 128
 
 [node name="Shape" type="CollisionShape2D" parent="InteractSensor"]
-position = Vector2(0, -95)
+position = Vector2(0, -119)
 shape = SubResource("interact")
 
 [node name="Combat" type="Node" parent="."]

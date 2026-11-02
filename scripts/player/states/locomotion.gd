@@ -33,10 +33,11 @@ func physics_update(delta: float) -> void:
 	p.move_and_slide()
 
 	if p.is_on_floor() and not _was_on_floor:
-		p.visual.squash(Vector2(1.18, 0.84))
+		p.visual.squash(Vector2(1.22, 0.8))
 		if fall_speed > 350.0:
 			Sound.sfx("land", remap(minf(fall_speed, Morilla.MAX_FALL), 350.0, Morilla.MAX_FALL, -10.0, 0.0))
 			Effects.dust(p.get_parent(), p.global_position)
+			Game.shake(remap(minf(fall_speed, Morilla.MAX_FALL), 350.0, Morilla.MAX_FALL, 0.04, 0.2))
 	_was_on_floor = p.is_on_floor()
 	_animate()
 
@@ -71,9 +72,12 @@ func _animate() -> void:
 	var anim := &"idle"
 	if not p.is_on_floor():
 		anim = &"jump" if p.velocity.y < 0.0 else &"fall"
-	elif absf(p.velocity.x) > 330.0:
+	elif absf(p.velocity.x) > 380.0:
 		anim = &"run"
 	elif absf(p.velocity.x) > 40.0:
 		anim = &"walk"
 	p.visual.play_anim(anim)
 	p.visual.face(p.facing)
+	if anim == &"run" or anim == &"walk":
+		var ref: float = Morilla.SPEED if anim == &"run" else Morilla.SPEED * 0.45
+		p.visual.speed_scale = clampf(absf(p.velocity.x) / ref, 0.7, 1.45)

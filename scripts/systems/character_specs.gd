@@ -10,7 +10,7 @@ const MORILLA := {
 	"root": "res://assets/characters/morilla",
 	"canvas": Vector2(640, 480),
 	"anchor_y": 470.0,
-	"scale": 0.64,
+	"scale": 0.8,
 	"faces": 1,
 	"placeholder": Color(0.1, 0.1, 0.14),
 	"anims": {
@@ -35,7 +35,7 @@ const RECRUIT := {
 	"root": "res://assets/characters/enemies/white_belt_recruit",
 	"canvas": Vector2(560, 440),
 	"anchor_y": 430.0,
-	"scale": 0.5,
+	"scale": 0.66,
 	"faces": -1,
 	"placeholder": Color(0.45, 0.3, 0.7),
 	"anims": {
@@ -53,7 +53,7 @@ const MO := {
 	"root": "res://assets/characters/coaches/mo",
 	"canvas": Vector2(560, 460),
 	"anchor_y": 450.0,
-	"scale": 0.5,
+	"scale": 0.7,
 	"faces": -1,
 	"placeholder": Color(0.15, 0.15, 0.18),
 	"anims": {
