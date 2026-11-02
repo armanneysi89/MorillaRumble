@@ -3,7 +3,8 @@
 /android/
 
 # Export-Ausgaben, Roh-Generierungen und Logs
-/builds/
+/builds/*
+!/builds/release/
 /tools/raw/
 /tools/__pycache__/
 *.log

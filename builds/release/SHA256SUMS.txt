@@ -1,0 +1,7 @@
+f5e7022d18c0c9f99049edb4ee791c8df0e99d9de5d221fbf21b36195f842fd4  MorillaRumble-1.0-android-debug.apk
+9b4ca5d4643c59c5628d3339b0cff2576b53860fd5783b54c04dfa67f9ad2c2e  MorillaRumble-1.0-linux-arm64.zip
+56d23a39fc03b51f60943d0d67dac4290d2a4b8fe79907cf5f7adf9666c39d74  MorillaRumble-1.0-linux-x86_64.zip
+f79aa64a152eb8c648d86b267b148abf859a01fa722de8c3f9cf0594f7567541  MorillaRumble-1.0-macos.zip
+e44217acb1d4a8b7843debf04020a0819d52110452f1fa7c8a8676d76effe6a8  MorillaRumble-1.0-web.zip
+06ed8cef508757f0eca044b0c93872ddcd8df8a5c80e04501e41dd2b12314525  MorillaRumble-1.0-windows-arm64.zip
+1fbe44269984d130de5ab6d8f36d306ca371ed2fafdd469aecb770d4664c66d2  MorillaRumble-1.0-windows-x86_64.zip
