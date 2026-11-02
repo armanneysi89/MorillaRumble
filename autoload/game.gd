@@ -23,6 +23,7 @@ const ACTIONS := {
 }
 
 var _hitstop_end := 0
+var _hitstop_id := 0
 var _changing := false
 var _fade: ColorRect
 
@@ -77,9 +78,12 @@ func hit_stop(duration: float, time_scale := 0.03) -> void:
 	if end <= _hitstop_end:
 		return
 	_hitstop_end = end
+	_hitstop_id += 1
+	var id := _hitstop_id
 	Engine.time_scale = time_scale
 	await get_tree().create_timer(duration, true, false, true).timeout
-	if Time.get_ticks_msec() >= _hitstop_end:
+	# Der Timer kann minimal vor dem Ablaufzeitpunkt feuern; nur der jüngste Aufruf stellt zurück.
+	if id == _hitstop_id:
 		Engine.time_scale = 1.0
 
 
@@ -98,6 +102,7 @@ func change_scene(path: String, fade_time := 0.35) -> void:
 	await _fade_to(1.0, fade_time)
 	Engine.time_scale = 1.0
 	_hitstop_end = 0
+	_hitstop_id += 1
 	get_tree().paused = false
 	get_tree().change_scene_to_file(path)
 	await get_tree().process_frame

@@ -5,7 +5,7 @@ extends Node
 const SFX_PATH := "res://assets/audio/sfx/%s.wav"
 const MUSIC_PATH := "res://assets/audio/music/%s.ogg"
 const SFX_VOICES := 14
-const MUSIC_DB := -6.0
+const MUSIC_DB := -11.0
 const SFX_DB := -4.0
 const SILENT := -60.0
 
