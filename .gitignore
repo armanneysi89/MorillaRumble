@@ -1,10 +1,8 @@
 # Godot 4+
 .godot/
 /android/
-
-# Export-Ausgaben, Roh-Generierungen und Logs
 /builds/*
-!/builds/release/
+# Roh-Generierungen und Logs
 /tools/raw/
 /tools/__pycache__/
 *.log
