@@ -225,26 +225,31 @@ SFX = {
 
 # ------------------------------------------------------------------ Musik (Trap)
 
-def bass808(m, sec):
+def bass808(m, sec, slide=0):
+    """808 mit kurzem Pitch-Punch, langem Sustain und Sättigung; slide: Halbtöne, in die am Ende geglitten wird."""
     f = hz(m)
     t = tt(sec)
-    freq = f * (1 + 1.2 * np.exp(-t / 0.03))
-    x = np.sin(TAU * np.cumsum(freq) / SR) * env(t, sec * 0.5)
-    return np.tanh(2.2 * x) * 0.9
+    freq = f * (1 + 1.0 * np.exp(-t / 0.025)) * 2 ** (slide / 12 * np.clip((t - sec * 0.6) / (sec * 0.4), 0, 1))
+    ph = TAU * np.cumsum(freq) / SR
+    x = (np.sin(ph) + 0.35 * np.sin(2 * ph)) * np.minimum(t / 0.004, 1) * np.exp(-t / (sec * 0.8))
+    return np.tanh(3.5 * x) * 0.8
 
 
 def kick808():
-    return thump(120, 0.3, 0.1) * 1.1
+    return mix(thump(130, 0.25, 0.07) * 1.2, bp(noise(0.02), 2000, 6000) * env(tt(0.02), 0.005) * 0.5)
 
 
 def snare():
-    t = tt(0.25)
-    return (bp(noise(0.25), 1200, 9000) * env(t, 0.07) * 0.8 + np.sin(TAU * 190 * t) * env(t, 0.05) * 0.5)
+    t = tt(0.3)
+    clap = mix(*[at(bp(noise(0.12), 900, 3500) * env(tt(0.12), 0.025), d) for d in (0, 0.012, 0.025)])
+    clap = np.pad(clap, (0, int(0.3 * SR) - len(clap)))
+    body = bp(noise(0.3), 1800, 9000) * env(t, 0.09) * 0.7 + np.sin(TAU * 200 * t) * env(t, 0.05) * 0.4
+    return (clap * 0.5 + body) * 0.9
 
 
-def hat(open_=False):
-    sec = 0.18 if open_ else 0.04
-    return hp(noise(sec), 7500) * env(tt(sec), 0.09 if open_ else 0.02) * 0.35
+def hat(open_=False, vel=1.0):
+    sec = 0.22 if open_ else 0.045
+    return hp(noise(sec), 8000) * env(tt(sec), 0.1 if open_ else 0.015) * 0.3 * vel
 
 
 def pluck(f, sec, tau=0.35):
@@ -271,29 +276,37 @@ def trap(bpm, bars, roots, chords, melody, hard):
         i = int(start * SR)
         out[i:i + len(x)] += x[: len(out) - i]
 
-    kick_pats = [[0, 7, 10], [0, 6, 10, 13], [0, 7, 11], [0, 3, 10, 14]] if hard else [[0, 10], [0, 7, 10], [0, 10], [0, 6, 10]]
+    kick_pats = [[0, 7, 10], [0, 6, 10, 13], [0, 7, 11], [0, 3, 10, 14]] if hard else [[0, 7, 10], [0, 10], [0, 7, 10], [0, 6, 10, 14]]
     for b in range(bars):
         t0 = b * bar
-        put(dark_pad([hz(m) for m in chords[b % len(chords)]], bar + 0.5) * 0.3, t0)
-        for s in kick_pats[b % 4]:
-            put(kick808() * 0.8, t0 + s * step)
-            put(bass808(roots[b % len(roots)], step * 6) * 0.9, t0 + s * step)
+        put(dark_pad([hz(m) for m in chords[b % len(chords)]], bar + 0.5) * 0.18, t0)
+        pat = kick_pats[b % 4]
+        for i, s in enumerate(pat):
+            end = pat[i + 1] if i + 1 < len(pat) else 16
+            slide = -2 if (i == len(pat) - 1 and b % 4 == 3) else 0
+            put(kick808() * 0.7, t0 + s * step)
+            put(bass808(roots[b % len(roots)], max(end - s, 2) * step * 1.05, slide), t0 + s * step)
         put(snare(), t0 + 8 * step)
-        for s in range(0, 16, 2):
-            put(hat() * (1.0 if s % 4 == 0 else 0.6), t0 + s * step)
-        if hard:
-            for s in (13, 15):
-                put(hat() * 0.5, t0 + s * step)
-            if b % 4 == 3:
-                for k in range(6):
-                    put(hat() * (0.4 + 0.1 * k), t0 + (12 + k * 2 / 3) * step)
-        put(hat(True) * 0.7, t0 + 6 * step)
+        if hard and b % 4 == 3:
+            put(snare() * 0.4, t0 + 14 * step)
+        for s in range(16):
+            if s % 2 == 1 and rng.random() < (0.25 if hard else 0.5):
+                continue
+            put(hat(vel=(1.0 if s % 4 == 0 else 0.55 if s % 2 == 0 else 0.35)), t0 + s * step)
+        put(hat(True, 0.9), t0 + 6 * step)
+        if b % 2 == 1:
+            put(hat(True, 0.7), t0 + 14 * step)
+        if b % 4 == 3:
+            for k in range(6):
+                put(hat(vel=0.35 + 0.1 * k), t0 + (12 + k * 2 / 3) * step)
+            for k in range(8):
+                put(hat(vel=0.5 + 0.06 * k), t0 + (14 + k / 4) * step)
     for bar_i, s, m, ln in melody:
-        put(pluck(hz(m), ln * step + 0.3, 0.3) * 0.35, bar_i * bar + s * step)
+        put(pluck(hz(m), ln * step + 0.3, 0.3) * 0.28, bar_i * bar + s * step)
     n = int(total * SR)
     out[: len(out) - n] += out[n:]
-    out = np.tanh(out[:n] * 1.2)
-    return out / max(np.abs(out).max(), 1e-6) * 0.75
+    out = np.tanh(out[:n] * 1.4)
+    return out / max(np.abs(out).max(), 1e-6) * 0.8
 
 
 def music_menu():
