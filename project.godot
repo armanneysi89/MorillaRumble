@@ -23,6 +23,10 @@ Progression="*res://autoload/progression.gd"
 Sound="*res://autoload/sound.gd"
 OrientationGuard="*res://autoload/orientation_guard.gd"
 
+[audio]
+
+general/default_playback_type.web=0
+
 [display]
 
 window/size/viewport_width=1920
