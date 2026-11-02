@@ -111,8 +111,11 @@ func _process(delta: float) -> void:
 	_squash = _squash.lerp(Vector2.ONE, minf(delta * 9.0, 1.0))
 	_breathe_t += delta
 	var breathe := Vector2.ONE
+	var sway := 0.0
 	if animation == &"idle":
-		breathe = Vector2(1.0 - sin(_breathe_t * 2.6) * 0.01, 1.0 + sin(_breathe_t * 2.6) * 0.018)
+		var s := sin(_breathe_t * 2.2)
+		breathe = Vector2(1.0 - s * 0.012, 1.0 + s * 0.026)
+		sway = sin(_breathe_t * 1.1) * 0.008
 	scale = Vector2.ONE * base_scale * _squash * breathe
 	var want_lean := 0.0
 	if _body:
@@ -120,7 +123,7 @@ func _process(delta: float) -> void:
 		if not _body.is_on_floor():
 			want_lean *= 0.5
 	_lean = lerpf(_lean, want_lean, minf(delta * 7.0, 1.0))
-	rotation = _lean
+	rotation = _lean + sway
 
 
 func _on_frame_changed() -> void:

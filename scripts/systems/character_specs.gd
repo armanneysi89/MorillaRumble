@@ -14,7 +14,7 @@ const MORILLA := {
 	"faces": 1,
 	"placeholder": Color(0.1, 0.1, 0.14),
 	"anims": {
-		"idle": ["idle", 6.0, true],
+		"idle": ["idle", 6.0, true, [2]],
 		"walk": ["walk", 11.0, true],
 		"run": ["run", 16.0, true],
 		"jump": ["jump", 8.0, false],

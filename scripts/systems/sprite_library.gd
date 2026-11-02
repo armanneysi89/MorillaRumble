@@ -19,12 +19,14 @@ static func build(spec: Dictionary) -> SpriteFrames:
 		frames.add_animation(anim_name)
 		frames.set_animation_speed(anim_name, def[1])
 		frames.set_animation_loop(anim_name, def[2])
+		var picked: Array = def[3] if def.size() > 3 else []
 		var index := 1
 		while true:
 			var path := frame_path(spec, def[0], anim_name, index)
 			if not ResourceLoader.exists(path):
 				break
-			frames.add_frame(anim_name, load(path))
+			if picked.is_empty() or picked.has(index):
+				frames.add_frame(anim_name, load(path))
 			index += 1
 		if frames.get_frame_count(anim_name) == 0:
 			frames.add_frame(anim_name, _placeholder(spec))
