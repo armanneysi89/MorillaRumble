@@ -34,6 +34,8 @@ Der Oktopus-Geist (Taste **Q / R**, Gamepad: rechter Trigger) erscheint nach kur
 | Pause       | Esc, P              | Start          |
 | Musik an/aus| M                   | –              |
 
+Der leichte Schlag ist eine Kombo: Wer innerhalb kurzer Zeit weiterdrückt, schlägt Jab, Cross, Hook, Lowkick und zum Abschluss einen Kick (doppelter Schaden, starker Rückstoß).
+
 ## Starten
 
 1. [Godot 4.7](https://godotengine.org/) installieren.

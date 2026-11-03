@@ -28,7 +28,7 @@ const DECOR := [
 const HINTS := [
 	[520, 800, "A / D oder Stick: laufen.  Leertaste: springen – länger halten, höher springen."],
 	[1130, 800, "Shift / Z: Dash. Er macht dich kurz unverwundbar – auch in der Luft (einmal pro Sprung)."],
-	[1700, 800, "J / X: leichter Schlag.  K / C: schwerer Schlag (langsamer, aber stärker). Übe an der Puppe!"],
+	[1700, 800, "J / X: Kombo – mehrfach drücken für Jab, Cross, Hook, Lowkick und Kick.  K / C: schwerer Schlag (langsamer, aber stärker). Übe an der Puppe!"],
 	[2560, 800, "Spring über die Lücke. Wer fällt, verliert ein Leben und startet am letzten Checkpoint."],
 	[3050, 800, "Regale lassen sich von unten durchspringen. Dort oben liegt etwas verborgen."],
 	[3480, 800, "Gegner kündigen Angriffe mit einem roten ! an. Weiche mit Dash aus oder blocke mit L / V."],
