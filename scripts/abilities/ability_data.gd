@@ -20,3 +20,9 @@ extends Resource
 @export var execute_time := 0.5
 @export var recover_time := 0.3
 @export var hit_stop := 0.12
+## Anzeige im HUD: Taste, mit der die Technik ausgelöst wird.
+@export var input_hint := "F"
+## Beschwörungen: höchstens so viele Gegner pro Einsatz (0 = keine Beschwörung).
+@export var max_targets := 0
+## Beschwörungen: Dauer der Konzentration vor dem Erscheinen (Sekunden).
+@export var charge_time := 0.5

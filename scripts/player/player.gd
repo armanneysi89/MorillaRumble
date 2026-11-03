@@ -24,7 +24,8 @@ const COYOTE_TIME := 0.12
 const JUMP_BUFFER := 0.14
 const INPUT_BUFFER := 0.16
 const DASH_COOLDOWN := 0.5
-const BUFFERED_ACTIONS: Array[String] = ["jump", "light_attack", "heavy_attack", "dash", "grab"]
+const BUFFERED_ACTIONS: Array[String] = ["jump", "light_attack", "heavy_attack", "dash", "grab", "summon"]
+const SUMMON_ID := "octopus"
 
 @onready var visual: CharacterSprite = $Visual
 @onready var health: Health = $Health
@@ -43,6 +44,7 @@ var fall_limit := 2200.0
 var coyote := 0.0
 var air_dash_available := true
 var dash_cooldown := 0.0
+var summon_cooldown := 0.0
 var combo_step := 0
 var combo_timer := 0.0
 var last_hit: HitInfo
@@ -111,6 +113,7 @@ func _physics_process(delta: float) -> void:
 
 func _tick(delta: float) -> void:
 	dash_cooldown = maxf(dash_cooldown - delta, 0.0)
+	summon_cooldown = maxf(summon_cooldown - delta, 0.0)
 	combo_timer = maxf(combo_timer - delta, 0.0)
 	if combo_timer <= 0.0:
 		combo_step = 0
@@ -168,6 +171,14 @@ func apply_horizontal(delta: float, speed_mult := 1.0, accel_mult := 1.0) -> voi
 
 func can_dash() -> bool:
 	return dash_cooldown <= 0.0 and (is_on_floor() or air_dash_available)
+
+
+func summon_ability() -> AbilityData:
+	return Progression.get_ability(SUMMON_ID)
+
+
+func summon_unlocked() -> bool:
+	return Progression.has_ability(SUMMON_ID) and summon_ability() != null
 
 
 func is_busy() -> bool:

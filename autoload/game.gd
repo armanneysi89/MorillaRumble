@@ -7,6 +7,7 @@ signal toast_requested(text: String)
 
 const MENU_SCENE := "res://scenes/ui/main_menu.tscn"
 const DOJO_SCENE := "res://scenes/levels/dojo_level.tscn"
+const BAMBOO_SCENE := "res://scenes/levels/bamboo_level.tscn"
 
 # Aktion -> Tasten, Gamepad-Tasten, Gamepad-Achse [Achse, Richtung]
 const ACTIONS := {
@@ -18,6 +19,7 @@ const ACTIONS := {
 	"dash": {"keys": [KEY_SHIFT, KEY_Z], "buttons": [JOY_BUTTON_B]},
 	"block": {"keys": [KEY_L, KEY_V], "buttons": [JOY_BUTTON_LEFT_SHOULDER]},
 	"grab": {"keys": [KEY_F, KEY_G], "buttons": [JOY_BUTTON_RIGHT_SHOULDER]},
+	"summon": {"keys": [KEY_Q, KEY_R], "buttons": [], "axis": [JOY_AXIS_TRIGGER_RIGHT, 1.0]},
 	"interact": {"keys": [KEY_E, KEY_ENTER, KEY_KP_ENTER], "buttons": [JOY_BUTTON_DPAD_UP]},
 	"pause": {"keys": [KEY_ESCAPE, KEY_P], "buttons": [JOY_BUTTON_START]},
 }
@@ -93,6 +95,13 @@ func shake(strength: float) -> void:
 
 func toast(text: String) -> void:
 	toast_requested.emit(text)
+
+
+## Szene, mit der "Weiterspielen" den gespeicherten Fortschritt fortsetzt.
+func resume_scene() -> String:
+	if Progression.get_flag("level_dojo_cleared") or str(Progression.last_checkpoint.get("level", "")) == "bamboo":
+		return BAMBOO_SCENE
+	return DOJO_SCENE
 
 
 func change_scene(path: String, fade_time := 0.35) -> void:

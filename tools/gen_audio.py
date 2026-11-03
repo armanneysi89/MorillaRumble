@@ -213,13 +213,50 @@ def sfx_ui():
     return fade(mix(bell(1046, 0.18, 0.05) * 0.6, bell(1568, 0.14, 0.04) * 0.3))
 
 
+def sfx_summon_charge():
+    t = tt(0.6)
+    swell = np.sin(TAU * np.cumsum(180 * (1 + 2.2 * t / 0.6)) / SR) * (t / 0.6) ** 1.5
+    shimmer = bp(noise(0.6), 2500, 7000) * (t / 0.6) ** 2 * 0.35
+    return fade(mix(swell * 0.6, shimmer), a=0.02, r=0.05)
+
+
+def sfx_summon():
+    t = tt(1.1)
+    boom = glide(150, 45, 0.9) * env(t[: int(0.9 * SR)], 0.35)
+    rise = glide(220, 880, 0.5) * env(tt(0.5), 0.3) * 0.4
+    return fade(mix(boom * 0.9, rise, whoosh(0.7, 300, 3000, 0.7), at(bell(hz(55), 1.0, 0.5) * 0.3, 0.05)), r=0.12)
+
+
+def sfx_tentacle():
+    t = tt(0.3)
+    crack = hp(noise(0.05), 2500) * env(tt(0.05), 0.012)
+    slither = lp(noise(0.3), 1400) * env(t, 0.09) * (1 + 0.6 * np.sin(TAU * 38 * t))
+    return fade(mix(whoosh(0.22, 500, 4200, 0.8), at(crack * 0.9, 0.12), at(slither * 0.35, 0.1)))
+
+
+def sfx_ink_blast():
+    t = tt(0.9)
+    return fade(mix(thump(70, 0.8, 0.3) * 1.3, lp(noise(0.9), 1800) * env(t, 0.22) * 0.8, bell(hz(46), 0.9, 0.3) * 0.4,
+                    at(bp(noise(0.5), 600, 3500) * env(tt(0.5), 0.15) * 0.4, 0.05)), r=0.1)
+
+
+def sfx_spirit_vanish():
+    t = tt(0.7)
+    return fade(mix(glide(700, 140, 0.7) * env(t, 0.3) * 0.5, whoosh(0.7, 3500, 400, 0.5)), r=0.1)
+
+
+def sfx_menu_start():
+    return fade(mix(thump(80, 0.5, 0.2) * 1.1, bell(hz(60), 0.9, 0.4) * 0.4, bell(hz(67), 0.9, 0.35) * 0.35, whoosh(0.4, 400, 2500, 0.6)), r=0.1)
+
+
 SFX = {
     "jump": sfx_jump, "land": sfx_land, "step": sfx_step, "whoosh": sfx_whoosh, "heavy_whoosh": sfx_heavy_whoosh,
     "dash": sfx_dash, "hit": sfx_hit, "heavy_hit": sfx_heavy_hit, "block": sfx_block, "block_up": sfx_block_up,
     "parry": sfx_parry, "hurt": sfx_hurt, "death": sfx_death, "enemy_swing": sfx_enemy_swing, "enemy_down": sfx_enemy_down,
     "grab": sfx_grab, "strain": sfx_strain, "submit": sfx_submit, "gong": sfx_gong, "scroll": sfx_scroll,
     "learn": sfx_learn, "arena_start": sfx_arena_start, "arena_clear": sfx_arena_clear, "fanfare": sfx_fanfare,
-    "ui": sfx_ui,
+    "ui": sfx_ui, "summon_charge": sfx_summon_charge, "summon": sfx_summon, "tentacle": sfx_tentacle,
+    "ink_blast": sfx_ink_blast, "spirit_vanish": sfx_spirit_vanish, "menu_start": sfx_menu_start,
 }
 
 

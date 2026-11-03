@@ -14,6 +14,13 @@ const LEDGE_PROBE := 55.0
 const GRAB_TIMEOUT := 4.0
 const PARRY_STUN := 0.9
 
+## Gegnertypen der Level (Schlüssel -> EnemyData).
+const ENEMY_DATA := {
+	"recruit": "res://resources/enemies/white_belt_recruit.tres",
+	"rival": "res://resources/enemies/blue_belt_rival.tres",
+}
+const INK_TINT := Color(0.72, 0.55, 1.0)
+
 @export var data: EnemyData
 @export var patrol_range := 160.0
 
@@ -38,9 +45,13 @@ var _alert: Label
 var _hit_shape: RectangleShape2D
 
 
+static func data_for(kind: String) -> EnemyData:
+	return load(ENEMY_DATA.get(kind, ENEMY_DATA["recruit"]))
+
+
 func _ready() -> void:
 	if data == null:
-		data = load("res://resources/enemies/white_belt_recruit.tres")
+		data = data_for("recruit")
 	add_to_group("enemies")
 	collision_layer = Layers.ENEMY
 	collision_mask = Layers.WORLD
@@ -267,6 +278,33 @@ func _die() -> void:
 	tw.tween_interval(0.7)
 	tw.tween_property(visual, "modulate:a", 0.0, 0.8)
 	tw.tween_callback(queue_free)
+
+
+# --- Oktopus-Geist (siehe OctopusSpirit) ---
+
+func can_be_spirit_targeted() -> bool:
+	return state != S.DEAD and state != S.GRABBED
+
+
+## Der Geist hält den Gegner fest: betäubt, ohne Angriff.
+func spirit_bind(duration: float) -> void:
+	if not can_be_spirit_targeted():
+		return
+	hitbox.deactivate()
+	velocity = Vector2.ZERO
+	_set_state(S.STUNNED, duration)
+	visual.modulate = INK_TINT
+
+
+func apply_spirit_hit(info: HitInfo) -> void:
+	if not can_be_spirit_targeted() or not health.take_damage(info.damage):
+		return
+	visual.flash(0.2, Color(0.75, 0.45, 1.0))
+	if health.is_dead():
+		return
+	velocity = Vector2(info.direction * info.knockback.x, info.knockback.y)
+	_set_state(S.STUNNED, info.stun)
+	visual.modulate = INK_TINT
 
 
 # --- Griff-Schnittstelle (siehe PlayerGrapple) ---

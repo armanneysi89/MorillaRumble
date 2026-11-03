@@ -23,6 +23,7 @@ var _hp := 0
 var _max_hp := 0
 var _belt := Color.WHITE
 var _belt_name := ""
+var _cd_tenths := -1
 
 
 func _ready() -> void:
@@ -93,6 +94,15 @@ func _exit_tree() -> void:
 		Progression.belt_changed.disconnect(_on_belt_changed)
 
 
+func _process(_delta: float) -> void:
+	if player == null or not is_instance_valid(player):
+		return
+	var tenths := ceili(player.summon_cooldown * 10.0)
+	if tenths != _cd_tenths:
+		_cd_tenths = tenths
+		_update_tech()
+
+
 func bind_player(p: Morilla) -> void:
 	player = p
 	_hp = p.health.hp
@@ -143,8 +153,12 @@ func _update_tech() -> void:
 	var lines: PackedStringArray = []
 	for id in Progression.abilities:
 		var ab := Progression.get_ability(id)
-		if ab:
-			lines.append("F  %s" % ab.display_name)
+		if ab == null:
+			continue
+		var line := "%s  %s" % [ab.input_hint, ab.display_name]
+		if ab.max_targets > 0 and player and is_instance_valid(player) and player.summon_cooldown > 0.0:
+			line += "  %.1f s" % player.summon_cooldown
+		lines.append(line)
 	_tech.text = "\n".join(lines)
 
 

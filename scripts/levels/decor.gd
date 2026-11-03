@@ -3,12 +3,18 @@ extends Node2D
 
 ## Reines Dekor-Sprite am Fußpunkt (Säulen, Laternen, Bäume ...). Laternen erhalten einen pendelnden Lichtschein.
 
-const PATH := "res://assets/environments/dojo/props/%s.png"
+## Ordner, in denen nach dem Sprite gesucht wird (zuerst der Bambushain, dann das Dojo).
+const PATHS: Array[String] = [
+	"res://assets/environments/bamboo/props/%s.png",
+	"res://assets/environments/dojo/props/%s.png",
+]
 # Art -> [Lichtfarbe, Radius, Höhenanteil des Lichts]
 const GLOWS := {
 	"lantern": [Color(1.0, 0.6, 0.25, 0.5), 260.0, 0.5],
 	"gong": [Color(1.0, 0.7, 0.3, 0.3), 220.0, 0.55],
 	"banner": [Color(1.0, 0.3, 0.2, 0.08), 200.0, 0.5],
+	"stone_lantern": [Color(1.0, 0.6, 0.25, 0.45), 240.0, 0.6],
+	"shrine": [Color(1.0, 0.5, 0.25, 0.22), 380.0, 0.35],
 }
 
 var kind := ""
@@ -17,8 +23,12 @@ var flip := false
 
 
 func _ready() -> void:
-	var path := PATH % kind
-	if not ResourceLoader.exists(path):
+	var path := ""
+	for pattern in PATHS:
+		if ResourceLoader.exists(pattern % kind):
+			path = pattern % kind
+			break
+	if path == "":
 		return
 	var tex: Texture2D = load(path)
 	var sp := Sprite2D.new()

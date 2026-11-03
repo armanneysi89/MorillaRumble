@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "blue_belt_rival"
+display_name = "Blauer Rivale"
+spec_key = "rival"
+max_hp = 4
+move_speed = 230.0
+detect_range = 720.0
+attack_range = 130.0
+attack_damage = 1
+windup_time = 0.42
+attack_time = 0.16
+recover_time = 0.55
+attack_cooldown = 0.45
+lunge_speed = 520.0
+size_class = 1
+grapple_vulnerable = true

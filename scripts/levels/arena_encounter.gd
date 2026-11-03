@@ -12,7 +12,7 @@ const WALL_HEIGHT := 4000.0
 var encounter_id := ""
 ## Weltbereich der Arena.
 var arena_rect := Rect2()
-## Pro Welle eine Liste von Spawn-Positionen (Fußpunkte).
+## Pro Welle eine Liste von Spawns: Vector2 (Fußpunkt, Rekrut) oder [Vector2, Typ] (siehe Enemy.ENEMY_DATA).
 var waves: Array = []
 var camera: GameCamera
 
@@ -42,7 +42,9 @@ func is_done() -> bool:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is Morilla and not _active and not _done:
-		_start()
+		_active = true
+		# Gegner dürfen nicht innerhalb des Physik-Callbacks hinzugefügt werden.
+		_start.call_deferred()
 
 
 func _start() -> void:
@@ -77,8 +79,10 @@ func _next_wave() -> void:
 		return
 	var spawns: Array = waves[_wave]
 	_alive = spawns.size()
-	for pos: Vector2 in spawns:
+	for spawn: Variant in spawns:
+		var pos: Vector2 = spawn if spawn is Vector2 else spawn[0]
 		var enemy := ENEMY_SCENE.instantiate() as Enemy
+		enemy.data = Enemy.data_for("recruit" if spawn is Vector2 else spawn[1])
 		enemy.position = pos
 		enemy.patrol_range = 80.0
 		enemy.died.connect(_on_enemy_died)

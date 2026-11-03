@@ -26,14 +26,14 @@ def upload(path: Path) -> str:
     return _post("/upload/image", body, f"multipart/form-data; boundary={boundary}")["name"]
 
 
-def build(prompt: str, width: int, height: int, seed: int, refs: list[str], steps: int) -> dict:
+def build(prompt: str, width: int, height: int, seed: int, refs: list[str], steps: int, negative: str = NEGATIVE) -> dict:
     g = {
         "unet": {"class_type": "UNETLoader", "inputs": {"unet_name": "qwen_image_2.1_int8_convrot.safetensors", "weight_dtype": "default"}},
         "cache": {"class_type": "QwenImage21Cache", "inputs": {"model": ["unet", 0], "device": "auto", "dtype": "default"}},
         "clip": {"class_type": "CLIPLoader", "inputs": {"clip_name": "qwen3vl_8b_int8_convrot.safetensors", "type": "qwen_image", "device": "default"}},
         "vae": {"class_type": "VAELoader", "inputs": {"vae_name": "qwen_image_2.1_vae_bf16.safetensors"}},
         "enc": {"class_type": "TextEncodeQwenImage21", "inputs": {
-            "clip": ["clip", 0], "prompt": prompt, "negative_prompt": NEGATIVE, "resolution": 1024, "vae": ["vae", 0]}},
+            "clip": ["clip", 0], "prompt": prompt, "negative_prompt": negative, "resolution": 1024, "vae": ["vae", 0]}},
         "latent": {"class_type": "EmptyLatentImage", "inputs": {"width": width, "height": height, "batch_size": 1}},
         "ks": {"class_type": "KSampler", "inputs": {
             "model": ["cache", 0], "positive": ["enc", 0], "negative": ["enc", 1], "latent_image": ["latent", 0],
@@ -47,9 +47,9 @@ def build(prompt: str, width: int, height: int, seed: int, refs: list[str], step
     return g
 
 
-def generate(prompt: str, out: Path, width=1024, height=1024, seed=1, refs: list[Path] | None = None, steps=25) -> Path:
+def generate(prompt: str, out: Path, width=1024, height=1024, seed=1, refs: list[Path] | None = None, steps=25, negative: str = NEGATIVE) -> Path:
     names = [upload(p) for p in refs or []]
-    pid = _post("/prompt", json.dumps({"prompt": build(prompt, width, height, seed, names, steps)}).encode(), "application/json")["prompt_id"]
+    pid = _post("/prompt", json.dumps({"prompt": build(prompt, width, height, seed, names, steps, negative)}).encode(), "application/json")["prompt_id"]
     while True:
         with urllib.request.urlopen(f"{SERVER}/history/{pid}") as r:
             hist = json.loads(r.read())

@@ -84,6 +84,7 @@ func _init() -> void:
 	level_width = 8700.0
 	start = Vector2(300, 800)
 	music = "dojo"
+	next_scene = Game.BAMBOO_SCENE
 	platforms = PLATFORMS
 	decor = DECOR
 	hints = HINTS

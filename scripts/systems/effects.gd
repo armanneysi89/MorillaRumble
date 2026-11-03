@@ -52,11 +52,14 @@ static func shockwave(parent: Node, pos: Vector2, color: Color, radius: float, d
 	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	ring.material = mat
 	parent.add_child(ring)
-	var tw := ring.create_tween().set_parallel()
-	tw.tween_property(ring, "scale", Vector2.ONE * radius, duration).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	tw.tween_property(ring, "width", 14.0 / radius, duration)
-	tw.tween_property(ring, "modulate:a", 0.0, duration)
-	tw.chain().tween_callback(ring.queue_free)
+	# Die Linienbreite wird mitskaliert; die sichtbare Dicke wandert daher von 48 auf 14 Pixel, egal wie groß der Ring wird.
+	var tw := ring.create_tween()
+	tw.tween_method(func(p: float) -> void:
+		var s := lerpf(8.0, radius, 1.0 - pow(1.0 - p, 3.0))
+		ring.scale = Vector2.ONE * s
+		ring.width = lerpf(48.0, 14.0, p) / s
+		ring.modulate.a = 1.0 - p, 0.0, 1.0, duration)
+	tw.tween_callback(ring.queue_free)
 
 
 ## Kurze, radial nach außen schießende Impact-Striche.

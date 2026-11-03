@@ -8,9 +8,13 @@ const PILLAR_PATH := "res://assets/environments/dojo/props/pillar.png"
 
 var level_width := 8000.0
 var far_path := "res://assets/environments/dojo/bg_dojo.png"
+var pillar_path := PILLAR_PATH
+var pillar_tint := Color(0.45, 0.42, 0.6, 0.9)
 var sky_top := Color("0b0a22")
 var sky_bottom := Color("2a1745")
 var petals := true
+var petal_color := Color(1.0, 0.72, 0.82, 0.85)
+var fireflies := false
 
 var _view := Vector2.ZERO
 var _far: Sprite2D
@@ -44,8 +48,8 @@ func _build() -> void:
 		_far_size = tex.get_size() * s
 		add_child(_far)
 
-	if ResourceLoader.exists(PILLAR_PATH):
-		var tex: Texture2D = load(PILLAR_PATH)
+	if ResourceLoader.exists(pillar_path):
+		var tex: Texture2D = load(pillar_path)
 		var count := int(ceil(_view.x / _pillar_spacing)) + 2
 		var h := _view.y * 0.85
 		var s := h / tex.get_height()
@@ -55,7 +59,7 @@ func _build() -> void:
 			sp.centered = false
 			sp.scale = Vector2(s, s)
 			sp.flip_h = i % 2 == 1
-			sp.modulate = Color(0.45, 0.42, 0.6, 0.9)
+			sp.modulate = pillar_tint
 			sp.position.y = _view.y * 0.08
 			sp.set_meta("base", float(i) * _pillar_spacing)
 			add_child(sp)
@@ -66,6 +70,8 @@ func _build() -> void:
 		_petal_layer.layer = 2
 		get_parent().add_child.call_deferred(_petal_layer)
 		_petal_layer.add_child(_make_petals())
+		if fireflies:
+			_petal_layer.add_child(_make_fireflies())
 
 
 func _add_gradient() -> void:
@@ -102,7 +108,33 @@ func _make_petals() -> CPUParticles2D:
 	p.angular_velocity_max = 90.0
 	p.scale_amount_min = 3.0
 	p.scale_amount_max = 7.0
-	p.color = Color(1.0, 0.72, 0.82, 0.85)
+	p.color = petal_color
+	return p
+
+
+## Langsam schwebende, leuchtende Punkte (additiv).
+func _make_fireflies() -> CPUParticles2D:
+	var p := CPUParticles2D.new()
+	p.amount = 26
+	p.lifetime = 7.0
+	p.preprocess = 7.0
+	p.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	p.emission_rect_extents = Vector2(_view.x * 0.55, _view.y * 0.4)
+	p.position = Vector2(_view.x * 0.5, _view.y * 0.6)
+	p.direction = Vector2(0.0, -1.0)
+	p.spread = 180.0
+	p.initial_velocity_min = 8.0
+	p.initial_velocity_max = 40.0
+	p.gravity = Vector2.ZERO
+	p.scale_amount_min = 3.0
+	p.scale_amount_max = 6.0
+	var ramp := Gradient.new()
+	ramp.offsets = PackedFloat32Array([0.0, 0.3, 0.7, 1.0])
+	ramp.colors = PackedColorArray([Color(0.8, 1.0, 0.4, 0.0), Color(0.8, 1.0, 0.4, 0.9), Color(0.8, 1.0, 0.4, 0.9), Color(0.8, 1.0, 0.4, 0.0)])
+	p.color_ramp = ramp
+	var mat := CanvasItemMaterial.new()
+	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	p.material = mat
 	return p
 
 

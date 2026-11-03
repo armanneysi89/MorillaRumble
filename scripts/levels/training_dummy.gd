@@ -12,6 +12,7 @@ var _tween: Tween
 
 
 func _ready() -> void:
+	add_to_group("dummies")
 	_sprite = Sprite2D.new()
 	if ResourceLoader.exists(TEX_PATH):
 		var tex: Texture2D = load(TEX_PATH)
@@ -37,11 +38,26 @@ func _ready() -> void:
 
 func _on_hit(info: HitInfo) -> void:
 	Effects.float_text(get_parent(), global_position + Vector2(0, -HEIGHT - 30.0), str(info.damage), Color("ffd166"), 44)
+	_wobble(info.direction, info.heavy)
+
+
+## Oktopus-Geist (Coach Armans Vorführung): Die Puppe wird gefesselt und von der Tintenwelle geschleudert.
+func spirit_bind(_duration: float) -> void:
+	_sprite.modulate = Color(0.72, 0.55, 1.0)
+	_wobble(1, false)
+
+
+func apply_spirit_hit(info: HitInfo) -> void:
+	_sprite.modulate = Color.WHITE
+	_wobble(info.direction, true)
+
+
+func _wobble(direction: int, heavy: bool) -> void:
 	if _tween and _tween.is_valid():
 		_tween.kill()
 	_sprite.position = Vector2.ZERO
 	_tween = create_tween()
-	var lean := 0.12 * info.direction * (2.0 if info.heavy else 1.0)
+	var lean := 0.12 * direction * (2.0 if heavy else 1.0)
 	_tween.tween_property(self, "rotation", lean, 0.06)
 	_tween.tween_property(self, "rotation", -lean * 0.5, 0.12).set_trans(Tween.TRANS_SINE)
 	_tween.tween_property(self, "rotation", 0.0, 0.2).set_trans(Tween.TRANS_SINE)

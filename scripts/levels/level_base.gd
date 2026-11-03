@@ -11,6 +11,8 @@ const COACH_SCENE: PackedScene = preload("res://scenes/coaches/coach_mo.tscn")
 const K_WOOD := PlatformBlock.Kind.WOOD
 const K_STONE := PlatformBlock.Kind.STONE
 const K_SHELF := PlatformBlock.Kind.SHELF
+const K_MOSS := PlatformBlock.Kind.MOSS
+const K_LOG := PlatformBlock.Kind.LOG
 
 var level_id := "level"
 var level_title := ""
@@ -21,13 +23,21 @@ var room_bottom := 1080
 var start := Vector2(300, 800)
 var music := "dojo"
 var far_background := "res://assets/environments/dojo/bg_dojo.png"
+var pillar_path := "res://assets/environments/dojo/props/pillar.png"
+var pillar_tint := Color(0.45, 0.42, 0.6, 0.9)
+var sky_top := Color("0b0a22")
+var sky_bottom := Color("2a1745")
+var petal_color := Color(1.0, 0.72, 0.82, 0.85)
+var fireflies := false
+## Szene, die nach dem Levelende geladen wird.
+var next_scene: String = Game.MENU_SCENE
 ## [Art, x, y (Oberkante), Breite]
 var platforms := []
 ## [Art, x, y (Fußpunkt), Höhe, gespiegelt, z]
 var decor := []
 ## [x, y (Fußpunkt), Text]
 var hints := []
-## [x, y (Fußpunkt), Patrouillenradius]
+## [x, y (Fußpunkt), Patrouillenradius, optional Typ (siehe Enemy.ENEMY_DATA)]
 var enemies := []
 ## [id, x, y (Fußpunkt)]
 var checkpoints := []
@@ -49,6 +59,12 @@ func _ready() -> void:
 	var bg := LevelBackground.new()
 	bg.level_width = level_width
 	bg.far_path = far_background
+	bg.pillar_path = pillar_path
+	bg.pillar_tint = pillar_tint
+	bg.sky_top = sky_top
+	bg.sky_bottom = sky_bottom
+	bg.petal_color = petal_color
+	bg.fireflies = fireflies
 	add_child(bg)
 	_build_platforms()
 	_build_walls()
@@ -131,6 +147,7 @@ func _build_props() -> void:
 func _build_enemies() -> void:
 	for e in enemies:
 		var enemy := ENEMY_SCENE.instantiate() as Enemy
+		enemy.data = Enemy.data_for(e[3] if e.size() > 3 else "recruit")
 		enemy.position = Vector2(e[0], e[1])
 		enemy.patrol_range = e[2]
 		add_child(enemy)
@@ -190,4 +207,4 @@ func complete_level(banner: String, sub: String) -> void:
 	player.freeze()
 	hud.show_banner(banner, sub, 3.5)
 	await get_tree().create_timer(5.0).timeout
-	Game.change_scene(Game.MENU_SCENE, 0.8)
+	Game.change_scene(next_scene, 0.8)

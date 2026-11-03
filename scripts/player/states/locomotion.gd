@@ -57,6 +57,15 @@ func _check_transitions(on_floor: bool) -> bool:
 		elif p.grapple.cooldown <= 0.0:
 			machine.change(&"grapple")
 			return true
+	if p.buffered("summon") and on_floor:
+		p.consume("summon")
+		if not p.summon_unlocked():
+			Game.toast("Diese Technik kennst du noch nicht. Sprich mit Coach Arman.")
+		elif p.summon_cooldown > 0.0:
+			Game.toast("Der Geist erholt sich noch: %.1f s" % p.summon_cooldown)
+		else:
+			machine.change(&"summon")
+			return true
 	if p.consume("heavy_attack"):
 		machine.change(&"attack", {"kind": "heavy"})
 		return true

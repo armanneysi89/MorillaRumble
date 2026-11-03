@@ -12,6 +12,7 @@ const BUTTONS := [
 	["dash", "Dash", Vector2(-190, -440), 80.0],
 	["block", "Block", Vector2(-680, -230), 75.0],
 	["grab", "Griff", Vector2(-680, -420), 70.0],
+	["summon", "Geist", Vector2(-440, -540), 70.0],
 	["interact", "Reden", Vector2(-190, -640), 70.0],
 	["pause", "II", Vector2(-1, 70), 42.0],
 ]
@@ -76,6 +77,8 @@ func _is_active(b: Array) -> bool:
 	match b[0]:
 		"grab":
 			return Progression.has_ability("kimura")
+		"summon":
+			return Progression.has_ability("octopus")
 		"interact":
 			return player != null and is_instance_valid(player) and player.current_interactable() != null
 	return true

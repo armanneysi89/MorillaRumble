@@ -14,6 +14,9 @@ signal lesson_finished(coach: CoachNpc)
 var first_lines: Array[String] = []
 var repeat_lines: Array[String] = []
 
+## Während einer Vorführung blickt der Coach nicht zum Spieler, sondern in die vom Level gesetzte Richtung.
+var locked := false
+
 var _visual: CharacterSprite
 var _player: Morilla
 var _talked := false
@@ -36,6 +39,8 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if locked:
+		return
 	if _player == null or not is_instance_valid(_player):
 		_player = get_tree().get_first_node_in_group("player") as Morilla
 	elif absf(_player.global_position.x - global_position.x) < 600.0:
@@ -44,6 +49,10 @@ func _physics_process(_delta: float) -> void:
 
 func can_interact() -> bool:
 	return true
+
+
+func sprite() -> CharacterSprite:
+	return _visual
 
 
 func get_prompt() -> String:

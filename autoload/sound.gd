@@ -32,6 +32,7 @@ func _ready() -> void:
 	_music.bus = "Music"
 	_music.volume_db = SILENT
 	add_child(_music)
+	GameSettings.apply(GameSettings.load_all())
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -4,9 +4,15 @@ extends StaticBody2D
 ## Begehbare Fläche: Boden (Holz/Stein) oder durchspringbares Regal. Die Textur wird aus überlappenden Segmenten
 ## zusammengesetzt; fehlt sie, zeichnet ein einfacher Platzhalter die Fläche (Gameplay bleibt unabhängig von der Grafik).
 
-enum Kind { WOOD, STONE, SHELF }
+enum Kind { WOOD, STONE, SHELF, MOSS, LOG }
 
-const DIR := "res://assets/environments/dojo/terrain/"
+const TEXTURES := {
+	Kind.WOOD: "res://assets/environments/dojo/terrain/ground_wood.png",
+	Kind.STONE: "res://assets/environments/dojo/terrain/ground_stone.png",
+	Kind.SHELF: "res://assets/environments/dojo/terrain/platform_wood.png",
+	Kind.MOSS: "res://assets/environments/bamboo/terrain/ground_moss.png",
+	Kind.LOG: "res://assets/environments/bamboo/terrain/platform_bamboo.png",
+}
 const CHUNK_WIDTH := 560.0
 const CHUNK_OVERLAP := 200.0
 const SHELF_THICKNESS := 26.0
@@ -39,9 +45,13 @@ static func surface_of(tex: Texture2D) -> float:
 	return result
 
 
-func _load(file: String) -> Texture2D:
-	var path := DIR + file
+func _load() -> Texture2D:
+	var path: String = TEXTURES[kind]
 	return load(path) if ResourceLoader.exists(path) else null
+
+
+func _is_shelf() -> bool:
+	return kind == Kind.SHELF or kind == Kind.LOG
 
 
 func _ready() -> void:
@@ -49,7 +59,7 @@ func _ready() -> void:
 	collision_mask = 0
 	var shape := RectangleShape2D.new()
 	var cs := CollisionShape2D.new()
-	if kind == Kind.SHELF:
+	if _is_shelf():
 		shape.size = Vector2(size.x, SHELF_THICKNESS)
 		cs.one_way_collision = true
 		cs.position = shape.size * 0.5
@@ -63,10 +73,10 @@ func _ready() -> void:
 
 
 func _build_ground() -> void:
-	var tex := _load("ground_wood.png" if kind == Kind.WOOD else "ground_stone.png")
+	var tex := _load()
 	var fill := Polygon2D.new()
 	fill.polygon = PackedVector2Array([Vector2(70, 60), Vector2(size.x - 70, 60), Vector2(size.x - 110, size.y), Vector2(110, size.y)])
-	fill.color = fill_color
+	fill.color = Color("10201e") if kind == Kind.MOSS else fill_color
 	fill.z_index = -3
 	add_child(fill)
 	if tex == null:
@@ -83,7 +93,7 @@ func _build_ground() -> void:
 
 
 func _build_shelf() -> void:
-	var tex := _load("platform_wood.png")
+	var tex := _load()
 	if tex == null:
 		_placeholder_top()
 		return
@@ -93,7 +103,7 @@ func _build_shelf() -> void:
 
 func _placeholder_top() -> void:
 	var top := Polygon2D.new()
-	var h := 22.0 if kind != Kind.SHELF else SHELF_THICKNESS
+	var h := 22.0 if not _is_shelf() else SHELF_THICKNESS
 	top.polygon = PackedVector2Array([Vector2(0, 0), Vector2(size.x, 0), Vector2(size.x, h), Vector2(0, h)])
 	top.color = top_color
 	top.z_index = -2

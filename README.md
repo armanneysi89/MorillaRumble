@@ -7,6 +7,17 @@ Du spielst Morilla, einen muskulösen Gorilla im Gi, der als Weißgurt startet u
 
 ![Morilla Dojo](docs/screenshots/dojo.png)
 
+![Mondbambus-Hain mit Oktopus-Geist](docs/screenshots/bamboo.png)
+
+## Level
+
+| Level | Inhalt |
+|-------|--------|
+| 1 – Morilla Dojo | Bewegungs-Tutorial, Coach Mo lehrt den Kimura, Arena-Kampf |
+| 2 – Mondbambus-Hain | Coach Arman führt den Oktopus-Geist vor und lehrt ihn Morilla; Gruppen aus Rekruten und blauen Rivalen, Regal-Aufstieg, Arena in zwei Wellen |
+
+Der Oktopus-Geist (Taste **Q / R**, Gamepad: rechter Trigger) erscheint nach kurzer Konzentration, fesselt bis zu sechs Gegner gleichzeitig und setzt sie mit einer Tintenwelle für einige Sekunden außer Gefecht. Danach braucht er neun Sekunden Abklingzeit.
+
 ## Steuerung
 
 | Aktion      | Tastatur            | Gamepad        |
@@ -18,6 +29,7 @@ Du spielst Morilla, einen muskulösen Gorilla im Gi, der als Weißgurt startet u
 | Dash        | Shift, Z            | B              |
 | Blocken     | L, V                | LB             |
 | Griff       | F, G                | RB             |
+| Oktopus-Geist | Q, R              | RT             |
 | Sprechen    | E, Enter            | D-Pad hoch     |
 | Pause       | Esc, P              | Start          |
 | Musik an/aus| M                   | –              |
@@ -50,7 +62,7 @@ Der Pfad zur Godot-Binary lässt sich über die Umgebungsvariable `GODOT` setzen
 | `autoload/`   | Globale Systeme (Game, Progression, Sound, Savegame) |
 | `scenes/`     | Spieler, Gegner, Trainer, Level, UI            |
 | `scripts/`    | GDScript-Logik (u. a. Zustandsmaschine des Spielers) |
-| `tools/`      | Asset-/Audio-Generierung und Build-Skripte     |
+| `tools/`      | Asset-/Audio-Generierung und Build-Skripte (`gen_assets.py`, `gen_level2.py`, `process_assets.py`, `gen_audio.py`) |
 | `concept/`    | Konzeptbilder und Design-Dokument              |
 
 ## Screenshots neu erstellen
