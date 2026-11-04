@@ -13,7 +13,7 @@ Du spielst Morilla, einen muskulösen Gorilla im Gi, der als Weißgurt startet u
 
 | Level | Inhalt |
 |-------|--------|
-| 1 – Morilla Dojo | Bewegungs-Tutorial, Coach Mo lehrt den Kimura, Arena-Kampf |
+| 1 – Morilla Dojo | Intro-Film mit Erzähler, Gespräch mit Mo, Bewegungs-Tutorial, Kimura-Lektion, Arena-Kampf |
 | 2 – Mondbambus-Hain | Coach Arman führt den Oktopus-Geist vor und lehrt ihn Morilla; Gruppen aus Rekruten und blauen Rivalen, Regal-Aufstieg, Arena in zwei Wellen |
 
 Der Oktopus-Geist (Taste **Q / R**, Gamepad: rechter Trigger) erscheint nach kurzer Konzentration, fesselt bis zu sechs Gegner gleichzeitig und setzt sie mit einer Tintenwelle für einige Sekunden außer Gefecht. Danach braucht er neun Sekunden Abklingzeit.
