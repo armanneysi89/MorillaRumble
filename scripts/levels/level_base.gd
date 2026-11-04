@@ -55,6 +55,7 @@ var _completed := false
 
 
 func _ready() -> void:
+	_collect_markers()
 	Sound.play_music(music)
 	var bg := LevelBackground.new()
 	bg.level_width = level_width
@@ -75,6 +76,54 @@ func _ready() -> void:
 	_build_player()
 	_build_ui()
 	_after_ready()
+
+
+## Wandelt im Editor platzierte Level-Platzhalter (LevelPlatform, LevelDecor ...) in die Datenfelder um.
+func _collect_markers() -> void:
+	var anchor := get_node_or_null(^"Start") as Node2D
+	if anchor:
+		start = anchor.position
+	for n in find_children("*", "", true, false):
+		var pos := to_local((n as Node2D).global_position) if n is Node2D else Vector2.ZERO
+		if n is LevelPlatform:
+			platforms.append([(n as LevelPlatform).kind, pos.x, pos.y, (n as LevelPlatform).width])
+		elif n is LevelDecor:
+			var d := n as LevelDecor
+			decor.append([d.kind, pos.x, pos.y, d.height, d.flip, d.z_index])
+		elif n is LevelHint:
+			hints.append([pos.x, pos.y, (n as LevelHint).text])
+		elif n is LevelEnemy and not _in_arena(n):
+			var e := n as LevelEnemy
+			enemies.append([pos.x, pos.y, e.patrol_range, e.enemy_type])
+		elif n is LevelCheckpoint:
+			checkpoints.append([(n as LevelCheckpoint).id, pos.x, pos.y])
+		elif n is LevelPickup:
+			pickups.append([(n as LevelPickup).id, pos.x, pos.y])
+		elif n is LevelDummy:
+			dummies.append([pos.x, pos.y])
+		elif n is LevelBackdrop:
+			var b := n as LevelBackdrop
+			level_width = b.level_width
+			far_background = b.far_background
+			pillar_path = b.pillar_path
+			pillar_tint = b.pillar_tint
+			sky_top = b.sky_top
+			sky_bottom = b.sky_bottom
+			petal_color = b.petal_color
+			fireflies = b.fireflies
+		else:
+			continue
+		if not _in_arena(n):
+			n.queue_free()
+
+
+func _in_arena(node: Node) -> bool:
+	var p := node.get_parent()
+	while p and p != self:
+		if p is LevelArena:
+			return true
+		p = p.get_parent()
+	return false
 
 
 ## Für levelspezifische Objekte (Coaches, Arena, Ausgang) überschreiben. Läuft vor dem Erstellen des Spielers.

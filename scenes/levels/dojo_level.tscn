@@ -1,6 +1,390 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=12 format=3]
 
-[ext_resource type="Script" path="res://scripts/levels/dojo_level.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/levels/level_platform.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/levels/level_decor.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/levels/level_hint.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/levels/level_enemy.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/levels/level_checkpoint.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/levels/level_pickup.gd" id="6"]
+[ext_resource type="Script" path="res://scripts/levels/level_dummy.gd" id="7"]
+[ext_resource type="Script" path="res://scripts/levels/level_anchor.gd" id="8"]
+[ext_resource type="Script" path="res://scripts/levels/level_arena.gd" id="9"]
+[ext_resource type="Script" path="res://scripts/levels/dojo_level.gd" id="10"]
+[ext_resource type="Script" path="res://scripts/levels/level_backdrop.gd" id="11"]
 
 [node name="DojoLevel" type="Node2D"]
+script = ExtResource("10")
+
+[node name="Backdrop" type="Node2D" parent="."]
+script = ExtResource("11")
+level_width = 8700.0
+
+[node name="Start" type="Node2D" parent="."]
+script = ExtResource("8")
+position = Vector2(300, 800)
+label = "Start"
+character = "morilla"
+
+[node name="Mo" type="Node2D" parent="."]
+script = ExtResource("8")
+position = Vector2(760, 800)
+label = "Coach Mo"
+character = "mo"
+
+[node name="Gate" type="Node2D" parent="."]
+script = ExtResource("8")
+position = Vector2(8250, 800)
+label = "Ausgang"
+sprite = "res://assets/environments/dojo/props/gate.png"
+sprite_height = 520.0
+
+[node name="Plattformen" type="Node2D" parent="."]
+
+[node name="Holz1" type="Node2D" parent="Plattformen"]
 script = ExtResource("1")
+position = Vector2(0, 800)
+kind = 0
+width = 2700.0
+
+[node name="Holz2" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(3080, 800)
+kind = 0
+width = 2520.0
+
+[node name="Regal3" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(3200, 640)
+kind = 2
+width = 220.0
+
+[node name="Regal4" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(3560, 490)
+kind = 2
+width = 220.0
+
+[node name="Regal5" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(3900, 340)
+kind = 2
+width = 240.0
+
+[node name="Stein6" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(5600, 800)
+kind = 1
+width = 3100.0
+
+[node name="Dekor" type="Node2D" parent="."]
+
+[node name="pillar1" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(220, 800)
+kind = "pillar"
+height = 900.0
+
+[node name="pillar2" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(920, 800)
+kind = "pillar"
+height = 900.0
+flip = true
+
+[node name="pillar3" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(1620, 800)
+kind = "pillar"
+height = 900.0
+
+[node name="pillar4" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(2320, 800)
+kind = "pillar"
+height = 900.0
+flip = true
+
+[node name="pillar5" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(3320, 800)
+kind = "pillar"
+height = 900.0
+
+[node name="pillar6" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(4020, 800)
+kind = "pillar"
+height = 900.0
+flip = true
+
+[node name="pillar7" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(4720, 800)
+kind = "pillar"
+height = 900.0
+
+[node name="pillar8" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(5420, 800)
+kind = "pillar"
+height = 900.0
+flip = true
+
+[node name="banner1" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -2
+position = Vector2(570, 520)
+kind = "banner"
+height = 330.0
+
+[node name="banner2" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -2
+position = Vector2(1270, 520)
+kind = "banner"
+height = 330.0
+flip = true
+
+[node name="banner3" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -2
+position = Vector2(1970, 520)
+kind = "banner"
+height = 330.0
+
+[node name="banner4" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -2
+position = Vector2(3670, 380)
+kind = "banner"
+height = 330.0
+flip = true
+
+[node name="banner5" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -2
+position = Vector2(4370, 520)
+kind = "banner"
+height = 330.0
+
+[node name="lantern1" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(800, 330)
+kind = "lantern"
+height = 170.0
+
+[node name="lantern2" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(1500, 330)
+kind = "lantern"
+height = 170.0
+
+[node name="lantern3" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(2200, 330)
+kind = "lantern"
+height = 170.0
+
+[node name="lantern4" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(3400, 300)
+kind = "lantern"
+height = 170.0
+
+[node name="lantern5" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(4100, 330)
+kind = "lantern"
+height = 170.0
+
+[node name="lantern6" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(4800, 330)
+kind = "lantern"
+height = 170.0
+
+[node name="weapon_rack1" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(1000, 800)
+kind = "weapon_rack"
+height = 200.0
+
+[node name="cherry_tree1" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(5850, 810)
+kind = "cherry_tree"
+height = 820.0
+
+[node name="cherry_tree2" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(6650, 810)
+kind = "cherry_tree"
+height = 760.0
+flip = true
+
+[node name="cherry_tree3" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(7450, 810)
+kind = "cherry_tree"
+height = 840.0
+
+[node name="cherry_tree4" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(8450, 810)
+kind = "cherry_tree"
+height = 800.0
+flip = true
+
+[node name="lantern7" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(6250, 360)
+kind = "lantern"
+height = 170.0
+
+[node name="lantern8" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(7050, 360)
+kind = "lantern"
+height = 170.0
+
+[node name="lantern9" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(7850, 360)
+kind = "lantern"
+height = 170.0
+
+[node name="Hinweise" type="Node2D" parent="."]
+
+[node name="Hinweis1" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(950, 800)
+text = "A / D oder Stick: laufen.  Leertaste: springen – länger halten, höher springen."
+
+[node name="Hinweis2" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(1130, 800)
+text = "Shift / Z: Dash. Er macht dich kurz unverwundbar – auch in der Luft (einmal pro Sprung)."
+
+[node name="Hinweis3" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(1700, 800)
+text = "J / X: Kombo – mehrfach drücken für Jab, Cross, Hook, Lowkick und Kick.  K / C: schwerer Schlag (langsamer, aber stärker). Übe an der Puppe!"
+
+[node name="Hinweis4" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(2560, 800)
+text = "Spring über die Lücke. Wer fällt, verliert ein Leben und startet am letzten Checkpoint."
+
+[node name="Hinweis5" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(3050, 800)
+text = "Regale lassen sich von unten durchspringen. Dort oben liegt etwas verborgen."
+
+[node name="Hinweis6" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(3480, 800)
+text = "Gegner kündigen Angriffe mit einem roten ! an. Weiche mit Dash aus oder blocke mit L / V."
+
+[node name="Hinweis7" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(5150, 800)
+text = "Block im allerletzten Moment pariert den Angriff. Danach greifst du zu: F / G (Kimura)."
+
+[node name="Gegner" type="Node2D" parent="."]
+
+[node name="Gegner1" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(3700, 800)
+patrol_range = 140.0
+
+[node name="Gegner2" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(4300, 800)
+patrol_range = 160.0
+
+[node name="Gegner3" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(4950, 800)
+patrol_range = 120.0
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="cp_mo" type="Node2D" parent="Checkpoints"]
+script = ExtResource("5")
+position = Vector2(2150, 800)
+id = "cp_mo"
+
+[node name="cp_hall" type="Node2D" parent="Checkpoints"]
+script = ExtResource("5")
+position = Vector2(4650, 800)
+id = "cp_hall"
+
+[node name="Schriftrollen" type="Node2D" parent="."]
+
+[node name="hp_scroll_dojo" type="Node2D" parent="Schriftrollen"]
+script = ExtResource("6")
+position = Vector2(4020, 250)
+id = "hp_scroll_dojo"
+
+[node name="Puppen" type="Node2D" parent="."]
+
+[node name="Puppe1" type="Node2D" parent="Puppen"]
+script = ExtResource("7")
+position = Vector2(1950, 800)
+
+[node name="Arena" type="Node2D" parent="."]
+script = ExtResource("9")
+position = Vector2(6020, 800)
+rect = Rect2(5900.0, -700.0, 1600.0, 1780.0)
+
+[node name="Welle1" type="Node2D" parent="Arena"]
+
+[node name="Gegner1" type="Node2D" parent="Arena/Welle1"]
+script = ExtResource("4")
+position = Vector2(980, 0)
+patrol_range = 80.0
+
+[node name="Gegner2" type="Node2D" parent="Arena/Welle1"]
+script = ExtResource("4")
+position = Vector2(1230, 0)
+patrol_range = 80.0
+
+[node name="Welle2" type="Node2D" parent="Arena"]
+
+[node name="Gegner1" type="Node2D" parent="Arena/Welle2"]
+script = ExtResource("4")
+position = Vector2(130, 0)
+patrol_range = 80.0
+
+[node name="Gegner2" type="Node2D" parent="Arena/Welle2"]
+script = ExtResource("4")
+position = Vector2(1080, 0)
+patrol_range = 80.0
+
+[node name="Gegner3" type="Node2D" parent="Arena/Welle2"]
+script = ExtResource("4")
+position = Vector2(1280, 0)
+patrol_range = 80.0
+

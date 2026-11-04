@@ -1,6 +1,446 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=12 format=3]
 
-[ext_resource type="Script" path="res://scripts/levels/bamboo_level.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/levels/level_platform.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/levels/level_decor.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/levels/level_hint.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/levels/level_enemy.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/levels/level_checkpoint.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/levels/level_pickup.gd" id="6"]
+[ext_resource type="Script" path="res://scripts/levels/level_dummy.gd" id="7"]
+[ext_resource type="Script" path="res://scripts/levels/level_anchor.gd" id="8"]
+[ext_resource type="Script" path="res://scripts/levels/level_arena.gd" id="9"]
+[ext_resource type="Script" path="res://scripts/levels/bamboo_level.gd" id="10"]
+[ext_resource type="Script" path="res://scripts/levels/level_backdrop.gd" id="11"]
 
 [node name="BambooLevel" type="Node2D"]
+script = ExtResource("10")
+
+[node name="Backdrop" type="Node2D" parent="."]
+script = ExtResource("11")
+level_width = 9400.0
+far_background = "res://assets/environments/bamboo/bg_bamboo.png"
+pillar_path = "res://assets/environments/bamboo/props/bamboo_stalks.png"
+pillar_tint = Color(0.5, 0.72, 0.78, 0.85)
+sky_top = Color(0.0235294, 0.0784314, 0.109804, 1)
+sky_bottom = Color(0.0705882, 0.2, 0.227451, 1)
+petal_color = Color(0.55, 0.9, 0.55, 0.8)
+fireflies = true
+
+[node name="Start" type="Node2D" parent="."]
+script = ExtResource("8")
+position = Vector2(300, 800)
+label = "Start"
+character = "morilla"
+
+[node name="Arman" type="Node2D" parent="."]
+script = ExtResource("8")
+position = Vector2(3000, 800)
+label = "Coach Arman"
+character = "arman"
+
+[node name="Gate" type="Node2D" parent="."]
+script = ExtResource("8")
+position = Vector2(9200, 800)
+label = "Ausgang"
+sprite = "res://assets/environments/dojo/props/gate.png"
+sprite_height = 520.0
+
+[node name="Plattformen" type="Node2D" parent="."]
+
+[node name="Moos1" type="Node2D" parent="Plattformen"]
 script = ExtResource("1")
+position = Vector2(0, 800)
+kind = 3
+width = 2000.0
+
+[node name="Bambus2" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(2070, 730)
+kind = 4
+width = 170.0
+
+[node name="Moos3" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(2300, 800)
+kind = 3
+width = 2400.0
+
+[node name="Bambus4" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(4790, 700)
+kind = 4
+width = 200.0
+
+[node name="Bambus5" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(4990, 630)
+kind = 4
+width = 200.0
+
+[node name="Moos6" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(5150, 800)
+kind = 3
+width = 1700.0
+
+[node name="Bambus7" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(5450, 640)
+kind = 4
+width = 240.0
+
+[node name="Bambus8" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(5800, 490)
+kind = 4
+width = 240.0
+
+[node name="Bambus9" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(6150, 340)
+kind = 4
+width = 240.0
+
+[node name="Moos10" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(7050, 800)
+kind = 3
+width = 2350.0
+
+[node name="Dekor" type="Node2D" parent="."]
+
+[node name="bamboo_cluster1" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(250, 800)
+kind = "bamboo_cluster"
+height = 800.0
+
+[node name="bamboo_cluster2" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(720, 800)
+kind = "bamboo_cluster"
+height = 700.0
+flip = true
+
+[node name="bamboo_cluster3" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(1350, 800)
+kind = "bamboo_cluster"
+height = 860.0
+
+[node name="bamboo_cluster4" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(1830, 800)
+kind = "bamboo_cluster"
+height = 720.0
+flip = true
+
+[node name="stone_lantern1" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(1000, 800)
+kind = "stone_lantern"
+height = 240.0
+
+[node name="stone_lantern2" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(1960, 800)
+kind = "stone_lantern"
+height = 240.0
+flip = true
+
+[node name="bamboo_cluster5" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(2500, 800)
+kind = "bamboo_cluster"
+height = 780.0
+flip = true
+
+[node name="bamboo_cluster6" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(4500, 800)
+kind = "bamboo_cluster"
+height = 820.0
+
+[node name="stone_lantern3" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(2650, 800)
+kind = "stone_lantern"
+height = 240.0
+
+[node name="stone_lantern4" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(3250, 800)
+kind = "stone_lantern"
+height = 240.0
+flip = true
+
+[node name="shrine1" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(4100, 800)
+kind = "shrine"
+height = 560.0
+
+[node name="stone_lantern5" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(3900, 800)
+kind = "stone_lantern"
+height = 240.0
+
+[node name="stone_lantern6" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(4380, 800)
+kind = "stone_lantern"
+height = 240.0
+flip = true
+
+[node name="bamboo_cluster7" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(5300, 800)
+kind = "bamboo_cluster"
+height = 760.0
+
+[node name="bamboo_cluster8" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(6000, 800)
+kind = "bamboo_cluster"
+height = 840.0
+flip = true
+
+[node name="bamboo_cluster9" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(6700, 800)
+kind = "bamboo_cluster"
+height = 740.0
+
+[node name="stone_lantern7" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(5200, 800)
+kind = "stone_lantern"
+height = 240.0
+
+[node name="stone_lantern8" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(6800, 800)
+kind = "stone_lantern"
+height = 240.0
+flip = true
+
+[node name="bamboo_cluster10" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(7300, 800)
+kind = "bamboo_cluster"
+height = 860.0
+flip = true
+
+[node name="bamboo_cluster11" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(8000, 800)
+kind = "bamboo_cluster"
+height = 780.0
+
+[node name="bamboo_cluster12" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -3
+position = Vector2(8700, 800)
+kind = "bamboo_cluster"
+height = 840.0
+flip = true
+
+[node name="stone_lantern9" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(7500, 800)
+kind = "stone_lantern"
+height = 240.0
+
+[node name="stone_lantern10" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(8300, 800)
+kind = "stone_lantern"
+height = 240.0
+flip = true
+
+[node name="stone_lantern11" type="Node2D" parent="Dekor"]
+script = ExtResource("2")
+z_index = -1
+position = Vector2(8950, 800)
+kind = "stone_lantern"
+height = 240.0
+
+[node name="Hinweise" type="Node2D" parent="."]
+
+[node name="Hinweis1" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(520, 800)
+text = "Der Pfad vom Dojo endet im Mondbambus-Hain. Die Schatten sind hier schon vor dir gewesen."
+
+[node name="Hinweis2" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(2500, 800)
+text = "Coach Arman wartet im Hain. Sprich ihn an: E / Enter."
+
+[node name="Hinweis3" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(4300, 800)
+text = "Q / R (Gamepad: rechter Trigger): Oktopus-Geist beschwören. Er fesselt mehrere Gegner und betäubt sie."
+
+[node name="Hinweis4" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(5100, 800)
+text = "Vor dir lauert eine Gruppe. Genau dafür ist der Oktopus-Geist da – danach sind sie leichte Beute."
+
+[node name="Hinweis5" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(7150, 800)
+text = "Die Arena kommt in zwei Wellen. Beschwöre den Geist, wenn du umzingelt bist, und warte seine Abklingzeit ab."
+
+[node name="Gegner" type="Node2D" parent="."]
+
+[node name="Gegner1" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(1150, 800)
+patrol_range = 150.0
+
+[node name="Gegner2" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(1650, 800)
+patrol_range = 160.0
+
+[node name="Gegner3" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(5600, 800)
+patrol_range = 80.0
+
+[node name="Gegner4" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(5800, 800)
+enemy_type = "rival"
+patrol_range = 100.0
+
+[node name="Gegner5" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(6000, 800)
+patrol_range = 80.0
+
+[node name="Gegner6" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(6350, 800)
+patrol_range = 110.0
+
+[node name="Gegner7" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(6600, 800)
+enemy_type = "rival"
+patrol_range = 90.0
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="cp_clearing" type="Node2D" parent="Checkpoints"]
+script = ExtResource("5")
+position = Vector2(2450, 800)
+id = "cp_clearing"
+
+[node name="cp_ridge" type="Node2D" parent="Checkpoints"]
+script = ExtResource("5")
+position = Vector2(5250, 800)
+id = "cp_ridge"
+
+[node name="cp_arena" type="Node2D" parent="Checkpoints"]
+script = ExtResource("5")
+position = Vector2(7150, 800)
+id = "cp_arena"
+
+[node name="Schriftrollen" type="Node2D" parent="."]
+
+[node name="hp_scroll_bamboo" type="Node2D" parent="Schriftrollen"]
+script = ExtResource("6")
+position = Vector2(6150, 250)
+id = "hp_scroll_bamboo"
+
+[node name="Puppen" type="Node2D" parent="."]
+
+[node name="Puppe1" type="Node2D" parent="Puppen"]
+script = ExtResource("7")
+position = Vector2(3450, 800)
+
+[node name="Puppe2" type="Node2D" parent="Puppen"]
+script = ExtResource("7")
+position = Vector2(3600, 800)
+
+[node name="Puppe3" type="Node2D" parent="Puppen"]
+script = ExtResource("7")
+position = Vector2(3750, 800)
+
+[node name="Arena" type="Node2D" parent="."]
+script = ExtResource("9")
+position = Vector2(7420, 800)
+rect = Rect2(7300.0, -700.0, 1700.0, 1780.0)
+
+[node name="Welle1" type="Node2D" parent="Arena"]
+
+[node name="Gegner1" type="Node2D" parent="Arena/Welle1"]
+script = ExtResource("4")
+position = Vector2(880, 0)
+patrol_range = 80.0
+
+[node name="Gegner2" type="Node2D" parent="Arena/Welle1"]
+script = ExtResource("4")
+position = Vector2(1130, 0)
+enemy_type = "rival"
+patrol_range = 80.0
+
+[node name="Gegner3" type="Node2D" parent="Arena/Welle1"]
+script = ExtResource("4")
+position = Vector2(1330, 0)
+patrol_range = 80.0
+
+[node name="Welle2" type="Node2D" parent="Arena"]
+
+[node name="Gegner1" type="Node2D" parent="Arena/Welle2"]
+script = ExtResource("4")
+position = Vector2(280, 0)
+patrol_range = 80.0
+
+[node name="Gegner2" type="Node2D" parent="Arena/Welle2"]
+script = ExtResource("4")
+position = Vector2(930, 0)
+enemy_type = "rival"
+patrol_range = 80.0
+
+[node name="Gegner3" type="Node2D" parent="Arena/Welle2"]
+script = ExtResource("4")
+position = Vector2(1130, 0)
+patrol_range = 80.0
+
+[node name="Gegner4" type="Node2D" parent="Arena/Welle2"]
+script = ExtResource("4")
+position = Vector2(1330, 0)
+enemy_type = "rival"
+patrol_range = 80.0
+
+[node name="Gegner5" type="Node2D" parent="Arena/Welle2"]
+script = ExtResource("4")
+position = Vector2(1430, 0)
+patrol_range = 80.0
+
