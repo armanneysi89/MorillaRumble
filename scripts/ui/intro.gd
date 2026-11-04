@@ -1,7 +1,7 @@
 class_name IntroCutscene
 extends Control
 
-## Intro-Film (ComfyUI-Clips) nach "Neues Spiel". Jede Eingabe überspringt; danach folgt das Dojo.
+## Intro-Film (ComfyUI-Clips mit Erzählerstimme) nach "Neues Spiel". Jede Eingabe überspringt; danach folgt das Dojo.
 
 const VIDEO_PATH := "res://assets/intro/intro.ogv"
 const VIDEO_RATIO := 1344.0 / 768.0
@@ -13,7 +13,7 @@ var _done := false
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	Sound.play_music("dojo")
+	Sound.stop_music(0.8)
 	var bg := ColorRect.new()
 	bg.color = Color.BLACK
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -30,6 +30,7 @@ func _ready() -> void:
 	_player = VideoStreamPlayer.new()
 	_player.stream = stream
 	_player.expand = true
+	_player.bus = &"SFX"
 	_player.finished.connect(_finish)
 	box.add_child(_player)
 	_player.play()

@@ -1,6 +1,6 @@
 """Intro-Animation: 6 Panels (Qwen Image) -> je ein Clip (MiniMax H3 Bild-zu-Video) -> tools/raw/intro.
 
-Aufruf: gen_intro.py panels [1..6]   |   gen_intro.py clips [1..6]
+Aufruf: gen_intro.py panels|clips|voiced [1..6]
 Die Clips werden bewusst einzeln animiert und später hart geschnitten (keine Perspektiv-Morphs).
 """
 import json
@@ -20,6 +20,7 @@ MO = REF / "mo_ref.png"
 
 W, H = 1344, 768
 FRAMES = 73  # 17k+5 -> ~3 s bei 24 fps
+VOICED_FRAMES = 107  # ~4,5 s Platz für den Sprecher
 
 STYLE = ("Hand-painted 2D anime game cinematic, rich painterly shading, dramatic dusk lighting in purple and deep blue with warm "
          "orange lantern glow, 16:9 widescreen. ")
@@ -74,6 +75,19 @@ SHOTS = [
 ]
 
 
+# Erzähler-Zeilen (kurz: ein Clip dauert ~3-4 s). H3 erzeugt Bild und Ton gemeinsam.
+NARRATION = {
+    "1": "Morilla kehrt vom Holzsammeln heim. Vor ihm liegt sein Dojo.",
+    "2": "Doch etwas stimmt nicht. Die Tür ist zerbrochen.",
+    "3": "Das Holz fällt ihm aus der Hand.",
+    "4": "Sein Dojo ist verwüstet.",
+    "5": "Doch Mo lebt.",
+    "6": "Der Schattenmeister war hier.",
+}
+VOICE = ("Audio: an off-screen narrator with a deep, calm, warm male storytelling voice speaks slowly in German: \"{text}\" "
+         "Soft ambient night sounds in the background, no music.")
+
+
 def panel_path(name: str) -> Path:
     return OUT / f"panel_{name}.png"
 
@@ -82,14 +96,14 @@ def clip_path(name: str) -> Path:
     return OUT / f"clip_{name}.mp4"
 
 
-def video_graph(image: str, prompt: str, seed: int, prefix: str) -> dict:
-    return {
+def video_graph(image: str, prompt: str, seed: int, prefix: str, frames: int = FRAMES, voiced: bool = False) -> dict:
+    g = {
         "clip": {"class_type": "CLIPLoader", "inputs": {"clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors", "type": "minimax", "device": "default"}},
         "vae": {"class_type": "VAELoader", "inputs": {"vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"}},
         "unet": {"class_type": "UNETLoader", "inputs": {"unet_name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors", "weight_dtype": "default"}},
         "img": {"class_type": "LoadImage", "inputs": {"image": image}},
         "cond": {"class_type": "MiniMaxH3ImageToVideo", "inputs": {
-            "clip": ["clip", 0], "vae": ["vae", 0], "prompt": prompt, "width": W, "height": H, "length": FRAMES, "first_frame": ["img", 0]}},
+            "clip": ["clip", 0], "vae": ["vae", 0], "prompt": prompt, "width": W, "height": H, "length": frames, "first_frame": ["img", 0]}},
         "neg": {"class_type": "ConditioningZeroOut", "inputs": {"conditioning": ["cond", 0]}},
         "shift": {"class_type": "MiniMaxH3SigmaShift", "inputs": {"model": ["unet", 0], "shift_video": 10, "shift_audio": 3}},
         "attn": {"class_type": "ModelAttentionBackend", "inputs": {"model": ["shift", 0], "attention": "comfy kitchen attention"}},
@@ -104,11 +118,16 @@ def video_graph(image: str, prompt: str, seed: int, prefix: str) -> dict:
             "images": ["dec", 0], "frame_rate": 24, "loop_count": 0, "filename_prefix": prefix, "format": "video/h264-mp4",
             "pix_fmt": "yuv420p", "crf": 17, "save_metadata": False, "trim_to_audio": False, "pingpong": False, "save_output": True}},
     }
+    if voiced:
+        g["avae"] = {"class_type": "VAELoader", "inputs": {"vae_name": "minimax_h3_audio_vae_fp32.safetensors"}}
+        g["adec"] = {"class_type": "VAEDecodeAudio", "inputs": {"samples": ["ks", 0], "vae": ["avae", 0]}}
+        g["save"]["inputs"]["audio"] = ["adec", 0]
+    return g
 
 
-def animate(name: str, prompt: str, seed: int, out: Path) -> Path:
+def animate(name: str, prompt: str, seed: int, out: Path, frames: int = FRAMES, voiced: bool = False) -> Path:
     image = upload(panel_path(name))
-    graph = video_graph(image, prompt, seed, f"morilla_rumble/intro_{name}")
+    graph = video_graph(image, prompt, seed, f"morilla_rumble/intro_{name}", frames, voiced)
     pid = _post("/prompt", json.dumps({"prompt": graph}).encode(), "application/json")["prompt_id"]
     while True:
         with urllib.request.urlopen(f"{SERVER}/history/{pid}") as r:
@@ -138,6 +157,12 @@ if __name__ == "__main__":
             if out.exists():
                 continue
             generate(prompt, out, W, H, seed, refs, negative=NEGATIVE)
+        elif mode == "voiced":
+            out = OUT / f"clip_{name}_voiced.mp4"
+            if out.exists():
+                continue
+            text = NARRATION[name.split("_")[0]]
+            animate(name, motion + " " + VOICE.format(text=text), seed, out, VOICED_FRAMES, True)
         else:
             out = clip_path(name)
             if out.exists():

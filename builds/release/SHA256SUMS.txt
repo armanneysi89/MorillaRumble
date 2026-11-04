@@ -2,6 +2,6 @@
 cdd5692b5b5e498490a221519988ee7b7a97757161e86f3c7b1c5ee7ef1305fa  MorillaRumble-1.4-linux-arm64.zip
 d0868377d03913b400b2bdc83b1cae6a2c897a9d1f8371ee984343a7b786a865  MorillaRumble-1.4-linux-x86_64.zip
 26d64454a1e87208de1200bf263fc2aec6b71921fddaff6fd238250322307544  MorillaRumble-1.4-macos.zip
-50a8e7fb2172b3bb6bce408fe871da9861630a7600d7f74a7684556e4bd3d397  MorillaRumble-1.4-web.zip
+a4717063679cb1fc0cfaeff30af57220b2b7f5cba8006c337cf75ab835435a2a  MorillaRumble-1.4-web.zip
 96e9abef5e57567a6e7232b4fecd8e9501386f03f840880b6b07e14534e2337c  MorillaRumble-1.4-windows-arm64.zip
 a6b7894ac2cd2d49194a11ed3a2acf17bf6bc66b40287ae0efffc16bbedef3aa  MorillaRumble-1.4-windows-x86_64.zip
