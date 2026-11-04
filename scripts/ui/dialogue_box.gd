@@ -6,6 +6,10 @@ extends CanvasLayer
 signal finished
 
 const CHARS_PER_SECOND := 55.0
+const PORTRAITS := {
+	"Morilla": "res://assets/ui/morilla_portrait.png",
+	"Coach Mo": "res://assets/ui/mo_portrait.png",
+}
 
 var _root: Control
 var _name: Label
@@ -13,6 +17,7 @@ var _text: Label
 var _hint: Label
 var _portrait: TextureRect
 var _lines: Array[String] = []
+var _speakers: Array[String] = []
 var _index := 0
 var _shown := 0.0
 var _active := false
@@ -75,6 +80,7 @@ func play(speaker: String, portrait: Texture2D, lines: Array[String]) -> void:
 		return
 	_active = true
 	_lines = lines
+	_speakers = []
 	_index = 0
 	_name.text = speaker
 	_portrait.texture = portrait
@@ -84,7 +90,29 @@ func play(speaker: String, portrait: Texture2D, lines: Array[String]) -> void:
 	await finished
 
 
+## Wechselgespräch aus [Sprecher, Text]-Paaren; Porträts stammen aus PORTRAITS.
+func play_conversation(script: Array) -> void:
+	if _active or script.is_empty():
+		return
+	_active = true
+	_lines = []
+	_speakers = []
+	for entry: Array in script:
+		_speakers.append(entry[0])
+		_lines.append(entry[1])
+	_index = 0
+	_root.visible = true
+	_show_line()
+	await finished
+
+
 func _show_line() -> void:
+	if not _speakers.is_empty():
+		var who := _speakers[_index]
+		var path: String = PORTRAITS.get(who, "")
+		_name.text = who
+		_portrait.texture = load(path) if path != "" and ResourceLoader.exists(path) else null
+		_portrait.visible = _portrait.texture != null
 	_text.text = _lines[_index]
 	_text.visible_characters = 0
 	_shown = 0.0

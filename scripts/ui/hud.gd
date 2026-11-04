@@ -17,6 +17,8 @@ var _banner_sub: Label
 var _banner: VBoxContainer
 var _fade: ColorRect
 var _tech: Label
+var _goal: Label
+var _task: Label
 var _toast_tween: Tween
 var _banner_tween: Tween
 var _hp := 0
@@ -57,6 +59,23 @@ func _ready() -> void:
 	_tech.position = Vector2(48, 120)
 	_canvas.add_child(_tech)
 
+	var objective := VBoxContainer.new()
+	objective.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	objective.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	objective.offset_left = -820
+	objective.offset_right = -48
+	objective.offset_top = 44
+	objective.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_canvas.add_child(objective)
+	_goal = _label(26, Color(UiTheme.TEXT, 0.7), 6)
+	_task = _label(34, UiTheme.ACCENT, 8)
+	for l: Label in [_goal, _task]:
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		objective.add_child(l)
+	Progression.task_changed.connect(_update_task)
+	_update_task()
+
 	_banner = VBoxContainer.new()
 	_banner.set_anchors_preset(Control.PRESET_CENTER)
 	_banner.offset_left = -800
@@ -88,6 +107,8 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if Progression.task_changed.is_connected(_update_task):
+		Progression.task_changed.disconnect(_update_task)
 	if Game.toast_requested.is_connected(show_toast):
 		Game.toast_requested.disconnect(show_toast)
 	if Progression.belt_changed.is_connected(_on_belt_changed):
@@ -147,6 +168,13 @@ func _on_belt_changed(belt_id: String) -> void:
 	_belt = data.color
 	_belt_name = data.display_name
 	_canvas.queue_redraw()
+
+
+func _update_task() -> void:
+	_goal.text = Progression.main_goal_text()
+	_goal.visible = _goal.text != ""
+	_task.text = Progression.task_text()
+	_task.visible = _task.text != ""
 
 
 func _update_tech() -> void:

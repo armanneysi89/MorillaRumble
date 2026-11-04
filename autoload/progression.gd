@@ -5,11 +5,14 @@ extends Node
 
 signal belt_changed(belt_id: String)
 signal ability_unlocked(ability_id: String)
+signal task_changed
 
 const BELTS: PackedStringArray = ["white", "blue", "purple", "brown", "black"]
 const BELT_PATH := "res://resources/belts/%s.tres"
 const ABILITY_PATH := "res://resources/abilities/%s.tres"
 const BASE_HP := 5
+const MAIN_GOAL := "Suche alle Coaches auf und verfolge die Spur des Schattenmeisters."
+const TASKS := {"find_arman": "Finde Coach Arman im Mondbambus-Hain."}
 
 var belt := "white"
 var abilities: Array[String] = []
@@ -163,3 +166,19 @@ func set_quest(quest_id: String, state: String) -> void:
 
 func quest_state(quest_id: String) -> String:
 	return str(quests.get(quest_id, ""))
+
+
+## Aktuelle Aufgabe (id aus TASKS, leer = keine). Gibt auch das übergeordnete Ziel frei.
+func set_task(task_id: String) -> void:
+	quests["main_goal"] = "active"
+	quests["task"] = task_id
+	save_progress()
+	task_changed.emit()
+
+
+func task_text() -> String:
+	return TASKS.get(quest_state("task"), "")
+
+
+func main_goal_text() -> String:
+	return MAIN_GOAL if quest_state("main_goal") == "active" else ""

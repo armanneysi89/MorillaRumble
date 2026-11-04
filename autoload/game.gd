@@ -6,6 +6,7 @@ signal shake_requested(strength: float)
 signal toast_requested(text: String)
 
 const MENU_SCENE := "res://scenes/ui/main_menu.tscn"
+const INTRO_SCENE := "res://scenes/ui/intro.tscn"
 const DOJO_SCENE := "res://scenes/levels/dojo_level.tscn"
 const BAMBOO_SCENE := "res://scenes/levels/bamboo_level.tscn"
 

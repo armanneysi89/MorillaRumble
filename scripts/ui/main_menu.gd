@@ -310,7 +310,7 @@ func _on_start() -> void:
 func _begin_new_game() -> void:
 	Sound.sfx("menu_start")
 	Progression.new_game()
-	Game.change_scene(Game.DOJO_SCENE, 0.5)
+	Game.change_scene(Game.INTRO_SCENE, 0.5)
 
 
 func _on_load() -> void:

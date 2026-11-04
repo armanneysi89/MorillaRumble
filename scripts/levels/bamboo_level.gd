@@ -152,6 +152,8 @@ func _after_ready() -> void:
 
 
 func _on_lesson_finished(_coach: CoachNpc) -> void:
+	if Progression.quest_state("task") == "find_arman":
+		Progression.set_task("")
 	if Progression.has_ability(Morilla.SUMMON_ID):
 		return
 	player.freeze()
