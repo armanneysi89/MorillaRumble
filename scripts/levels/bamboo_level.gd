@@ -130,6 +130,8 @@ func _on_sauna_entered(_who: Morilla) -> void:
 	var skipped: bool = await sequence.play(dialogue, SAUNA_TALK, _arrive_in_yard)
 	sequence.queue_free()
 	Progression.set_flag(SAUNA_FLAG)
+	if Progression.quest_state("task") == "find_arman":
+		Progression.set_task("")
 	if skipped:
 		await dialogue.play_conversation(YARD_TALK)
 	await _on_lesson_finished(_arman)

@@ -1,0 +1,99 @@
+{
+ "style": "Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. ",
+ "size": [
+  1344,
+  768
+ ],
+ "fps": 24,
+ "frames": {
+  "once": 73,
+  "loop": 107
+ },
+ "image_model": "qwen_image_2.1_int8_convrot.safetensors (comfy.py)",
+ "video_model": "minimax_h3_fl2va_pruned_int8_convrot.safetensors (gen_intro.py video_graph)",
+ "shots": [
+  {
+   "name": "1_anreise",
+   "video": "res://assets/cutscenes/sauna/1_anreise.ogv",
+   "still": "res://assets/cutscenes/sauna/1_anreise.jpg",
+   "loop": false,
+   "seed": 9201,
+   "refs": [
+    "tools/raw/ref/morilla_ref.png",
+    "tools/raw/sauna_house.png"
+   ],
+   "prompt": "Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use image 2 as the exact reference for the sauna building. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Side view: Morilla walks along a stone path through a moonlit bamboo grove toward the Japanese wooden sauna house, which stands at the right with warm lantern light glowing through its windows and steam from its chimney. A full moon in the dark blue sky, purple flowers, a stone lantern, a small pond reflecting the lights. Morilla is full-body on the left, mid stride.",
+   "motion": "Slow tracking camera follows Morilla as he walks calmly toward the sauna house with heavy relaxed steps. Bamboo leaves sway slightly, steam rises from the chimney, lantern light flickers softly, water ripples gently. Peaceful atmosphere. Consistent character, no cuts."
+  },
+  {
+   "name": "2_sauna_innen",
+   "video": "res://assets/cutscenes/sauna/2_sauna_innen.ogv",
+   "still": "res://assets/cutscenes/sauna/2_sauna_innen.jpg",
+   "loop": true,
+   "seed": 9212,
+   "refs": [
+    "tools/raw/ref/morilla_ref.png",
+    "tools/raw/sauna/sauna_duo.png"
+   ],
+   "prompt": "Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use image 2 as the exact reference for the room and for the two men on the benches (their faces, hats, bodies and bench tiers must stay identical). Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Static wide side view into the sauna room: Morilla stands in the open doorway on the left, full-body, looking into the room. Arman on the middle bench tier gestures toward him with an open hand and a friendly smile; behind him on the highest tier sits the man in the grey felt hat that completely covers his face, resting directly on the top bench against the back wall, not floating.",
+   "motion": "Locked-off camera with only a very slow push-in. Steam drifts softly, lantern light flickers, Arman's open hand makes a small welcoming gesture, everyone breathes slowly. The man in the grey hat stays motionless. Faces, hats, hat colors and body proportions never change."
+  },
+  {
+   "name": "3_sauna_nahaufnahme",
+   "video": "res://assets/cutscenes/sauna/3_sauna_nahaufnahme.ogv",
+   "still": "res://assets/cutscenes/sauna/3_sauna_nahaufnahme.jpg",
+   "loop": true,
+   "seed": 9203,
+   "refs": [
+    "tools/raw/ref/morilla_ref.png",
+    "tools/raw/sauna/sauna_duo.png"
+   ],
+   "prompt": "Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use image 2 as the exact reference for the room and for the two men on the benches (faces, brown and grey hats, bodies stay identical). Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Over-the-shoulder shot: in the left foreground, large and slightly out of focus, the back of Morilla's head and shoulder; beyond him Arman sits on the middle bench tier with a brown felt hat, speaking with an open palm toward Morilla, and behind him on the highest tier the man with the grey felt hat covering his whole face sits cross-legged. Warm wooden sauna wall, steam.",
+   "motion": "Slow subtle push-in. Arman's hand makes a calm explaining gesture, steam drifts, lantern light flickers, chests move with slow breathing. The man in the grey hat stays still. Faces, hats and clothes never change."
+  },
+  {
+   "name": "4_trainingsplatz",
+   "video": "res://assets/cutscenes/sauna/4_trainingsplatz.ogv",
+   "still": "res://assets/cutscenes/sauna/4_trainingsplatz.jpg",
+   "loop": false,
+   "seed": 9204,
+   "refs": [
+    "tools/raw/ref/morilla_ref.png",
+    "tools/raw/dummy.png",
+    "tools/raw/sauna_house.png"
+   ],
+   "prompt": "Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use image 2 as the exact reference for the wooden training dummy and image 3 for the sauna building. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Wide side view of a small moonlit training yard in the bamboo grove: a raised wooden training deck with the wooden Wing Chun training dummy, a stone lantern, a wooden fence, a pond with moon reflection, the glowing sauna house at the right edge. Morilla stands full-body on the stone path in the center-left, arms hanging, waiting and looking toward the sauna door.",
+   "motion": "Slow static camera with a tiny drift. Morilla waits and breathes calmly, shifting his weight a little. Bamboo leaves sway, fireflies drift, lantern light flickers, steam from the sauna. Consistent character, no cuts."
+  },
+  {
+   "name": "5_arman_gespraech",
+   "video": "res://assets/cutscenes/sauna/5_arman_gespraech.ogv",
+   "still": "res://assets/cutscenes/sauna/5_arman_gespraech.jpg",
+   "loop": true,
+   "seed": 9205,
+   "refs": [
+    "tools/raw/ref/morilla_ref.png",
+    "tools/raw/ref/arman_ref.png",
+    "tools/raw/ref/arman_face.png",
+    "tools/raw/sauna/panel_4_trainingsplatz.png"
+   ],
+   "prompt": "Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use image 2 and image 3 as the exact references for Arman: Arman: a lean athletic young man, short dark wavy voluminous hair uncovered, no hat, thick dark eyebrows, short well-trimmed dark full beard, olive skin, wearing his black Brazilian Jiu-Jitsu gi and black belt, bare feet. Use image 4 as the exact reference for the location. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Medium shot at the training yard: Morilla at the left, large, listening seriously; Arman at the right in his black gi (no hat) speaks to him with open hands, calm and analytical. Wooden training dummy and stone lantern behind them, bamboo and full moon.",
+   "motion": "Slow subtle push-in. Arman gestures calmly with his open hands while he talks, Morilla listens and breathes, bamboo leaves sway, lantern light flickers. Faces and clothes never change."
+  },
+  {
+   "name": "6_oktopus",
+   "video": "res://assets/cutscenes/sauna/6_oktopus.ogv",
+   "still": "res://assets/cutscenes/sauna/6_oktopus.jpg",
+   "loop": false,
+   "seed": 9206,
+   "refs": [
+    "tools/raw/ref/morilla_ref.png",
+    "tools/raw/ref/arman_ref.png",
+    "tools/raw/ref/octopus_ref.png",
+    "tools/raw/sauna/panel_4_trainingsplatz.png"
+   ],
+   "prompt": "Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use image 2 as the exact reference for Arman in his black gi without a hat, image 3 for the giant ghostly octopus spirit (dark violet translucent body, purple smoke, glowing red eyes, glowing red sigil on its forehead) and image 4 for the location. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Arman kneels in the center of the training yard in his black gi, eyes closed, both palms pressed together in front of his chest in a ritual seal; behind him the huge purple octopus spirit rises with its tentacles spread wide, red eyes glowing. Morilla stands at the left, watching amazed. Wooden training dummy, lantern and moon.",
+   "motion": "Slow push-in toward Arman. The octopus spirit slowly rises and its smoky tentacles curl, purple smoke swirls, its red eyes glow brighter. Arman stays kneeling with his palms together, only breathing; Morilla watches. Characters stay consistent, no cuts."
+  }
+ ]
+}
