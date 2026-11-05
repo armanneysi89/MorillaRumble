@@ -3,11 +3,7 @@ class_name LevelDecor
 extends LevelMarker
 
 ## Dekor-Platzhalter (Fußpunkt). Die Zeichenreihenfolge steuert z_index im Inspektor.
-
-const PATHS: Array[String] = [
-	"res://assets/environments/bamboo/props/%s.png",
-	"res://assets/environments/dojo/props/%s.png",
-]
+## Suchpfade stammen von Decor.
 
 @export_enum("pillar", "banner", "lantern", "weapon_rack", "cherry_tree", "bamboo_cluster", "bamboo_stalks", "shrine", "stone_lantern") var kind := "pillar":
 	set(value):
@@ -24,7 +20,7 @@ const PATHS: Array[String] = [
 
 
 func _draw() -> void:
-	for pattern in PATHS:
+	for pattern in Decor.PATHS:
 		if draw_sprite(pattern % kind, height, flip):
 			return
 	draw_rect(Rect2(-30, -height, 60, height), Color(1, 0, 1, 0.5))

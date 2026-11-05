@@ -11,6 +11,6 @@ extends LevelMarker
 
 
 func _draw() -> void:
-	if not draw_sprite("res://assets/environments/dojo/props/scroll.png", 90.0, false, true):
-		draw_rect(Rect2(-14, -40, 28, 80), Color("e8c872"))
+	if not draw_sprite(ScrollPickup.TEX_PATH, ScrollPickup.HEIGHT, false, true):
+		draw_rect(Rect2(-14, -40, 28, 80), ScrollPickup.PLACEHOLDER)
 	draw_caption(id, Vector2(0, -60), 22, Color("ffd9a0"))

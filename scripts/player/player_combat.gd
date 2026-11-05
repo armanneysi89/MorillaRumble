@@ -42,6 +42,7 @@ func begin_attack(data: Dictionary, extra_damage := 0) -> void:
 	info.hit_stop = data["hit_stop"]
 	info.shake = data["shake"]
 	info.heavy = data["heavy"] or bonus > 1.0
+	info.charge = clampf(float(data.get("charge", 0.0)), 0.0, 1.0)
 	var reach: Vector2 = data["reach"]
 	var off: Vector2 = data["offset"]
 	_shape.size = reach
@@ -56,15 +57,18 @@ func end_attack() -> void:
 func _on_hit_landed(hurtbox: Hurtbox, info: HitInfo) -> void:
 	var parent := player.get_parent()
 	var pos := hurtbox.global_position + Vector2(0, -20)
-	Effects.hit_spark(parent, pos, info.heavy)
+	Effects.hit_spark(parent, pos, info.heavy, info.charge)
 	if info.heavy:
-		Effects.slash(parent, pos, player.facing, true)
-		Effects.float_text(parent, hurtbox.global_position + Vector2(0, -260), "KO!" if info.damage >= 4 else "BAM!", Color("ff7a45"))
+		Effects.slash(parent, pos, player.facing, true, 270.0 + 170.0 * info.charge)
+		var label := "KO!" if info.damage >= 4 else "BAM!"
+		if info.charge >= 0.9:
+			label = "MAHNSCHLAG!" if info.damage >= 4 else "HART!"
+		Effects.float_text(parent, hurtbox.global_position + Vector2(0, -260), label, Color("ff7a45"))
 	Sound.sfx("heavy_hit" if info.heavy else "hit")
 	Game.hit_stop(info.hit_stop)
 	Game.shake(info.shake)
 	# Der Treffer schiebt Morilla leicht zurück: Der Schlag bekommt Gewicht.
-	player.velocity.x -= player.facing * (170.0 if info.heavy else 70.0)
+	player.velocity.x -= player.facing * (170.0 if info.heavy else 70.0) * (1.0 + info.charge * 0.5)
 
 
 func _on_hit_received(info: HitInfo) -> void:

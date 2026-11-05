@@ -1,0 +1,167 @@
+{
+ "server": "http://127.0.0.1:8188",
+ "meta": {
+  "prompt": "Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use image 2 as the exact reference for Arman in his black gi without a hat, image 3 for the giant ghostly octopus spirit (dark violet translucent body, purple smoke, glowing red eyes, glowing red sigil on its forehead) and image 4 for the location. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Arman kneels in the center of the training yard in his black gi, eyes closed, both palms pressed together in front of his chest in a ritual seal; behind him the huge purple octopus spirit rises with its tentacles spread wide, red eyes glowing. Morilla stands at the left, watching amazed. Wooden training dummy, lantern and moon.",
+  "seed": 9206,
+  "size": [
+   1344,
+   768
+  ],
+  "steps": 25,
+  "refs": [
+   "tools/raw/ref/morilla_ref.png",
+   "tools/raw/ref/arman_ref.png",
+   "tools/raw/ref/octopus_ref.png",
+   "tools/raw/sauna/panel_4_trainingsplatz.png"
+  ],
+  "output": "tools/raw/sauna/panel_6_oktopus.png"
+ },
+ "api_graph": {
+  "unet": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+    "weight_dtype": "default"
+   }
+  },
+  "cache": {
+   "class_type": "QwenImage21Cache",
+   "inputs": {
+    "model": [
+     "unet",
+     0
+    ],
+    "device": "auto",
+    "dtype": "default"
+   }
+  },
+  "clip": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+    "type": "qwen_image",
+    "device": "default"
+   }
+  },
+  "vae": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+   }
+  },
+  "enc": {
+   "class_type": "TextEncodeQwenImage21",
+   "inputs": {
+    "clip": [
+     "clip",
+     0
+    ],
+    "prompt": "Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use image 2 as the exact reference for Arman in his black gi without a hat, image 3 for the giant ghostly octopus spirit (dark violet translucent body, purple smoke, glowing red eyes, glowing red sigil on its forehead) and image 4 for the location. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Arman kneels in the center of the training yard in his black gi, eyes closed, both palms pressed together in front of his chest in a ritual seal; behind him the huge purple octopus spirit rises with its tentacles spread wide, red eyes glowing. Morilla stands at the left, watching amazed. Wooden training dummy, lantern and moon.",
+    "negative_prompt": "text, letters, watermark, signature, frame, border, blurry, lowres, deformed, extra limbs, extra fingers, cropped, photo, 3d render",
+    "resolution": 1024,
+    "vae": [
+     "vae",
+     0
+    ],
+    "images.image_1": [
+     "ref1",
+     0
+    ],
+    "images.image_2": [
+     "ref2",
+     0
+    ],
+    "images.image_3": [
+     "ref3",
+     0
+    ],
+    "images.image_4": [
+     "ref4",
+     0
+    ]
+   }
+  },
+  "latent": {
+   "class_type": "EmptyLatentImage",
+   "inputs": {
+    "width": 1344,
+    "height": 768,
+    "batch_size": 1
+   }
+  },
+  "ks": {
+   "class_type": "KSampler",
+   "inputs": {
+    "model": [
+     "cache",
+     0
+    ],
+    "positive": [
+     "enc",
+     0
+    ],
+    "negative": [
+     "enc",
+     1
+    ],
+    "latent_image": [
+     "latent",
+     0
+    ],
+    "seed": 9206,
+    "steps": 25,
+    "cfg": 1.0,
+    "sampler_name": "euler",
+    "scheduler": "simple",
+    "denoise": 1.0
+   }
+  },
+  "dec": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "ks",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "save": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "images": [
+     "dec",
+     0
+    ],
+    "filename_prefix": "morilla_rumble/gen"
+   }
+  },
+  "ref1": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "morilla_ref.png"
+   }
+  },
+  "ref2": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "arman_ref.png"
+   }
+  },
+  "ref3": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "octopus_ref.png"
+   }
+  },
+  "ref4": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "panel_4_trainingsplatz.png"
+   }
+  }
+ }
+}

@@ -9,6 +9,7 @@ const CHARS_PER_SECOND := 55.0
 const PORTRAITS := {
 	"Morilla": "res://assets/ui/morilla_portrait.png",
 	"Coach Mo": "res://assets/ui/mo_portrait.png",
+	"Coach Arman": "res://assets/ui/arman_portrait.png",
 }
 
 var _root: Control
@@ -104,6 +105,15 @@ func play_conversation(script: Array) -> void:
 	_root.visible = true
 	_show_line()
 	await finished
+
+
+## Bricht ein laufendes Gespräch ab (Überspringen); wartende play()-Aufrufe kehren zurück.
+func cancel() -> void:
+	if not _active:
+		return
+	_active = false
+	_root.visible = false
+	finished.emit()
 
 
 func _show_line() -> void:

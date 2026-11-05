@@ -27,11 +27,15 @@ static func burst(parent: Node, pos: Vector2, color: Color, count := 10, speed :
 	parent.get_tree().create_timer(lifetime + 0.3).timeout.connect(p.queue_free)
 
 
-static func hit_spark(parent: Node, pos: Vector2, heavy: bool) -> void:
+## Aufprall-Funken; charge (0..1) verstärkt Funken, Ring und Striche eines aufgeladenen Treffers.
+static func hit_spark(parent: Node, pos: Vector2, heavy: bool, charge := 0.0) -> void:
+	var boost := 1.0 + clampf(charge, 0.0, 1.0) * 0.8
 	var color := Color(1.0, 0.45, 0.2) if heavy else Color(1.0, 0.72, 0.25)
-	burst(parent, pos, color, 22 if heavy else 12, 700.0 if heavy else 440.0, 0.3, 11.0 if heavy else 6.0)
-	shockwave(parent, pos, color, 170.0 if heavy else 95.0, 0.26)
-	spark_lines(parent, pos, color, 7 if heavy else 4, 150.0 if heavy else 90.0)
+	if charge > 0.5:
+		color = Color(1.0, 0.72, 0.3)
+	burst(parent, pos, color, int((22 if heavy else 12) * boost), (700.0 if heavy else 440.0) * boost, 0.3, (11.0 if heavy else 6.0) * boost)
+	shockwave(parent, pos, color, (170.0 if heavy else 95.0) * boost, 0.26 + 0.1 * charge)
+	spark_lines(parent, pos, color, int((7 if heavy else 4) * boost), (150.0 if heavy else 90.0) * boost)
 
 
 ## Expandierender Ring als Aufschlagwelle.
@@ -86,16 +90,17 @@ static func spark_lines(parent: Node, pos: Vector2, color: Color, count: int, le
 	tw.chain().tween_callback(root.queue_free)
 
 
-## Sichelförmiger Schlagbogen vor der Figur.
-static func slash(parent: Node, pos: Vector2, dir: int, heavy: bool) -> void:
-	var reach := 230.0 if heavy else 150.0
+## Sichelförmiger Schlagbogen vor der Figur. reach steuert die Bogenweite (geladene Schläge sind weiter).
+static func slash(parent: Node, pos: Vector2, dir: int, heavy: bool, reach := 0.0) -> void:
+	if reach <= 0.0:
+		reach = 230.0 if heavy else 150.0
 	var arc := Line2D.new()
 	var points := PackedVector2Array()
 	for i in 13:
 		var a := lerpf(-1.1, 1.1, i / 12.0)
 		points.append(Vector2(cos(a) * reach * dir, sin(a) * reach * 0.85))
 	arc.points = points
-	arc.width = 34.0 if heavy else 20.0
+	arc.width = (34.0 if heavy else 20.0) * clampf(reach / 230.0, 1.0, 1.5)
 	arc.width_curve = _taper()
 	arc.default_color = Color(1.0, 0.55, 0.3) if heavy else Color(0.85, 0.93, 1.0)
 	arc.position = pos
@@ -111,6 +116,36 @@ static func slash(parent: Node, pos: Vector2, dir: int, heavy: bool) -> void:
 	tw.tween_property(arc, "scale", Vector2(1.15, 0.8), dur).set_ease(Tween.EASE_OUT)
 	tw.tween_property(arc, "modulate:a", 0.0, dur)
 	tw.chain().tween_callback(arc.queue_free)
+
+
+## Nach innen ziehende Funken: visuelles Signal für einen Aufladevorgang.
+static func charge_motes(parent: Node, pos: Vector2, color: Color, count := 4, speed := 300.0) -> void:
+	var p := CPUParticles2D.new()
+	p.one_shot = true
+	p.emitting = true
+	p.amount = count
+	p.lifetime = 0.3
+	p.explosiveness = 1.0
+	p.direction = Vector2.ZERO
+	p.spread = 180.0
+	p.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE_SURFACE
+	p.emission_sphere_radius = 150.0
+	p.radial_accel_min = -speed * 7.0
+	p.radial_accel_max = -speed * 11.0
+	p.gravity = Vector2.ZERO
+	p.scale_amount_min = 3.0
+	p.scale_amount_max = 7.0
+	var ramp := Gradient.new()
+	ramp.colors = PackedColorArray([Color(color, 0.0), color])
+	p.color_ramp = ramp
+	p.position = pos
+	p.z_index = 10
+	var mat := CanvasItemMaterial.new()
+	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	p.material = mat
+	parent.add_child(p)
+	parent.get_tree().create_timer(0.7).timeout.connect(p.queue_free)
+
 
 
 static func _taper() -> Curve:

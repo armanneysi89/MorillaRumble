@@ -1,0 +1,122 @@
+{
+ "server": "http://127.0.0.1:8188",
+ "meta": {
+  "prompt": "Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Empty a traditional Japanese wooden sauna room: three clearly separated wooden bench tiers rising like steps, the lowest bench at the front, the second bench tier in the middle, the highest third tier at the back, a stone sauna heater full of dark stones on the right with a wooden bucket and ladle beside it, warm hanging lanterns, a lattice window with a purple night sky, soft white steam, warm orange light. Wide static side view into the room from the entrance, an open sliding door with a moonlit bamboo garden outside on the far left, nobody in the room, no people.",
+  "seed": 9102,
+  "size": [
+   1344,
+   768
+  ],
+  "steps": 25,
+  "refs": [],
+  "output": "tools/raw/sauna/sauna_interior.png"
+ },
+ "api_graph": {
+  "unet": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+    "weight_dtype": "default"
+   }
+  },
+  "cache": {
+   "class_type": "QwenImage21Cache",
+   "inputs": {
+    "model": [
+     "unet",
+     0
+    ],
+    "device": "auto",
+    "dtype": "default"
+   }
+  },
+  "clip": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+    "type": "qwen_image",
+    "device": "default"
+   }
+  },
+  "vae": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+   }
+  },
+  "enc": {
+   "class_type": "TextEncodeQwenImage21",
+   "inputs": {
+    "clip": [
+     "clip",
+     0
+    ],
+    "prompt": "Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Empty a traditional Japanese wooden sauna room: three clearly separated wooden bench tiers rising like steps, the lowest bench at the front, the second bench tier in the middle, the highest third tier at the back, a stone sauna heater full of dark stones on the right with a wooden bucket and ladle beside it, warm hanging lanterns, a lattice window with a purple night sky, soft white steam, warm orange light. Wide static side view into the room from the entrance, an open sliding door with a moonlit bamboo garden outside on the far left, nobody in the room, no people.",
+    "negative_prompt": "text, letters, watermark, signature, frame, border, blurry, lowres, deformed, extra limbs, extra fingers, cropped, photo, 3d render",
+    "resolution": 1024,
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "latent": {
+   "class_type": "EmptyLatentImage",
+   "inputs": {
+    "width": 1344,
+    "height": 768,
+    "batch_size": 1
+   }
+  },
+  "ks": {
+   "class_type": "KSampler",
+   "inputs": {
+    "model": [
+     "cache",
+     0
+    ],
+    "positive": [
+     "enc",
+     0
+    ],
+    "negative": [
+     "enc",
+     1
+    ],
+    "latent_image": [
+     "latent",
+     0
+    ],
+    "seed": 9102,
+    "steps": 25,
+    "cfg": 1.0,
+    "sampler_name": "euler",
+    "scheduler": "simple",
+    "denoise": 1.0
+   }
+  },
+  "dec": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "ks",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "save": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "images": [
+     "dec",
+     0
+    ],
+    "filename_prefix": "morilla_rumble/gen"
+   }
+  }
+ }
+}

@@ -6,16 +6,15 @@ extends Node2D
 
 # Pfad -> [Textur, zeichenbereit]
 static var _textures := {}
-static var _surfaces := {}
 
-# Schlüssel -> [Standbild, Fußpunkt-Y auf der Leinwand, Skalierung] (siehe CharacterSpecs)
-const CHARACTERS := {
-	"morilla": ["res://assets/characters/morilla/idle/morilla_idle_001.png", 470.0, 0.8],
-	"mo": ["res://assets/characters/coaches/mo/mo_idle_001.png", 450.0, 0.7],
-	"arman": ["res://assets/characters/coaches/arman/arman_idle_001.png", 450.0, 0.7],
-	"recruit": ["res://assets/characters/enemies/white_belt_recruit/recruit_idle_001.png", 430.0, 0.66],
-	"rival": ["res://assets/characters/enemies/blue_belt_rival/rival_idle_001.png", 430.0, 0.66],
-}
+## Standbild einer Figur als [Pfad, Fußpunkt-Y auf der Leinwand, Skalierung] – abgeleitet aus CharacterSpecs,
+## damit die Editor-Vorschau nicht hinter den Werten des Spiels zurückbleibt.
+static func character_frame(key: String) -> Array:
+	if not CharacterSpecs.ALL.has(key):
+		return []
+	var spec: Dictionary = CharacterSpecs.get_spec(key)
+	var def: Array = spec["anims"]["idle"]
+	return [SpriteLibrary.frame_path(spec, def[0], "idle", 1), float(spec["anchor_y"]), float(spec["scale"])]
 
 
 func _ready() -> void:
@@ -37,24 +36,9 @@ func ready_texture(path: String) -> Texture2D:
 	return null
 
 
-## Oberkante der begehbaren Fläche in Texturpixeln (wie PlatformBlock.surface_of).
+## Oberkante der begehbaren Fläche in Texturpixeln (nutzt den Cache von PlatformBlock).
 func surface_of(tex: Texture2D) -> float:
-	if _surfaces.has(tex):
-		return _surfaces[tex]
-	var img := tex.get_image()
-	var x0 := int(img.get_width() * 0.25)
-	var x1 := int(img.get_width() * 0.75)
-	var result := 0.0
-	for y in img.get_height():
-		var solid := 0
-		for x in range(x0, x1, 2):
-			if img.get_pixel(x, y).a > 0.5:
-				solid += 1
-		if solid >= (x1 - x0) / 2 * 0.6:
-			result = y
-			break
-	_surfaces[tex] = result
-	return result
+	return PlatformBlock.surface_of(tex)
 
 
 ## Zeichnet ein Sprite am Fußpunkt (oder zentriert). Gibt false zurück, wenn die Textur fehlt.
@@ -73,9 +57,9 @@ func draw_sprite(path: String, height: float, flip := false, centered := false) 
 
 ## Zeichnet das Standbild einer Spielfigur am Fußpunkt. Gibt false zurück, wenn die Textur fehlt.
 func draw_character(key: String) -> bool:
-	if not CHARACTERS.has(key):
+	var def := character_frame(key)
+	if def.is_empty():
 		return false
-	var def: Array = CHARACTERS[key]
 	if not ResourceLoader.exists(def[0]):
 		return false
 	var tex := ready_texture(def[0])

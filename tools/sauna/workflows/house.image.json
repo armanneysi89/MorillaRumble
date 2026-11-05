@@ -1,0 +1,122 @@
+{
+ "server": "http://127.0.0.1:8188",
+ "meta": {
+  "prompt": "A traditional Japanese wooden sauna bathhouse, small and cozy, front view: dark timber walls, a gently curved tiled roof covered with moss, a wooden porch with two steps, a sliding shoji door in the exact center with warm orange light glowing through it, two glowing paper lattice windows, a paper lantern hanging on each side of the door, a wooden bucket beside the entrance, a small chimney pipe with soft white steam rising from the roof. Isolated game asset, centered on a plain flat light grey background, nothing else, no text. Hand-painted 2D Japanese-inspired fantasy art, deep blue and purple night palette with warm orange lantern light, clean dark outlines.",
+  "seed": 9101,
+  "size": [
+   1536,
+   1024
+  ],
+  "steps": 25,
+  "refs": [],
+  "output": "tools/raw/sauna_house.png"
+ },
+ "api_graph": {
+  "unet": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+    "weight_dtype": "default"
+   }
+  },
+  "cache": {
+   "class_type": "QwenImage21Cache",
+   "inputs": {
+    "model": [
+     "unet",
+     0
+    ],
+    "device": "auto",
+    "dtype": "default"
+   }
+  },
+  "clip": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+    "type": "qwen_image",
+    "device": "default"
+   }
+  },
+  "vae": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+   }
+  },
+  "enc": {
+   "class_type": "TextEncodeQwenImage21",
+   "inputs": {
+    "clip": [
+     "clip",
+     0
+    ],
+    "prompt": "A traditional Japanese wooden sauna bathhouse, small and cozy, front view: dark timber walls, a gently curved tiled roof covered with moss, a wooden porch with two steps, a sliding shoji door in the exact center with warm orange light glowing through it, two glowing paper lattice windows, a paper lantern hanging on each side of the door, a wooden bucket beside the entrance, a small chimney pipe with soft white steam rising from the roof. Isolated game asset, centered on a plain flat light grey background, nothing else, no text. Hand-painted 2D Japanese-inspired fantasy art, deep blue and purple night palette with warm orange lantern light, clean dark outlines.",
+    "negative_prompt": "text, letters, watermark, signature, frame, border, blurry, lowres, deformed, extra limbs, extra fingers, cropped, photo, 3d render",
+    "resolution": 1024,
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "latent": {
+   "class_type": "EmptyLatentImage",
+   "inputs": {
+    "width": 1536,
+    "height": 1024,
+    "batch_size": 1
+   }
+  },
+  "ks": {
+   "class_type": "KSampler",
+   "inputs": {
+    "model": [
+     "cache",
+     0
+    ],
+    "positive": [
+     "enc",
+     0
+    ],
+    "negative": [
+     "enc",
+     1
+    ],
+    "latent_image": [
+     "latent",
+     0
+    ],
+    "seed": 9101,
+    "steps": 25,
+    "cfg": 1.0,
+    "sampler_name": "euler",
+    "scheduler": "simple",
+    "denoise": 1.0
+   }
+  },
+  "dec": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "ks",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "save": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "images": [
+     "dec",
+     0
+    ],
+    "filename_prefix": "morilla_rumble/gen"
+   }
+  }
+ }
+}

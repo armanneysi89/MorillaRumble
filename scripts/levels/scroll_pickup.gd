@@ -5,6 +5,7 @@ extends Area2D
 
 const TEX_PATH := "res://assets/environments/dojo/props/scroll.png"
 const HEIGHT := 90.0
+const PLACEHOLDER := Color("e8c872")
 
 var pickup_id := ""
 var upgrade_key := "max_hp"

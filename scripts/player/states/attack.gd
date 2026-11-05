@@ -3,8 +3,24 @@ extends State
 ## Leichter und schwerer Angriff (auch in der Luft). Phasen: Anlauf (Telegraph), Aktiv (Hitbox), Erholung.
 ## Abbruchregeln: Nach dem Anlauf lassen sich Dash, Sprung und Block aus der Erholung abbrechen;
 ## ein gepufferter Angriff startet nach 60 % der Erholung direkt den nächsten.
+## Der schwere Schlag trägt die Ladung aus dem Charge-Zustand: mehr Schaden, kürzerer Anlauf,
+## längere Aktivphase, größerer Radius und mehr Rückstoß.
 
 enum Phase { WINDUP, ACTIVE, RECOVER }
+
+## Skalierung des schweren Schlags bei voller Ladung (charge 0..1).
+const CHARGE_DAMAGE := 2
+const CHARGE_REACH := 0.6
+const CHARGE_KNOCKBACK := 0.85
+const CHARGE_STUN := 0.55
+const CHARGE_ACTIVE := 0.75
+const CHARGE_RECOVER := 0.45
+const CHARGE_LUNGE := 0.65
+const CHARGE_SHAKE := 0.5
+## Voll geladener Schlag holt schneller aus als unaufgeladener.
+const CHARGE_WINDUP := 0.58
+## Ab dieser Ladung wird der Treffer als maximal hart behandelt (KO-Text, Schockwelle).
+const CHARGE_FULL := 0.94
 
 ## Leichter Angriff: Jab, Cross, Hook, Lowkick, Kick. Jeder weitere Druck innerhalb des Kombo-Fensters startet die nächste Stufe.
 const COMBO := [
@@ -48,6 +64,8 @@ var _phase := Phase.WINDUP
 var _t := 0.0
 var _air := false
 var _ghost_t := 0.0
+## Übernommene Ladung (0 = unaufgeladen, 1 = voll geladen).
+var _charge := 0.0
 
 
 func enter(msg: Dictionary = {}) -> void:
@@ -56,13 +74,15 @@ func enter(msg: Dictionary = {}) -> void:
 	_air = not p.is_on_floor()
 	_phase = Phase.WINDUP
 	_t = 0.0
+	_charge = 0.0
 	if _kind == "light":
 		# Die Kombo endet nach dem Kick; danach beginnt sie wieder mit dem Jab.
 		p.combo_step = p.combo_step + 1 if p.combo_timer > 0.0 and p.combo_step < COMBO.size() else 1
 		_data = COMBO[p.combo_step - 1]
 	else:
 		p.combo_step = 0
-		_data = HEAVY
+		_charge = clampf(float(msg.get("charge", 0.0)), 0.0, 1.0)
+		_data = _heavy_data(_charge)
 	p.visual.show_frame(_data["anim"], 0)
 	p.visual.face(p.facing)
 	_ghost_t = 0.0
@@ -124,10 +144,37 @@ func _begin_active() -> void:
 	p.combo_timer = COMBO_WINDOW
 	var heavy: bool = _data["heavy"]
 	var off: Vector2 = _data["offset"]
-	Effects.slash(p.get_parent(), p.global_position + Vector2(off.x * p.facing * 0.8, off.y), p.facing, heavy)
+	var reach: Vector2 = _data["reach"]
+	Effects.slash(p.get_parent(), p.global_position + Vector2(off.x * p.facing * 0.8, off.y), p.facing, heavy, reach.x)
 	p.visual.squash(Vector2(1.16, 0.86) if heavy else Vector2(1.08, 0.93))
 	if heavy or p.combo_step >= 4:
 		p.visual.spawn_ghost(Color(1.0, 0.6, 0.3, 0.5))
+	if _charge >= CHARGE_FULL:
+		p.visual.spawn_ghost(Color(1.0, 0.7, 0.35, 0.6))
+		Effects.shockwave(p.get_parent(), p.global_position + Vector2(p.facing * 90.0, -150.0), Color(1.0, 0.62, 0.28, 0.9), 300.0, 0.3)
+		Sound.sfx("heavy_hit", -12.0, 0.85)
+
+## Baut die Werte des schweren Schlags aus der Ladung: 0 = Basis, 1 = voll geladen.
+## Mehr Ladung heißt mehr Schaden, kürzerer Anlauf, längere Aktivphase, größerer Radius und mehr Rückstoß.
+func _heavy_data(charge: float) -> Dictionary:
+	var data: Dictionary = HEAVY.duplicate()
+	if charge <= 0.0:
+		return data
+	var reach: Vector2 = data["reach"]
+	var knock: Vector2 = data["knockback"]
+	data["windup"] = float(data["windup"]) * (1.0 - CHARGE_WINDUP * charge)
+	data["active"] = float(data["active"]) * (1.0 + CHARGE_ACTIVE * charge)
+	data["recover"] = float(data["recover"]) * (1.0 + CHARGE_RECOVER * charge)
+	data["damage"] = int(data["damage"]) + roundi(CHARGE_DAMAGE * charge)
+	data["reach"] = reach * (1.0 + CHARGE_REACH * charge)
+	data["offset"] = Vector2(data["offset"]) * (1.0 + CHARGE_REACH * charge * 0.55)
+	data["knockback"] = knock * (1.0 + CHARGE_KNOCKBACK * charge)
+	data["stun"] = float(data["stun"]) * (1.0 + CHARGE_STUN * charge)
+	data["hit_stop"] = float(data["hit_stop"]) * (1.0 + 0.6 * charge)
+	data["shake"] = minf(float(data["shake"]) + CHARGE_SHAKE * charge, 1.0)
+	data["lunge"] = float(data["lunge"]) * (1.0 + CHARGE_LUNGE * charge)
+	data["charge"] = charge
+	return data
 
 
 func _check_cancels(recover_t: float, recover_total: float) -> bool:
@@ -142,7 +189,8 @@ func _check_cancels(recover_t: float, recover_total: float) -> bool:
 		return true
 	if recover_t >= recover_total * 0.6:
 		if p.consume("heavy_attack"):
-			machine.change(&"attack", {"kind": "heavy"})
+			# Aufgeladener Schlag: erst laden, dann losschlagen.
+			machine.change(&"charge")
 			return true
 		if p.consume("light_attack"):
 			machine.change(&"attack", {"kind": "light"})

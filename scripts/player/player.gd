@@ -47,6 +47,8 @@ var dash_cooldown := 0.0
 var summon_cooldown := 0.0
 var combo_step := 0
 var combo_timer := 0.0
+## Ladung des schweren Schlags von 0.0 bis 1.0 (Charge-Zustand, siehe HUD und Effekte).
+var charge_level := 0.0
 var last_hit: HitInfo
 
 var _buffers := {}

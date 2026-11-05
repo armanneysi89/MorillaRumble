@@ -14,3 +14,5 @@ var hit_stop := 0.05
 var shake := 0.0
 var heavy := false
 var unblockable := false
+## Ladung des Treffers von 0.0 bis 1.0 (aufgeladener schwerer Schlag, 0 = normal).
+var charge := 0.0

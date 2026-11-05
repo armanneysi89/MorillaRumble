@@ -4,6 +4,9 @@ extends CanvasLayer
 ## Anzeige: Leben, Gürtel, Techniken, Interaktions-Hinweis, Meldungen, Banner, Vignette und Überblendung.
 
 const BELT_BAR := Vector2(220, 20)
+## Ladungsanzeige des schweren Schlags unterhalb des Lebens.
+const CHARGE_BAR := Vector2(300, 14)
+const CHARGE_FULL_AT := 0.94
 
 var player: Morilla
 var title := ""
@@ -26,6 +29,7 @@ var _max_hp := 0
 var _belt := Color.WHITE
 var _belt_name := ""
 var _cd_tenths := -1
+var _charge := 0.0
 
 
 func _ready() -> void:
@@ -122,6 +126,11 @@ func _process(_delta: float) -> void:
 	if tenths != _cd_tenths:
 		_cd_tenths = tenths
 		_update_tech()
+	# Die Ladung des schweren Schlags läuft framegenau, daher nur bei Änderung neu zeichnen.
+	var charge := snappedf(player.charge_level, 0.02)
+	if charge != _charge:
+		_charge = charge
+		_canvas.queue_redraw()
 
 
 func bind_player(p: Morilla) -> void:
@@ -237,3 +246,14 @@ func _draw_hud() -> void:
 	_canvas.draw_rect(Rect2(belt_pos + Vector2(3, 3), BELT_BAR - Vector2(6, 6)), _belt)
 	_canvas.draw_rect(Rect2(belt_pos, BELT_BAR), Color(UiTheme.ACCENT, 0.7), false, 2.0)
 	_canvas.draw_string(ThemeDB.fallback_font, belt_pos + Vector2(BELT_BAR.x + 14, 18), _belt_name, HORIZONTAL_ALIGNMENT_LEFT, -1, 24, UiTheme.TEXT)
+	# Ladung des schweren Schlags: wächst von links nach rechts, voll leuchtet gelb.
+	if _charge > 0.01:
+		var charge_pos := origin + Vector2(0, 76)
+		var full := _charge >= CHARGE_FULL_AT
+		var fill_col := Color("ffd166") if full else Color("ff7a45")
+		_canvas.draw_rect(Rect2(charge_pos, CHARGE_BAR), Color(0.05, 0.02, 0.08, 0.8))
+		var w := (CHARGE_BAR.x - 6.0) * clampf(_charge, 0.0, 1.0)
+		_canvas.draw_rect(Rect2(charge_pos + Vector2(3, 3), Vector2(w, CHARGE_BAR.y - 6.0)), fill_col)
+		_canvas.draw_rect(Rect2(charge_pos, CHARGE_BAR), Color(UiTheme.ACCENT, 0.7), false, 2.0)
+		var caption := "GELADEN" if full else "LÄDT"
+		_canvas.draw_string(ThemeDB.fallback_font, charge_pos + Vector2(CHARGE_BAR.x + 12, 13), caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color(UiTheme.TEXT, 0.85))

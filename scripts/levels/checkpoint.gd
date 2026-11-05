@@ -5,6 +5,7 @@ extends Area2D
 
 const TEX_PATH := "res://assets/environments/dojo/props/gong.png"
 const HEIGHT := 260.0
+const PLACEHOLDER := Color("8a5a2b")
 
 var level_id := ""
 var checkpoint_id := ""
@@ -36,7 +37,7 @@ func _ready() -> void:
 	else:
 		var ph := Polygon2D.new()
 		ph.polygon = PackedVector2Array([Vector2(-50, 0), Vector2(50, 0), Vector2(50, -HEIGHT), Vector2(-50, -HEIGHT)])
-		ph.color = Color("8a5a2b")
+		ph.color = PLACEHOLDER
 		add_child(ph)
 
 	_glow = Effects.glow(self, Vector2(0, -HEIGHT * 0.5), 260.0, Color(1.0, 0.65, 0.25, 0.0))

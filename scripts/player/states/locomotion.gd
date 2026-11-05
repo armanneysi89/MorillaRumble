@@ -67,7 +67,8 @@ func _check_transitions(on_floor: bool) -> bool:
 			machine.change(&"summon")
 			return true
 	if p.consume("heavy_attack"):
-		machine.change(&"attack", {"kind": "heavy"})
+		# Schwerer Schlag wird aufgeladen: Taste halten = härter und weitreichender, loslassen = Schlag.
+		machine.change(&"charge")
 		return true
 	if p.consume("light_attack"):
 		machine.change(&"attack", {"kind": "light"})

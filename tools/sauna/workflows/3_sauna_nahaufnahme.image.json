@@ -1,0 +1,145 @@
+{
+ "server": "http://127.0.0.1:8188",
+ "meta": {
+  "prompt": "Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use image 2 as the exact reference for the room and for the two men on the benches (faces, brown and grey hats, bodies stay identical). Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Over-the-shoulder shot: in the left foreground, large and slightly out of focus, the back of Morilla's head and shoulder; beyond him Arman sits on the middle bench tier with a brown felt hat, speaking with an open palm toward Morilla, and behind him on the highest tier the man with the grey felt hat covering his whole face sits cross-legged. Warm wooden sauna wall, steam.",
+  "seed": 9203,
+  "size": [
+   1344,
+   768
+  ],
+  "steps": 25,
+  "refs": [
+   "tools/raw/ref/morilla_ref.png",
+   "tools/raw/sauna/sauna_duo.png"
+  ],
+  "output": "tools/raw/sauna/panel_3_sauna_nahaufnahme.png"
+ },
+ "api_graph": {
+  "unet": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+    "weight_dtype": "default"
+   }
+  },
+  "cache": {
+   "class_type": "QwenImage21Cache",
+   "inputs": {
+    "model": [
+     "unet",
+     0
+    ],
+    "device": "auto",
+    "dtype": "default"
+   }
+  },
+  "clip": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+    "type": "qwen_image",
+    "device": "default"
+   }
+  },
+  "vae": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+   }
+  },
+  "enc": {
+   "class_type": "TextEncodeQwenImage21",
+   "inputs": {
+    "clip": [
+     "clip",
+     0
+    ],
+    "prompt": "Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use image 2 as the exact reference for the room and for the two men on the benches (faces, brown and grey hats, bodies stay identical). Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Over-the-shoulder shot: in the left foreground, large and slightly out of focus, the back of Morilla's head and shoulder; beyond him Arman sits on the middle bench tier with a brown felt hat, speaking with an open palm toward Morilla, and behind him on the highest tier the man with the grey felt hat covering his whole face sits cross-legged. Warm wooden sauna wall, steam.",
+    "negative_prompt": "text, letters, watermark, signature, frame, border, blurry, lowres, deformed, extra limbs, extra fingers, cropped, photo, 3d render",
+    "resolution": 1024,
+    "vae": [
+     "vae",
+     0
+    ],
+    "images.image_1": [
+     "ref1",
+     0
+    ],
+    "images.image_2": [
+     "ref2",
+     0
+    ]
+   }
+  },
+  "latent": {
+   "class_type": "EmptyLatentImage",
+   "inputs": {
+    "width": 1344,
+    "height": 768,
+    "batch_size": 1
+   }
+  },
+  "ks": {
+   "class_type": "KSampler",
+   "inputs": {
+    "model": [
+     "cache",
+     0
+    ],
+    "positive": [
+     "enc",
+     0
+    ],
+    "negative": [
+     "enc",
+     1
+    ],
+    "latent_image": [
+     "latent",
+     0
+    ],
+    "seed": 9203,
+    "steps": 25,
+    "cfg": 1.0,
+    "sampler_name": "euler",
+    "scheduler": "simple",
+    "denoise": 1.0
+   }
+  },
+  "dec": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "ks",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "save": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "images": [
+     "dec",
+     0
+    ],
+    "filename_prefix": "morilla_rumble/gen"
+   }
+  },
+  "ref1": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "morilla_ref.png"
+   }
+  },
+  "ref2": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "sauna_duo.png"
+   }
+  }
+ }
+}

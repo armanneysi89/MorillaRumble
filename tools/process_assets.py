@@ -56,6 +56,7 @@ PROP_SOURCES = {
     "bamboo_cluster": ("environments/bamboo/props/bamboo_cluster.png", 1280),
     "stone_lantern": ("environments/bamboo/props/stone_lantern.png", 768),
     "shrine": ("environments/bamboo/props/shrine.png", 1024),
+    "sauna_house": ("environments/bamboo/props/sauna_house.png", 1280),
     "ground_moss": ("environments/bamboo/terrain/ground_moss.png", 1024),
     "platform_bamboo": ("environments/bamboo/terrain/platform_bamboo.png", 1536),
 }

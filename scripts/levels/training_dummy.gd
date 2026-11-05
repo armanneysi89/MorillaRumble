@@ -5,6 +5,7 @@ extends Node2D
 
 const TEX_PATH := "res://assets/environments/dojo/props/dummy.png"
 const HEIGHT := 230.0
+const PLACEHOLDER := Color("b89a6a")
 
 var _sprite: Sprite2D
 var _hurtbox: Hurtbox

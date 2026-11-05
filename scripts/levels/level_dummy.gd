@@ -6,5 +6,5 @@ extends LevelMarker
 
 
 func _draw() -> void:
-	if not draw_sprite("res://assets/environments/dojo/props/dummy.png", 230.0):
-		draw_rect(Rect2(-45, -230, 90, 230), Color("b89a6a"))
+	if not draw_sprite(TrainingDummy.TEX_PATH, TrainingDummy.HEIGHT):
+		draw_rect(Rect2(-45, -TrainingDummy.HEIGHT, 90, TrainingDummy.HEIGHT), TrainingDummy.PLACEHOLDER)

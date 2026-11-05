@@ -16,13 +16,20 @@ const TEXTURES := {
 const CHUNK_WIDTH := 560.0
 const CHUNK_OVERLAP := 200.0
 const SHELF_THICKNESS := 26.0
+## Tiefe eines Bodens unterhalb der begehbaren Kante.
+const GROUND_DEPTH := 700.0
+## Füllfarbe des Erdreichs unter der Textur (Moos unterscheidet sich vom übrigen Boden).
+const MOSS_FILL := Color("10201e")
+const GROUND_FILL := Color("1c1a2e")
+## Streifen der Platzhalter-Oberkante, wenn die Textur fehlt.
+const TOP_FILL := Color("5a3b2e")
 
 static var _surface_cache := {}
 
 var kind := Kind.WOOD
-var size := Vector2(400, 700)
-var fill_color := Color("1c1a2e")
-var top_color := Color("5a3b2e")
+var size := Vector2(400, GROUND_DEPTH)
+var fill_color := GROUND_FILL
+var top_color := TOP_FILL
 
 
 ## Oberkante der begehbaren Fläche in Texturpixeln: erste Zeile, die über die Bildmitte fast vollständig deckend ist.
@@ -76,7 +83,7 @@ func _build_ground() -> void:
 	var tex := _load()
 	var fill := Polygon2D.new()
 	fill.polygon = PackedVector2Array([Vector2(70, 60), Vector2(size.x - 70, 60), Vector2(size.x - 110, size.y), Vector2(110, size.y)])
-	fill.color = Color("10201e") if kind == Kind.MOSS else fill_color
+	fill.color = MOSS_FILL if kind == Kind.MOSS else fill_color
 	fill.z_index = -3
 	add_child(fill)
 	if tex == null:

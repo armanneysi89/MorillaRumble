@@ -11,6 +11,6 @@ extends LevelMarker
 
 
 func _draw() -> void:
-	if not draw_sprite("res://assets/environments/dojo/props/gong.png", 260.0):
-		draw_rect(Rect2(-50, -260, 100, 260), Color("8a5a2b"))
+	if not draw_sprite(Checkpoint.TEX_PATH, Checkpoint.HEIGHT):
+		draw_rect(Rect2(-50, -Checkpoint.HEIGHT, 100, Checkpoint.HEIGHT), Checkpoint.PLACEHOLDER)
 	draw_caption(id, Vector2(0, -280), 24, Color("ffd9a0"))
