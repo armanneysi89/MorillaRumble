@@ -14,6 +14,20 @@ from scipy import ndimage
 ROOT = Path(__file__).resolve().parent.parent
 RAW = Path(__file__).parent / "raw"
 OUT = ROOT / "assets"
+## Unterordner von tools/raw, in denen Rohdateien zusätzlich gesucht werden (z. B. quarry/).
+RAW_SUBDIRS = ["quarry"]
+
+
+def raw_path(name: str) -> Path:
+	"""Rohdatei: zuerst tools/raw/<name>.png, dann die Unterordner (quarry/ ...)."""
+	direct = RAW / f"{name}.png"
+	if direct.exists():
+		return direct
+	for sub in RAW_SUBDIRS:
+		candidate = RAW / sub / f"{name}.png"
+		if candidate.exists():
+			return candidate
+	return direct
 
 # Figur: (Präfix, Zielordner, Leinwand, anchor_y, Zielhöhe der Referenzpose, Referenzbild, Ordner je Animation)
 MORILLA_DIRS = {
@@ -29,11 +43,17 @@ CHARACTERS = {
     "rival": (OUT / "characters/enemies/blue_belt_rival", (560, 440), 430, 340, "ref/rival_ref", {}),
     "arman": (OUT / "characters/coaches/arman", (560, 460), 450, 380, "ref/arman_ref", {}),
     "octopus": (OUT / "characters/summons/octopus", (640, 640), 320, 520, "ref/octopus_ref", {}),
+    # Level 2, Steinbruch-Abschnitt: Baby Mo (drei Meter groß), Vitali (Schwarzgurt) und Boss Eisenrücken.
+    "baby_mo": (OUT / "characters/coaches/baby_mo", (760, 640), 620, 560, "ref/baby_mo_ref", {}),
+    "vitali": (OUT / "characters/coaches/vitali", (640, 560), 540, 450, "ref/vitali_ref", {}),
+    "ironback": (OUT / "characters/enemies/ironback", (760, 620), 600, 540, "ref/ironback_ref", {}),
 }
 # Schwebende Figuren werden am Schwerpunkt statt am Fußpunkt ausgerichtet.
 CENTERED = {"octopus"}
 # Der Hintergrund wird auch zwischen den Tentakeln entfernt (Insel-Hintergründe).
-ENCLOSED = {"octopus", "bamboo_cluster", "bamboo_stalks"}
+ENCLOSED = {"octopus", "bamboo_cluster", "bamboo_stalks", "tea_jar", "bonsai", "stone_pagoda",
+            "quarry_arch", "quarry_crane", "quarry_rope", "quarry_waterfall", "quarry_rock", "quarry_pillar",
+            "belt_throne", "belt_throne_base", "belt_throne_cascade", "break_slab"}
 
 # Roh-Name -> (Zieldatei, Maximalgröße längste Seite oder None)
 PROPS = "environments/dojo/props"
@@ -57,11 +77,32 @@ PROP_SOURCES = {
     "stone_lantern": ("environments/bamboo/props/stone_lantern.png", 768),
     "shrine": ("environments/bamboo/props/shrine.png", 1024),
     "sauna_house": ("environments/bamboo/props/sauna_house.png", 1280),
+    "tea_jar": ("environments/bamboo/props/tea_jar.png", 256),
+    "bonsai": ("environments/bamboo/props/bonsai.png", 512),
+    "stone_pagoda": ("environments/bamboo/props/stone_pagoda.png", 1024),
     "ground_moss": ("environments/bamboo/terrain/ground_moss.png", 1024),
     "platform_bamboo": ("environments/bamboo/terrain/platform_bamboo.png", 1536),
+    # Level 2, Steinbruch-Abschnitt
+    "ground_rock": ("environments/quarry/terrain/ground_rock.png", 1024),
+    "platform_plank": ("environments/quarry/terrain/platform_plank.png", 1536),
+    "stairs_stone": ("environments/quarry/terrain/stairs_stone.png", 1536),
+    "quarry_arch": ("environments/quarry/props/quarry_arch.png", 1280),
+    "quarry_crane": ("environments/quarry/props/quarry_crane.png", 1280),
+    "quarry_lantern": ("environments/quarry/props/quarry_lantern.png", 768),
+    "quarry_banner": ("environments/quarry/props/quarry_banner.png", 1024),
+    "quarry_rope": ("environments/quarry/props/quarry_rope.png", 1024),
+    "quarry_waterfall": ("environments/quarry/props/quarry_waterfall.png", 1280),
+    "quarry_rock": ("environments/quarry/props/quarry_rock.png", 768),
+    "quarry_pillar": ("environments/quarry/props/quarry_pillar.png", 1280),
+    "belt_throne": ("environments/quarry/props/belt_throne.png", 1280),
+    "belt_throne_base": ("environments/quarry/props/belt_throne_base.png", 1280),
+    "belt_throne_cascade": ("environments/quarry/props/belt_throne_cascade.png", 1536),
+    "break_slab": ("environments/quarry/props/break_slab.png", 1024),
+    "baby_mo_portrait": ("ui/baby_mo_portrait.png", 512),
 }
 BACKGROUNDS = {"bg_dojo": "environments/dojo/bg_dojo.png", "bg_garden": "environments/dojo/bg_garden.png",
-               "bg_bamboo": "environments/bamboo/bg_bamboo.png", "menu2_b": "ui/menu_bg.png"}
+               "bg_bamboo": "environments/bamboo/bg_bamboo.png", "menu2_b": "ui/menu_bg.png",
+               "bg_quarry": "environments/quarry/bg_quarry.png"}
 
 TOLERANCE = 26.0
 
@@ -101,13 +142,13 @@ def wanted(name: str, only: set, force: bool, dest: Path) -> bool:
 
 def process_character(key: str, only: set, force: bool) -> None:
     prefix_dir, canvas, anchor_y, target_h, ref_name, dirs = CHARACTERS[key]
-    ref_path = RAW / f"{ref_name}.png"
+    ref_path = raw_path(ref_name)
     if not ref_path.exists():
         return
     ref = cut_out(Image.open(ref_path), key in ENCLOSED)
     box = bbox(ref)
     factor = target_h / (box[3] - box[1])
-    for src in sorted(RAW.glob(f"{key}_*.png")):
+    for src in sorted(RAW.glob(f"{key}_*.png")) + sorted((RAW / "quarry").glob(f"{key}_*.png")):
         stem = src.stem
         if stem.endswith("_portrait") or not stem[-3:].isdigit():
             continue
@@ -135,7 +176,7 @@ def process_character(key: str, only: set, force: bool) -> None:
 
 def process_props(only: set, force: bool) -> None:
     for name, (rel, max_side) in PROP_SOURCES.items():
-        src, dest = RAW / f"{name}.png", OUT / rel
+        src, dest = raw_path(name), OUT / rel
         if not src.exists() or not wanted(name, only, force, dest):
             continue
         img = cut_out(Image.open(src), name in ENCLOSED)
@@ -148,7 +189,7 @@ def process_props(only: set, force: bool) -> None:
 
 def process_backgrounds(only: set, force: bool) -> None:
     for name, rel in BACKGROUNDS.items():
-        src, dest = RAW / f"{name}.png", OUT / rel
+        src, dest = raw_path(name), OUT / rel
         if src.exists() and wanted(name, only, force, dest):
             save(Image.open(src).convert("RGB"), dest)
 

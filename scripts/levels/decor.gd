@@ -3,8 +3,9 @@ extends Node2D
 
 ## Reines Dekor-Sprite am Fußpunkt (Säulen, Laternen, Bäume ...). Laternen erhalten einen pendelnden Lichtschein.
 
-## Ordner, in denen nach dem Sprite gesucht wird (zuerst der Bambushain, dann das Dojo).
+## Ordner, in denen nach dem Sprite gesucht wird (zuerst der Steinbruch, dann der Bambushain, dann das Dojo).
 const PATHS: Array[String] = [
+	"res://assets/environments/quarry/props/%s.png",
 	"res://assets/environments/bamboo/props/%s.png",
 	"res://assets/environments/dojo/props/%s.png",
 ]
@@ -15,6 +16,8 @@ const GLOWS := {
 	"banner": [Color(1.0, 0.3, 0.2, 0.08), 200.0, 0.5],
 	"stone_lantern": [Color(1.0, 0.6, 0.25, 0.45), 240.0, 0.6],
 	"shrine": [Color(1.0, 0.5, 0.25, 0.22), 380.0, 0.35],
+	"quarry_lantern": [Color(1.0, 0.62, 0.28, 0.5), 280.0, 0.55],
+	"quarry_banner": [Color(1.0, 0.35, 0.2, 0.1), 220.0, 0.5],
 }
 
 var kind := ""

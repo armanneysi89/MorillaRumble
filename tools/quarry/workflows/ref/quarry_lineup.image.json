@@ -1,0 +1,156 @@
+{
+ "server": "http://127.0.0.1:8188",
+ "meta": {
+  "prompt": "Use image 1 as the exact character reference for Morilla, image 2 for Baby Mo and image 3 for Vitali. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, cold morning light in pale blue and grey with warm copper lantern accents, 16:9 widescreen, no text, no letters. Character lineup on one flat light grey background, all three standing on the SAME ground line, full body, side view facing left, evenly spaced from left to right: Morilla (2.2 m), then Baby Mo (3.0 m, the tallest, his head clearly above Morilla's head, Morilla reaches only to his chest), then Vitali (1.9 m, slightly shorter than Morilla). Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Baby Mo: a very tall, huge adult student of Vitali, 3.0 metres tall, about 1.4 times the height of Morilla and clearly the tallest person in the scene, broad heavy shoulders, calm and friendly, short dark curly hair, short dark beard, wearing a black Brazilian Jiu-Jitsu gi over a black-and-bordeaux rashguard with dark red chevron stripes, a clearly visible BLUE belt, bare feet. Vitali: a strong broad-shouldered Brazilian Jiu-Jitsu coach, 1.9 metres tall, clearly shorter than Baby Mo and about the same height as Morilla, powerful grappler build (muscular but not an exaggerated bodybuilder), short dark hair with short sides and a slightly longer top, a full well-trimmed dark beard, strong natural facial features, wearing an open black Brazilian Jiu-Jitsu gi over a black rashguard with dark red chevron stripes, a BLACK belt with a red rank patch, bare feet. STRICT SIZE RELATION, identical in every shot: Baby Mo is the tallest figure at 3.0 m, Morilla is 2.2 m and reaches only to Baby Mo's chest, Vitali is 1.9 m and slightly shorter than Morilla. Never change these proportions, never make Baby Mo small. Single character, full body fully visible and not cropped, centered on a plain flat light grey background, nothing else in the image, no ground, no shadow, no text. Hand-painted 2D fantasy game art, dark atmospheric painterly style inspired by Hollow Knight, clean bold dark outlines, rich shading, strong silhouette.",
+  "seed": 11010,
+  "size": [
+   1536,
+   1024
+  ],
+  "steps": 25,
+  "refs": [
+   "tools/raw/ref/morilla_ref.png",
+   "tools/raw/ref/baby_mo_ref.png",
+   "tools/raw/ref/vitali_ref.png"
+  ],
+  "output": "tools/raw/ref/quarry_lineup.png"
+ },
+ "api_graph": {
+  "unet": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+    "weight_dtype": "default"
+   }
+  },
+  "cache": {
+   "class_type": "QwenImage21Cache",
+   "inputs": {
+    "model": [
+     "unet",
+     0
+    ],
+    "device": "auto",
+    "dtype": "default"
+   }
+  },
+  "clip": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+    "type": "qwen_image",
+    "device": "default"
+   }
+  },
+  "vae": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+   }
+  },
+  "enc": {
+   "class_type": "TextEncodeQwenImage21",
+   "inputs": {
+    "clip": [
+     "clip",
+     0
+    ],
+    "prompt": "Use image 1 as the exact character reference for Morilla, image 2 for Baby Mo and image 3 for Vitali. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, cold morning light in pale blue and grey with warm copper lantern accents, 16:9 widescreen, no text, no letters. Character lineup on one flat light grey background, all three standing on the SAME ground line, full body, side view facing left, evenly spaced from left to right: Morilla (2.2 m), then Baby Mo (3.0 m, the tallest, his head clearly above Morilla's head, Morilla reaches only to his chest), then Vitali (1.9 m, slightly shorter than Morilla). Use image 1 as the exact character reference: the muscular anthropomorphic gorilla Morilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Baby Mo: a very tall, huge adult student of Vitali, 3.0 metres tall, about 1.4 times the height of Morilla and clearly the tallest person in the scene, broad heavy shoulders, calm and friendly, short dark curly hair, short dark beard, wearing a black Brazilian Jiu-Jitsu gi over a black-and-bordeaux rashguard with dark red chevron stripes, a clearly visible BLUE belt, bare feet. Vitali: a strong broad-shouldered Brazilian Jiu-Jitsu coach, 1.9 metres tall, clearly shorter than Baby Mo and about the same height as Morilla, powerful grappler build (muscular but not an exaggerated bodybuilder), short dark hair with short sides and a slightly longer top, a full well-trimmed dark beard, strong natural facial features, wearing an open black Brazilian Jiu-Jitsu gi over a black rashguard with dark red chevron stripes, a BLACK belt with a red rank patch, bare feet. STRICT SIZE RELATION, identical in every shot: Baby Mo is the tallest figure at 3.0 m, Morilla is 2.2 m and reaches only to Baby Mo's chest, Vitali is 1.9 m and slightly shorter than Morilla. Never change these proportions, never make Baby Mo small. Single character, full body fully visible and not cropped, centered on a plain flat light grey background, nothing else in the image, no ground, no shadow, no text. Hand-painted 2D fantasy game art, dark atmospheric painterly style inspired by Hollow Knight, clean bold dark outlines, rich shading, strong silhouette.",
+    "negative_prompt": "text, letters, watermark, signature, frame, border, blurry, lowres, deformed, extra limbs, extra fingers, cropped, photo, 3d render",
+    "resolution": 1024,
+    "vae": [
+     "vae",
+     0
+    ],
+    "images.image_1": [
+     "ref1",
+     0
+    ],
+    "images.image_2": [
+     "ref2",
+     0
+    ],
+    "images.image_3": [
+     "ref3",
+     0
+    ]
+   }
+  },
+  "latent": {
+   "class_type": "EmptyLatentImage",
+   "inputs": {
+    "width": 1536,
+    "height": 1024,
+    "batch_size": 1
+   }
+  },
+  "ks": {
+   "class_type": "KSampler",
+   "inputs": {
+    "model": [
+     "cache",
+     0
+    ],
+    "positive": [
+     "enc",
+     0
+    ],
+    "negative": [
+     "enc",
+     1
+    ],
+    "latent_image": [
+     "latent",
+     0
+    ],
+    "seed": 11010,
+    "steps": 25,
+    "cfg": 1.0,
+    "sampler_name": "euler",
+    "scheduler": "simple",
+    "denoise": 1.0
+   }
+  },
+  "dec": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "ks",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "save": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "images": [
+     "dec",
+     0
+    ],
+    "filename_prefix": "morilla_rumble/gen"
+   }
+  },
+  "ref1": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "morilla_ref.png"
+   }
+  },
+  "ref2": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "baby_mo_ref.png"
+   }
+  },
+  "ref3": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "vitali_ref.png"
+   }
+  }
+ }
+}

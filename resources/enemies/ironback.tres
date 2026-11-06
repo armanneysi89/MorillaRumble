@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "ironback"
+display_name = "Eisenrücken"
+spec_key = "ironback"
+max_hp = 14
+move_speed = 190.0
+detect_range = 1400.0
+attack_range = 190.0
+attack_damage = 2
+attack_knockback = Vector2(620, -320)
+windup_time = 0.7
+attack_time = 0.22
+recover_time = 1.1
+attack_cooldown = 1.0
+lunge_speed = 460.0
+size_class = 2
+grapple_vulnerable = true
+super_armor_windup = true

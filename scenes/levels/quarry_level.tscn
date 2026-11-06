@@ -1,0 +1,476 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/level_platform.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/levels/level_decor.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/levels/level_hint.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/levels/level_enemy.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/levels/level_checkpoint.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/levels/level_pickup.gd" id="6"]
+[ext_resource type="Script" path="res://scripts/levels/level_dummy.gd" id="7"]
+[ext_resource type="Script" path="res://scripts/levels/level_anchor.gd" id="8"]
+[ext_resource type="Script" path="res://scripts/levels/level_backdrop.gd" id="9"]
+[ext_resource type="Script" path="res://scripts/levels/level_npc.gd" id="10"]
+[ext_resource type="Script" path="res://scripts/levels/level_throne.gd" id="11"]
+[ext_resource type="Script" path="res://scripts/levels/level_slab.gd" id="12"]
+[ext_resource type="Script" path="res://scripts/levels/level_boss.gd" id="13"]
+[ext_resource type="Script" path="res://scripts/levels/quarry_level.gd" id="14"]
+
+[node name="QuarryLevel" type="Node2D"]
+script = ExtResource("14")
+
+[node name="Backdrop" type="Node2D" parent="."]
+z_index = -100
+script = ExtResource("9")
+level_width = 9600.0
+far_background = "res://assets/environments/quarry/bg_quarry.png"
+pillar_path = "res://assets/environments/quarry/props/quarry_pillar.png"
+pillar_tint = Color(0.88, 0.92, 0.98, 0.5)
+sky_top = Color(0.45, 0.62, 0.78, 1)
+sky_bottom = Color(0.85, 0.9, 0.95, 1)
+petal_color = Color(0.98, 0.96, 0.88, 0.5)
+fireflies = false
+
+[node name="Start" type="Node2D" parent="."]
+position = Vector2(300, 800)
+script = ExtResource("8")
+label = "Start"
+character = "morilla"
+
+[node name="BabyMo" type="Node2D" parent="."]
+position = Vector2(1500, 800)
+script = ExtResource("10")
+label = "Baby Mo"
+character = "baby_mo"
+
+[node name="Thron" type="Node2D" parent="."]
+position = Vector2(2200, 800)
+script = ExtResource("11")
+height = 620.0
+
+[node name="Boss" type="Node2D" parent="."]
+position = Vector2(8400, 800)
+script = ExtResource("13")
+boss_id = "ironback"
+arena_width = 1700.0
+
+[node name="Gate" type="Node2D" parent="."]
+position = Vector2(9400, 800)
+script = ExtResource("8")
+label = "Ausgang"
+sprite = "res://assets/environments/dojo/props/gate.png"
+sprite_height = 520.0
+
+[node name="Plattformen" type="Node2D" parent="."]
+
+[node name="Fels1" type="Node2D" parent="Plattformen"]
+position = Vector2(0, 800)
+script = ExtResource("1")
+kind = 5
+width = 3000.0
+
+[node name="Fels2" type="Node2D" parent="Plattformen"]
+position = Vector2(3300, 800)
+script = ExtResource("1")
+kind = 5
+width = 2600.0
+
+[node name="Fels3" type="Node2D" parent="Plattformen"]
+position = Vector2(6200, 800)
+script = ExtResource("1")
+kind = 5
+width = 3400.0
+
+[node name="Steg1" type="Node2D" parent="Plattformen"]
+position = Vector2(3400, 640)
+script = ExtResource("1")
+kind = 6
+width = 260.0
+
+[node name="Steg2" type="Node2D" parent="Plattformen"]
+position = Vector2(3800, 490)
+script = ExtResource("1")
+kind = 6
+width = 240.0
+
+[node name="Steg3" type="Node2D" parent="Plattformen"]
+position = Vector2(4200, 340)
+script = ExtResource("1")
+kind = 6
+width = 260.0
+
+[node name="Steg4" type="Node2D" parent="Plattformen"]
+position = Vector2(6400, 620)
+script = ExtResource("1")
+kind = 6
+width = 260.0
+
+[node name="Treppe1" type="Node2D" parent="Plattformen"]
+position = Vector2(6900, 700)
+script = ExtResource("1")
+kind = 7
+width = 420.0
+
+[node name="Dekor" type="Node2D" parent="."]
+
+[node name="quarry_pillar1" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(420, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 900.0
+
+[node name="quarry_crane1" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(760, 800)
+script = ExtResource("2")
+kind = "quarry_crane"
+height = 700.0
+
+[node name="quarry_lantern1" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(1000, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+
+[node name="quarry_pillar2" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(1180, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 860.0
+flip = true
+
+[node name="quarry_rope1" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(1320, 800)
+script = ExtResource("2")
+kind = "quarry_rope"
+height = 620.0
+
+[node name="quarry_lantern2" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(1600, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+flip = true
+
+[node name="quarry_rock1" type="Node2D" parent="Dekor"]
+z_index = -2
+position = Vector2(1720, 800)
+script = ExtResource("2")
+kind = "quarry_rock"
+height = 200.0
+
+[node name="quarry_pillar3" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(1900, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 880.0
+
+[node name="quarry_banner1" type="Node2D" parent="Dekor"]
+z_index = -2
+position = Vector2(2020, 520)
+script = ExtResource("2")
+kind = "quarry_banner"
+height = 330.0
+
+[node name="quarry_arch1" type="Node2D" parent="Dekor"]
+z_index = -4
+position = Vector2(2200, 800)
+script = ExtResource("2")
+kind = "quarry_arch"
+height = 900.0
+
+[node name="quarry_banner2" type="Node2D" parent="Dekor"]
+z_index = -2
+position = Vector2(2380, 520)
+script = ExtResource("2")
+kind = "quarry_banner"
+height = 330.0
+flip = true
+
+[node name="quarry_lantern3" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(2500, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+
+[node name="quarry_pillar4" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(2600, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 880.0
+flip = true
+
+[node name="quarry_lantern4" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(2900, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+flip = true
+
+[node name="quarry_lantern5" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(3500, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+
+[node name="quarry_pillar5" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(3600, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 900.0
+
+[node name="quarry_pillar6" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(4400, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 900.0
+flip = true
+
+[node name="quarry_lantern6" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(4550, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+flip = true
+
+[node name="quarry_waterfall1" type="Node2D" parent="Dekor"]
+z_index = -4
+position = Vector2(4700, 800)
+script = ExtResource("2")
+kind = "quarry_waterfall"
+height = 820.0
+
+[node name="quarry_rock2" type="Node2D" parent="Dekor"]
+z_index = -2
+position = Vector2(5050, 800)
+script = ExtResource("2")
+kind = "quarry_rock"
+height = 190.0
+
+[node name="quarry_crane2" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(5300, 800)
+script = ExtResource("2")
+kind = "quarry_crane"
+height = 680.0
+flip = true
+
+[node name="quarry_lantern7" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(5350, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+
+[node name="quarry_pillar7" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(5800, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 870.0
+
+[node name="quarry_lantern8" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(6450, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+
+[node name="quarry_pillar8" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(6600, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 890.0
+flip = true
+
+[node name="quarry_rope2" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(6750, 800)
+script = ExtResource("2")
+kind = "quarry_rope"
+height = 600.0
+
+[node name="quarry_lantern9" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(7150, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+flip = true
+
+[node name="quarry_rock3" type="Node2D" parent="Dekor"]
+z_index = -2
+position = Vector2(7300, 800)
+script = ExtResource("2")
+kind = "quarry_rock"
+height = 200.0
+
+[node name="quarry_pillar9" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(7800, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 900.0
+
+[node name="quarry_lantern10" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(7900, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+
+[node name="quarry_pillar10" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(8600, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 900.0
+flip = true
+
+[node name="quarry_lantern11" type="Node2D" parent="Dekor"]
+z_index = -1
+position = Vector2(9000, 800)
+script = ExtResource("2")
+kind = "quarry_lantern"
+height = 240.0
+flip = true
+
+[node name="quarry_pillar11" type="Node2D" parent="Dekor"]
+z_index = -3
+position = Vector2(9200, 800)
+script = ExtResource("2")
+kind = "quarry_pillar"
+height = 880.0
+
+[node name="Hinweise" type="Node2D" parent="."]
+
+[node name="Hinweis1" type="Node2D" parent="Hinweise"]
+position = Vector2(650, 800)
+script = ExtResource("3")
+text = "Der Bambus lichtet sich: Vitalis Steinbruch liegt im Morgenlicht. Hier oben ist die Luft dünn und der Fels hell."
+
+[node name="Hinweis2" type="Node2D" parent="Hinweise"]
+position = Vector2(1750, 800)
+script = ExtResource("3")
+text = "Suplex (F / G): erst im Klinch greifen, dann über die Schulter werfen. Übe an den Puppen neben dem Thron."
+
+[node name="Hinweis3" type="Node2D" parent="Hinweise"]
+position = Vector2(2950, 800)
+script = ExtResource("3")
+text = "Der Fels ist aufgebrochen. Spring über die Schlucht – die Stege aus Planken tragen dich nach oben."
+
+[node name="Hinweis4" type="Node2D" parent="Hinweise"]
+position = Vector2(5250, 800)
+script = ExtResource("3")
+text = "Eine markierte Bruchplatte versperrt den Weg. Nur der Suplex zerbricht sie – Schläge richten nichts aus."
+
+[node name="Hinweis5" type="Node2D" parent="Hinweise"]
+position = Vector2(7150, 800)
+script = ExtResource("3")
+text = "Hinter der Treppe wartet der Eisenrücken. Weiche seinem Ansturm aus – danach taumelt er. Das ist dein Fenster."
+
+[node name="Gegner" type="Node2D" parent="."]
+
+[node name="Gegner1" type="Node2D" parent="Gegner"]
+position = Vector2(2650, 800)
+script = ExtResource("4")
+patrol_range = 120.0
+
+[node name="Gegner2" type="Node2D" parent="Gegner"]
+position = Vector2(2850, 800)
+script = ExtResource("4")
+patrol_range = 100.0
+
+[node name="Gegner3" type="Node2D" parent="Gegner"]
+position = Vector2(3600, 800)
+script = ExtResource("4")
+patrol_range = 150.0
+
+[node name="Gegner4" type="Node2D" parent="Gegner"]
+position = Vector2(4000, 800)
+script = ExtResource("4")
+enemy_type = "rival"
+patrol_range = 130.0
+
+[node name="Gegner5" type="Node2D" parent="Gegner"]
+position = Vector2(4400, 800)
+script = ExtResource("4")
+patrol_range = 140.0
+
+[node name="Gegner6" type="Node2D" parent="Gegner"]
+position = Vector2(4800, 800)
+script = ExtResource("4")
+enemy_type = "rival"
+patrol_range = 120.0
+
+[node name="Gegner7" type="Node2D" parent="Gegner"]
+position = Vector2(6350, 800)
+script = ExtResource("4")
+patrol_range = 130.0
+
+[node name="Gegner8" type="Node2D" parent="Gegner"]
+position = Vector2(6700, 800)
+script = ExtResource("4")
+enemy_type = "rival"
+patrol_range = 110.0
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="cp_yard" type="Node2D" parent="Checkpoints"]
+position = Vector2(900, 800)
+script = ExtResource("5")
+id = "cp_yard"
+
+[node name="cp_slab" type="Node2D" parent="Checkpoints"]
+position = Vector2(5100, 800)
+script = ExtResource("5")
+id = "cp_slab"
+
+[node name="cp_boss" type="Node2D" parent="Checkpoints"]
+position = Vector2(7100, 800)
+script = ExtResource("5")
+id = "cp_boss"
+
+[node name="Sammelobjekte" type="Node2D" parent="."]
+
+[node name="hp_scroll_quarry" type="Node2D" parent="Sammelobjekte"]
+position = Vector2(4330, 250)
+script = ExtResource("6")
+id = "hp_scroll_quarry"
+
+[node name="tea_quarry" type="Node2D" parent="Sammelobjekte"]
+position = Vector2(6530, 540)
+script = ExtResource("6")
+id = "tea_quarry"
+kind = "tea"
+
+[node name="Puppen" type="Node2D" parent="."]
+
+[node name="Puppe1" type="Node2D" parent="Puppen"]
+position = Vector2(1900, 800)
+script = ExtResource("7")
+
+[node name="Puppe2" type="Node2D" parent="Puppen"]
+position = Vector2(2030, 800)
+script = ExtResource("7")
+
+[node name="Bruchplatte" type="Node2D" parent="."]
+
+[node name="Bruchplatte1" type="Node2D" parent="Bruchplatte"]
+position = Vector2(5500, 800)
+script = ExtResource("12")
+id = "quarry_side"
+height = 620.0

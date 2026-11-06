@@ -9,6 +9,7 @@ const MENU_SCENE := "res://scenes/ui/main_menu.tscn"
 const INTRO_SCENE := "res://scenes/ui/intro.tscn"
 const DOJO_SCENE := "res://scenes/levels/dojo_level.tscn"
 const BAMBOO_SCENE := "res://scenes/levels/bamboo_level.tscn"
+const QUARRY_SCENE := "res://scenes/levels/quarry_level.tscn"
 
 # Aktion -> Tasten, Gamepad-Tasten, Gamepad-Achse [Achse, Richtung]
 const ACTIONS := {
@@ -99,8 +100,12 @@ func toast(text: String) -> void:
 
 
 ## Szene, mit der "Weiterspielen" den gespeicherten Fortschritt fortsetzt.
+## Ein abgeschlossenes Level führt in das nächste; ein Checkpoint hat Vorrang.
 func resume_scene() -> String:
-	if Progression.get_flag("level_dojo_cleared") or str(Progression.last_checkpoint.get("level", "")) == "bamboo":
+	var cp_level := str(Progression.last_checkpoint.get("level", ""))
+	if cp_level == "quarry" or Progression.get_flag("level_bamboo_cleared"):
+		return QUARRY_SCENE
+	if cp_level == "bamboo" or Progression.get_flag("level_dojo_cleared"):
 		return BAMBOO_SCENE
 	return DOJO_SCENE
 

@@ -1,0 +1,156 @@
+{
+ "server": "http://127.0.0.1:8188",
+ "meta": {
+  "prompt": "Image 1 is the exact character reference for this shot: it shows the characters at their correct relative sizes on one ground line. Copy their faces, hair, gis, belt colours and body proportions exactly, and keep the size relation exactly as shown. Draw each character EXACTLY ONCE: no duplicates, no extra fighters, no second gorilla, no background people. Image 2 is the exact reference for the location and props. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, cold morning light in pale blue and grey with warm copper lantern accents, 16:9 widescreen, no text, no letters. Wide shot: Baby Mo stands at the left, huge, pointing forward and up with one outstretched arm toward a gigantic throne built entirely from thousands of woven Jiu-Jitsu belts in white, blue, purple, brown and black, which rises in the center-right of the quarry courtyard. Morilla stands at the far left, much smaller than Baby Mo, looking up at the throne. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: Baby Mo is the tallest figure at 3.0 m and fills about 78% of the image height; Morilla is 2.2 m and fills about 57%; Vitali is 1.9 m and fills about 50%. Morilla's head reaches only to Baby Mo's chest, Vitali is the shortest. Never change these proportions, never make Baby Mo small or the same size as Morilla. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. ONLY Morilla and Baby Mo appear in this shot. The throne is empty. Vitali is NOT in this shot. Image 3 is the user's approved storyboard panel for this exact shot: copy its camera angle, framing, character placement and background composition, but repaint it in the clean game style above and keep the strict size relation. ",
+  "seed": 11703,
+  "size": [
+   1344,
+   768
+  ],
+  "steps": 25,
+  "refs": [
+   "tools/raw/ref/charts/3_thron_zeigen.png",
+   "tools/raw/quarry/belt_throne.png",
+   "tools/raw/ref/sheet/3_thron_zeigen.png"
+  ],
+  "output": "tools/raw/quarry/panel_3_thron_zeigen.png"
+ },
+ "api_graph": {
+  "unet": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+    "weight_dtype": "default"
+   }
+  },
+  "cache": {
+   "class_type": "QwenImage21Cache",
+   "inputs": {
+    "model": [
+     "unet",
+     0
+    ],
+    "device": "auto",
+    "dtype": "default"
+   }
+  },
+  "clip": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+    "type": "qwen_image",
+    "device": "default"
+   }
+  },
+  "vae": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+   }
+  },
+  "enc": {
+   "class_type": "TextEncodeQwenImage21",
+   "inputs": {
+    "clip": [
+     "clip",
+     0
+    ],
+    "prompt": "Image 1 is the exact character reference for this shot: it shows the characters at their correct relative sizes on one ground line. Copy their faces, hair, gis, belt colours and body proportions exactly, and keep the size relation exactly as shown. Draw each character EXACTLY ONCE: no duplicates, no extra fighters, no second gorilla, no background people. Image 2 is the exact reference for the location and props. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, cold morning light in pale blue and grey with warm copper lantern accents, 16:9 widescreen, no text, no letters. Wide shot: Baby Mo stands at the left, huge, pointing forward and up with one outstretched arm toward a gigantic throne built entirely from thousands of woven Jiu-Jitsu belts in white, blue, purple, brown and black, which rises in the center-right of the quarry courtyard. Morilla stands at the far left, much smaller than Baby Mo, looking up at the throne. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: Baby Mo is the tallest figure at 3.0 m and fills about 78% of the image height; Morilla is 2.2 m and fills about 57%; Vitali is 1.9 m and fills about 50%. Morilla's head reaches only to Baby Mo's chest, Vitali is the shortest. Never change these proportions, never make Baby Mo small or the same size as Morilla. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. ONLY Morilla and Baby Mo appear in this shot. The throne is empty. Vitali is NOT in this shot. Image 3 is the user's approved storyboard panel for this exact shot: copy its camera angle, framing, character placement and background composition, but repaint it in the clean game style above and keep the strict size relation. ",
+    "negative_prompt": "text, letters, watermark, signature, frame, border, blurry, lowres, deformed, extra limbs, extra fingers, cropped, photo, 3d render",
+    "resolution": 1024,
+    "vae": [
+     "vae",
+     0
+    ],
+    "images.image_1": [
+     "ref1",
+     0
+    ],
+    "images.image_2": [
+     "ref2",
+     0
+    ],
+    "images.image_3": [
+     "ref3",
+     0
+    ]
+   }
+  },
+  "latent": {
+   "class_type": "EmptyLatentImage",
+   "inputs": {
+    "width": 1344,
+    "height": 768,
+    "batch_size": 1
+   }
+  },
+  "ks": {
+   "class_type": "KSampler",
+   "inputs": {
+    "model": [
+     "cache",
+     0
+    ],
+    "positive": [
+     "enc",
+     0
+    ],
+    "negative": [
+     "enc",
+     1
+    ],
+    "latent_image": [
+     "latent",
+     0
+    ],
+    "seed": 11703,
+    "steps": 25,
+    "cfg": 1.0,
+    "sampler_name": "euler",
+    "scheduler": "simple",
+    "denoise": 1.0
+   }
+  },
+  "dec": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "ks",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "save": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "images": [
+     "dec",
+     0
+    ],
+    "filename_prefix": "morilla_rumble/gen"
+   }
+  },
+  "ref1": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "3_thron_zeigen.png"
+   }
+  },
+  "ref2": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "belt_throne.png"
+   }
+  },
+  "ref3": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "3_thron_zeigen.png"
+   }
+  }
+ }
+}

@@ -6,7 +6,7 @@ extends LevelMarker
 ## Alle Werte (Texturen, Segmentmasse, Füllfarben) stammen von PlatformBlock, damit Vorschau und Spiel nicht
 ## auseinanderlaufen können.
 
-@export_enum("Holz:0", "Stein:1", "Regal:2", "Moos:3", "Bambus:4") var kind := 0:
+@export_enum("Holz:0", "Stein:1", "Regal:2", "Moos:3", "Bambus:4", "Fels:5", "Steg:6", "Treppe:7") var kind := 0:
 	set(value):
 		kind = value
 		queue_redraw()
@@ -17,16 +17,16 @@ extends LevelMarker
 
 
 func _draw() -> void:
-	var shelf := kind == PlatformBlock.Kind.SHELF or kind == PlatformBlock.Kind.LOG
+	var shelf := kind == PlatformBlock.Kind.SHELF or kind == PlatformBlock.Kind.LOG or kind == PlatformBlock.Kind.PLANK
 	var tex_path: String = PlatformBlock.TEXTURES[kind]
 	var tex: Texture2D = null
 	if ResourceLoader.exists(tex_path):
 		tex = ready_texture(tex_path)
 		if tex == null:
 			return
-	if not shelf:
-		var fill := PlatformBlock.MOSS_FILL if kind == PlatformBlock.Kind.MOSS else PlatformBlock.GROUND_FILL
-		draw_colored_polygon(PackedVector2Array([Vector2(70, 60), Vector2(width - 70, 60), Vector2(width - 110, PlatformBlock.GROUND_DEPTH), Vector2(110, PlatformBlock.GROUND_DEPTH)]), fill)
+		if not shelf:
+			var fill := PlatformBlock.MOSS_FILL if kind == PlatformBlock.Kind.MOSS else (PlatformBlock.ROCK_FILL if kind == PlatformBlock.Kind.ROCK else PlatformBlock.GROUND_FILL)
+			draw_colored_polygon(PackedVector2Array([Vector2(70, 60), Vector2(width - 70, 60), Vector2(width - 110, PlatformBlock.GROUND_DEPTH), Vector2(110, PlatformBlock.GROUND_DEPTH)]), fill)
 	if tex == null:
 		draw_rect(Rect2(0, 0, width, PlatformBlock.SHELF_THICKNESS if shelf else 24.0), PlatformBlock.TOP_FILL)
 		return
@@ -47,4 +47,5 @@ func _draw_chunk(tex: Texture2D, center_x: float, s: float, flip: bool) -> void:
 	var w := tex.get_width() * s
 	var top := -(surface_of(tex) + 6.0) * s
 	var rect := Rect2(center_x + w * 0.5, top, -w, tex.get_height() * s) if flip else Rect2(center_x - w * 0.5, top, w, tex.get_height() * s)
-	draw_texture_rect(tex, rect, false)
+	var tint: Color = PlatformBlock.TINTS.get(kind, Color.WHITE)
+	draw_texture_rect(tex, rect, false, tint)

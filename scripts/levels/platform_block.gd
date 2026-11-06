@@ -4,7 +4,7 @@ extends StaticBody2D
 ## Begehbare Fläche: Boden (Holz/Stein) oder durchspringbares Regal. Die Textur wird aus überlappenden Segmenten
 ## zusammengesetzt; fehlt sie, zeichnet ein einfacher Platzhalter die Fläche (Gameplay bleibt unabhängig von der Grafik).
 
-enum Kind { WOOD, STONE, SHELF, MOSS, LOG }
+enum Kind { WOOD, STONE, SHELF, MOSS, LOG, ROCK, PLANK, STAIRS }
 
 const TEXTURES := {
 	Kind.WOOD: "res://assets/environments/dojo/terrain/ground_wood.png",
@@ -12,6 +12,9 @@ const TEXTURES := {
 	Kind.SHELF: "res://assets/environments/dojo/terrain/platform_wood.png",
 	Kind.MOSS: "res://assets/environments/bamboo/terrain/ground_moss.png",
 	Kind.LOG: "res://assets/environments/bamboo/terrain/platform_bamboo.png",
+	Kind.ROCK: "res://assets/environments/quarry/terrain/ground_rock.png",
+	Kind.PLANK: "res://assets/environments/quarry/terrain/platform_plank.png",
+	Kind.STAIRS: "res://assets/environments/quarry/terrain/stairs_stone.png",
 }
 const CHUNK_WIDTH := 560.0
 const CHUNK_OVERLAP := 200.0
@@ -21,6 +24,15 @@ const GROUND_DEPTH := 700.0
 ## Füllfarbe des Erdreichs unter der Textur (Moos unterscheidet sich vom übrigen Boden).
 const MOSS_FILL := Color("10201e")
 const GROUND_FILL := Color("1c1a2e")
+## Felsiger Steinbruchboden: heller als die Nachtlevel, passend zum Morgenlicht.
+const ROCK_FILL := Color("4a4f5e")
+## Aufhellung der Boden-Texturen pro Art (Werte > 1 hellen auf). Der Steinbruch liegt im
+## Morgenlicht und soll sich deutlich von den dunklen Nachtleveln abheben.
+const TINTS := {
+	Kind.ROCK: Color(1.75, 1.7, 1.6),
+	Kind.PLANK: Color(1.6, 1.55, 1.5),
+	Kind.STAIRS: Color(1.7, 1.65, 1.6),
+}
 ## Streifen der Platzhalter-Oberkante, wenn die Textur fehlt.
 const TOP_FILL := Color("5a3b2e")
 
@@ -58,7 +70,7 @@ func _load() -> Texture2D:
 
 
 func _is_shelf() -> bool:
-	return kind == Kind.SHELF or kind == Kind.LOG
+	return kind == Kind.SHELF or kind == Kind.LOG or kind == Kind.PLANK
 
 
 func _ready() -> void:
@@ -83,7 +95,7 @@ func _build_ground() -> void:
 	var tex := _load()
 	var fill := Polygon2D.new()
 	fill.polygon = PackedVector2Array([Vector2(70, 60), Vector2(size.x - 70, 60), Vector2(size.x - 110, size.y), Vector2(110, size.y)])
-	fill.color = MOSS_FILL if kind == Kind.MOSS else fill_color
+	fill.color = MOSS_FILL if kind == Kind.MOSS else (ROCK_FILL if kind == Kind.ROCK else fill_color)
 	fill.z_index = -3
 	add_child(fill)
 	if tex == null:
@@ -126,4 +138,6 @@ func _add_sprite(tex: Texture2D, top_center: Vector2, s: float, flip: bool, z: i
 	sp.offset = Vector2(-tex.get_width() * 0.5, -surface_of(tex) - 6.0)
 	sp.position = top_center
 	sp.z_index = z
+	if TINTS.has(kind):
+		sp.modulate = TINTS[kind]
 	add_child(sp)

@@ -16,6 +16,12 @@ var repeat_lines: Array[String] = []
 
 ## Während einer Vorführung blickt der Coach nicht zum Spieler, sondern in die vom Level gesetzte Richtung.
 var locked := false
+## Ruheanimation (z. B. "sit" für Vitali auf dem Thron). Standard "idle".
+var idle_anim: StringName = &"idle"
+## Wird vor dem ersten Gespräch einmal gespielt (z. B. "stand", wenn Vitali aufsteht).
+var intro_anim: StringName = &""
+## Porträt, das im Dialog verwendet wird (leer = portrait_path).
+var portrait_override := ""
 
 var _visual: CharacterSprite
 var _player: Morilla
@@ -36,6 +42,8 @@ func _ready() -> void:
 	_visual.setup(spec_key)
 	_talked = Progression.get_flag("talked_" + coach_id)
 	_visual.face(-1)
+	if idle_anim != &"idle":
+		_visual.play_anim(idle_anim)
 
 
 func _physics_process(_delta: float) -> void:
@@ -64,11 +72,15 @@ func interact(player: Morilla) -> void:
 	if box == null:
 		return
 	player.freeze()
+	if intro_anim != &"" and not _talked:
+		_visual.play_anim(intro_anim)
+		await get_tree().create_timer(0.6).timeout
 	_visual.play_anim(&"talk")
-	var portrait: Texture2D = load(portrait_path) if ResourceLoader.exists(portrait_path) else null
+	var path := portrait_override if portrait_override != "" else portrait_path
+	var portrait: Texture2D = load(path) if ResourceLoader.exists(path) else null
 	var lines: Array[String] = repeat_lines if _talked and not repeat_lines.is_empty() else first_lines
 	await box.play(display_name, portrait, lines)
-	_visual.play_anim(&"idle")
+	_visual.play_anim(idle_anim)
 	if is_instance_valid(player):
 		player.unfreeze()
 	if not _talked:

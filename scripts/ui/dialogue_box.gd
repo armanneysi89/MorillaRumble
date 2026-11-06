@@ -10,6 +10,8 @@ const PORTRAITS := {
 	"Morilla": "res://assets/ui/morilla_portrait.png",
 	"Coach Mo": "res://assets/ui/mo_portrait.png",
 	"Coach Arman": "res://assets/ui/arman_portrait.png",
+	"Baby Mo": "res://assets/ui/baby_mo_portrait.png",
+	"Coach Vitali": "res://assets/ui/vitali_portrait.png",
 }
 
 var _root: Control

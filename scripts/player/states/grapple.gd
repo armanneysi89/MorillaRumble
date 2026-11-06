@@ -15,6 +15,7 @@ var _t := 0.0
 
 func enter(_msg: Dictionary = {}) -> void:
 	p = actor as Morilla
+	p.grapple.active = p.grapple.ability_for("kimura")
 	ab = p.grapple.ability()
 	_phase = Phase.LUNGE
 	_t = 0.0
@@ -26,6 +27,7 @@ func enter(_msg: Dictionary = {}) -> void:
 
 func exit() -> void:
 	p.grapple.release(false)
+	p.grapple.active = null
 
 
 func physics_update(delta: float) -> void:

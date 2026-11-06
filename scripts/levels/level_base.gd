@@ -41,15 +41,26 @@ var hints := []
 var enemies := []
 ## [id, x, y (Fußpunkt)]
 var checkpoints := []
-## [id, x, y (Mitte)]
+## [id, x, y (Mitte), optional Art: "scroll" | "tea"]
 var pickups := []
 ## [x, y (Fußpunkt)]
 var dummies := []
+## [name, x, y (Fußpunkt), Figur] – NPCs, die das Levelskript selbst aufbaut (Baby Mo, Vitali).
+var npcs := []
+## [x, y (Fußpunkt)]
+var thrones := []
+## [id, x, y (Fußpunkt), Höhe]
+var slabs := []
+## [id, x, y (Fußpunkt), Arena-Breite]
+var bosses := []
 
 var player: Morilla
 var hud: Hud
 var camera: GameCamera
 var dialogue: DialogueBox
+## Vom Levelskript nutzbare Referenzen auf die aus Markern gebauten Objekte.
+var throne_node: BeltThrone
+var slab_nodes: Array[BreakSlab] = []
 
 var _completed := false
 
@@ -98,9 +109,17 @@ func _collect_markers() -> void:
 		elif n is LevelCheckpoint:
 			checkpoints.append([(n as LevelCheckpoint).id, pos.x, pos.y])
 		elif n is LevelPickup:
-			pickups.append([(n as LevelPickup).id, pos.x, pos.y])
+			pickups.append([(n as LevelPickup).id, pos.x, pos.y, (n as LevelPickup).kind])
 		elif n is LevelDummy:
 			dummies.append([pos.x, pos.y])
+		elif n is LevelNpc:
+			npcs.append([n.name, pos.x, pos.y, (n as LevelNpc).character])
+		elif n is LevelThrone:
+			thrones.append([pos.x, pos.y])
+		elif n is LevelSlab:
+			slabs.append([(n as LevelSlab).id, pos.x, pos.y, (n as LevelSlab).height])
+		elif n is LevelBoss:
+			bosses.append([(n as LevelBoss).boss_id, pos.x, pos.y, (n as LevelBoss).arena_width])
 		elif n is LevelBackdrop:
 			var b := n as LevelBackdrop
 			level_width = b.level_width
@@ -186,11 +205,25 @@ func _build_props() -> void:
 		var pickup := ScrollPickup.new()
 		pickup.pickup_id = p[0]
 		pickup.position = Vector2(p[1], p[2])
+		pickup.kind = p[3] if p.size() > 3 else "scroll"
 		add_child(pickup)
 	for d in dummies:
 		var dummy := TrainingDummy.new()
 		dummy.position = Vector2(d[0], d[1])
 		add_child(dummy)
+	for t in thrones:
+		var throne := BeltThrone.new()
+		throne.position = Vector2(t[0], t[1])
+		add_child(throne)
+		if throne_node == null:
+			throne_node = throne
+	for s in slabs:
+		var slab := BreakSlab.new()
+		slab.slab_id = s[0]
+		slab.position = Vector2(s[1], s[2])
+		slab.height = s[3] if s.size() > 3 else BreakSlab.HEIGHT
+		add_child(slab)
+		slab_nodes.append(slab)
 
 
 func _build_enemies() -> void:

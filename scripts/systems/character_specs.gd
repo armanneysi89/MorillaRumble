@@ -30,6 +30,7 @@ const MORILLA := {
 		"block": ["attacks", 8.0, false],
 		"grab": ["grappling", 8.0, false],
 		"kimura": ["grappling", 8.0, false],
+		"suplex": ["grappling", 8.0, false],
 		"summon": ["grappling", 6.0, false],
 		"hurt": ["hurt", 8.0, false],
 		"death": ["hurt", 4.0, false],
@@ -119,8 +120,69 @@ const OCTOPUS := {
 	},
 }
 
-const ALL := {"morilla": MORILLA, "recruit": RECRUIT, "mo": MO, "rival": RIVAL, "arman": ARMAN, "octopus": OCTOPUS}
+## Baby Mo: Vitalis erwachsener Schüler und ein Riese – 3,0 m, also rund 1,4x Morilla (2,2 m) und deutlich größer
+## als Vitali (1,9 m). Schwarzer Gi über schwarz-bordeauxfarbenem Rashguard mit dunkelroten Chevrons, BLAUER Gürtel.
+## Die Größe ist verbindlich: Sie steht auch in jedem Cutscene-Prompt (tools/gen_quarry.py, SCALE_TXT).
+## scale 0,81 -> 445 px auf dem Bildschirm (Morilla: 318 px).
+const BABY_MO := {
+	"prefix": "baby_mo",
+	"root": "res://assets/characters/coaches/baby_mo",
+	"canvas": Vector2(760, 640),
+	"anchor_y": 620.0,
+	"scale": 0.81,
+	"faces": -1,
+	"placeholder": Color(0.12, 0.12, 0.16),
+	"anims": {
+		"idle": ["", 3.0, true],
+		"talk": ["", 4.0, true],
+		"point": ["", 3.0, false],
+		"walk": ["", 6.0, true],
+	},
+}
 
+## Vitali: Schwarzgurt mit rotem Rangfeld, kräftiger Grappler-Körperbau, offener schwarzer Gi über schwarzem
+## Rashguard mit dunkelroten Chevrons. Kleiner als Morilla. Sitzen, Sprechen, Aufstehen, Idle und Suplex-Demonstration.
+## scale 0,64 -> 273 px auf dem Bildschirm (Morilla: 318 px, Baby Mo: 445 px).
+const VITALI := {
+	"prefix": "vitali",
+	"root": "res://assets/characters/coaches/vitali",
+	"canvas": Vector2(640, 560),
+	"anchor_y": 540.0,
+	"scale": 0.64,
+	"faces": -1,
+	"placeholder": Color(0.14, 0.13, 0.15),
+	"anims": {
+		"idle": ["", 3.0, true],
+		"talk": ["", 4.0, true],
+		"sit": ["", 2.0, true],
+		"stand": ["", 4.0, false],
+		"suplex": ["", 6.0, false],
+	},
+}
 
+## Eisenrücken: steinerner Boss mit schwerem Trainingsrahmen. Kampf, Taumel, Wurf und Niederlage.
+const IRONBACK := {
+	"prefix": "ironback",
+	"root": "res://assets/characters/enemies/ironback",
+	"canvas": Vector2(760, 620),
+	"anchor_y": 600.0,
+	"scale": 0.9,
+	"faces": -1,
+	"placeholder": Color(0.35, 0.33, 0.3),
+	"anims": {
+		"idle": ["", 3.0, true],
+		"walk": ["", 5.0, true],
+		"windup": ["", 5.0, false],
+		"attack": ["", 6.0, false],
+		"charge": ["", 6.0, false],
+		"stagger": ["", 5.0, false],
+		"thrown": ["", 6.0, false],
+		"hurt": ["", 6.0, false],
+		"death": ["", 4.0, false],
+	},
+}
+
+const ALL := {"morilla": MORILLA, "recruit": RECRUIT, "mo": MO, "rival": RIVAL, "arman": ARMAN, "octopus": OCTOPUS,
+	"baby_mo": BABY_MO, "vitali": VITALI, "ironback": IRONBACK}
 static func get_spec(key: String) -> Dictionary:
 	return ALL[key]

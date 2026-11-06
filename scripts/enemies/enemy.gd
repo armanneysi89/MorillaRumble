@@ -32,6 +32,8 @@ const INK_TINT := Color(0.72, 0.55, 1.0)
 
 var state := S.IDLE
 var facing := -1
+## Größenklasse für Griffe (0 klein, 1 mittel, 2 groß). Große Gegner lassen sich nur per Suplex werfen.
+var size_class := 0
 
 var _home_x := 0.0
 var _player: Morilla
@@ -66,6 +68,7 @@ func _ready() -> void:
 	_hit_shape.size = Vector2(data.attack_range + 20.0, 110.0)
 
 	visual.setup(data.spec_key)
+	size_class = data.size_class
 	health.set_max(data.max_hp, true)
 	health.died.connect(_die)
 	hurtbox.hit_received.connect(_on_hit)
@@ -332,6 +335,17 @@ func apply_grapple_hit(info: HitInfo) -> void:
 	_pending_stun = info.stun
 	visual.flash(0.2, Color(1.0, 0.6, 0.3))
 	health.take_damage(info.damage)
+
+
+## Suplex-Aufprall: Der Gegner wird geworfen, auf den Boden geschlagen und lange betäubt.
+func apply_suplex_hit(info: HitInfo) -> void:
+	_pending_stun = info.stun
+	visual.flash(0.25, Color(1.0, 0.7, 0.35))
+	health.take_damage(info.damage)
+	if health.is_dead():
+		return
+	velocity = Vector2(info.direction * info.knockback.x, info.knockback.y)
+	_set_state(S.STUNNED, info.stun)
 
 
 ## Wird immer aufgerufen, wenn der Griff endet – regulär oder durch Unterbrechung.

@@ -151,6 +151,7 @@ func _process(_delta: float) -> void:
 		var span := maxf(_far_size.x - _view.x, 0.0)
 		var tx := clampf(c.x / maxf(level_width, 1.0), 0.0, 1.0)
 		_far.position = Vector2(-span * tx, -_view.y * 0.1 - c.y * 0.04)
+
 	var total := _pillar_spacing * _pillars.size()
 	for sp in _pillars:
 		var base: float = sp.get_meta("base")

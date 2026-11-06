@@ -52,11 +52,8 @@ func _check_transitions(on_floor: bool) -> bool:
 		return true
 	if p.buffered("grab") and on_floor:
 		p.consume("grab")
-		if not p.grapple.is_unlocked():
-			Game.toast("Diese Technik kennst du noch nicht. Sprich mit Coach Mo.")
-		elif p.grapple.cooldown <= 0.0:
-			machine.change(&"grapple")
-			return true
+		_try_grab()
+		return true
 	if p.buffered("summon") and on_floor:
 		p.consume("summon")
 		if not p.summon_unlocked():
@@ -76,6 +73,24 @@ func _check_transitions(on_floor: bool) -> bool:
 	if Input.is_action_just_pressed("interact") and on_floor and p.try_interact():
 		return true
 	return false
+
+
+## Griff-Taste: Der Suplex greift auch große Gegner, der Kimura nur kleine und mittlere.
+## Stehen beide Techniken bereit und ist ein großer Gegner in Reichweite, gewinnt der Suplex.
+func _try_grab() -> void:
+	var suplex := p.grapple.ability_for("suplex")
+	var suplex_ready := p.grapple.is_unlocked("suplex") and p.grapple.cooldown <= 0.0
+	var kimura_ready := p.grapple.is_unlocked("kimura") and p.grapple.cooldown <= 0.0
+	if suplex_ready and (not kimura_ready or p.grapple.has_large_target(suplex)):
+		machine.change(&"suplex")
+		return
+	if kimura_ready:
+		machine.change(&"grapple")
+		return
+	if not p.grapple.is_unlocked("kimura") and not p.grapple.is_unlocked("suplex"):
+		Game.toast("Diese Technik kennst du noch nicht. Sprich mit Coach Mo.")
+	elif p.grapple.cooldown > 0.0:
+		Game.toast("Der Griff erholt sich noch: %.1f s" % p.grapple.cooldown)
 
 
 func _animate() -> void:

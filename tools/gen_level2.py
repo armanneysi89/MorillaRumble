@@ -169,6 +169,16 @@ JOBS = [
     ("platform_bamboo",
      "Side view of a floating-looking bamboo platform: a horizontal row of thick bamboo logs lashed together with red rope, "
      "supported by two short bamboo brackets, straight and level, wide. " + ISO, 2048, 768, 607, []),
+    # Wipfelpfad: Heiltee-Item und zusätzliche Dekoration
+    ("tea_jar",
+     "A small ceramic Japanese tea pot with a bamboo handle on a tiny wooden saucer, a soft glowing green aura and a few "
+     "wisps of steam rising from the spout, front view, a collectible healing item. " + ISO, 768, 768, 901, []),
+    ("bonsai",
+     "A small Japanese bonsai pine tree with a twisted trunk and cloud-like needle clusters in a rounded glazed ceramic pot "
+     "on a small wooden stand, side view. " + ISO, 768, 768, 902, []),
+    ("stone_pagoda",
+     "A small tiered Japanese stone pagoda with five stacked curved roof tiers, covered with moss, with a warm orange light "
+     "glowing in its top tier, front view. " + ISO, 768, 1024, 903, []),
 
     # --- Hauptmenü ---
     *[(f"menu2_{v}", MENU, 1664, 928, seed, [MORILLA]) for v, seed in (("a", 701), ("b", 702), ("c", 703))],

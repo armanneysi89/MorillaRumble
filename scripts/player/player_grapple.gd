@@ -9,8 +9,10 @@ const PIN_DISTANCE := 96.0
 const DEFAULT_REACH := 150.0
 
 var player: Morilla
-var target: Enemy
+var target: Node2D
 var cooldown := 0.0
+## Aktuell ausgeführte Technik (Kimura oder Suplex). Leer = Kimura.
+var active: AbilityData
 
 
 func setup(p: Morilla) -> void:
@@ -28,18 +30,22 @@ func _physics_process(delta: float) -> void:
 
 
 func ability() -> AbilityData:
-	return Progression.get_ability(ABILITY_ID)
+	return active if active != null else Progression.get_ability(ABILITY_ID)
 
 
-func is_unlocked() -> bool:
-	return Progression.has_ability(ABILITY_ID) and ability() != null
+func ability_for(id: String) -> AbilityData:
+	return Progression.get_ability(id)
 
 
-func find_target(ab: AbilityData) -> Enemy:
-	var best: Enemy = null
+func is_unlocked(id := ABILITY_ID) -> bool:
+	return Progression.has_ability(id) and ability_for(id) != null
+
+
+func find_target(ab: AbilityData) -> Node2D:
+	var best: Node2D = null
 	var best_d := INF
 	for body in player.grab_sensor.get_overlapping_bodies():
-		if not body is Enemy or not (body as Enemy).can_be_grappled(ab):
+		if not body.has_method("can_be_grappled") or not body.can_be_grappled(ab):
 			continue
 		var dx: float = body.global_position.x - player.global_position.x
 		if signf(dx) != float(player.facing) and absf(dx) > 40.0:
@@ -50,7 +56,15 @@ func find_target(ab: AbilityData) -> Enemy:
 	return best
 
 
-func bind(enemy: Enemy) -> void:
+## Gibt es in Reichweite ein Ziel, das nur der Suplex greifen kann (große Gegner)?
+func has_large_target(ab: AbilityData) -> bool:
+	for body in player.grab_sensor.get_overlapping_bodies():
+		if body.has_method("can_be_grappled") and body.can_be_grappled(ab) and int(body.get("size_class")) >= 2:
+			return true
+	return false
+
+
+func bind(enemy: Node2D) -> void:
 	target = enemy
 	enemy.begin_grapple(player)
 

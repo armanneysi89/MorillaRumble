@@ -5,7 +5,7 @@ extends LevelMarker
 ## Dekor-Platzhalter (Fußpunkt). Die Zeichenreihenfolge steuert z_index im Inspektor.
 ## Suchpfade stammen von Decor.
 
-@export_enum("pillar", "banner", "lantern", "weapon_rack", "cherry_tree", "bamboo_cluster", "bamboo_stalks", "shrine", "stone_lantern") var kind := "pillar":
+@export_enum("pillar", "banner", "lantern", "weapon_rack", "cherry_tree", "bamboo_cluster", "bamboo_stalks", "shrine", "stone_lantern", "stone_pagoda", "bonsai", "quarry_arch", "quarry_crane", "quarry_lantern", "quarry_banner", "quarry_rope", "quarry_pulley", "quarry_waterfall", "quarry_rock", "quarry_pillar") var kind := "pillar":
 	set(value):
 		kind = value
 		queue_redraw()

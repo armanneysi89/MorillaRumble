@@ -1,0 +1,156 @@
+{
+ "server": "http://127.0.0.1:8188",
+ "meta": {
+  "prompt": "Image 1 is the exact character reference for this shot: it shows exactly 3 characters at their correct relative sizes on one ground line. WHO IS WHO, never swap them: Morilla is the black-furred GORILLA in the white gi; Baby Mo is the tall HUMAN man with short dark curly hair and the BLUE belt; Vitali is the HUMAN man with the dark beard and the BLACK belt with a red rank patch. Copy their faces, hair, gis, belt colours and body proportions exactly, and keep the size relation exactly as shown. The finished shot contains exactly 3 characters and nobody else: draw each of them EXACTLY ONCE, no duplicates, no extra fighters, no second gorilla, no background people. Image 2 is the exact reference for the location and props. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, cold morning light in pale blue and grey with warm copper lantern accents, 16:9 widescreen, no text, no letters. Wide reveal shot of the whole throne: the gigantic throne of thousands of woven Jiu-Jitsu belts fills the center, and on it sits Vitali in his open black gi with a BLACK belt and red rank patch, calm and upright, hands on the armrests. Baby Mo stands at the left, huge, pointing at him; Morilla stands at the far left, much smaller than Baby Mo. Quarry courtyard, stone arches, lanterns, mist. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: Baby Mo is the tallest figure at 3.0 m and fills about 78% of the image height; Morilla is 2.2 m and fills about 57%; Vitali is 1.9 m and fills about 50%. Morilla's head reaches only to Baby Mo's chest, Vitali is the shortest. Never change these proportions, never make Baby Mo small or the same size as Morilla. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Morilla, Baby Mo and Vitali appear in this shot, Vitali sitting on the throne. Image 3 is the approved storyboard for this shot. Use ONLY its camera angle, framing and background composition. The figures in it are rough placeholders: do NOT copy them and do NOT add anyone from it. The characters and their exact count come exclusively from image 1. ",
+  "seed": 11704,
+  "size": [
+   1344,
+   768
+  ],
+  "steps": 25,
+  "refs": [
+   "tools/raw/ref/charts/4_thron_enthuellung.png",
+   "tools/raw/quarry/belt_throne.png",
+   "tools/raw/ref/sheet/4_thron_enthuellung.png"
+  ],
+  "output": "tools/raw/quarry/panel_4_thron_enthuellung.png"
+ },
+ "api_graph": {
+  "unet": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+    "weight_dtype": "default"
+   }
+  },
+  "cache": {
+   "class_type": "QwenImage21Cache",
+   "inputs": {
+    "model": [
+     "unet",
+     0
+    ],
+    "device": "auto",
+    "dtype": "default"
+   }
+  },
+  "clip": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+    "type": "qwen_image",
+    "device": "default"
+   }
+  },
+  "vae": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+   }
+  },
+  "enc": {
+   "class_type": "TextEncodeQwenImage21",
+   "inputs": {
+    "clip": [
+     "clip",
+     0
+    ],
+    "prompt": "Image 1 is the exact character reference for this shot: it shows exactly 3 characters at their correct relative sizes on one ground line. WHO IS WHO, never swap them: Morilla is the black-furred GORILLA in the white gi; Baby Mo is the tall HUMAN man with short dark curly hair and the BLUE belt; Vitali is the HUMAN man with the dark beard and the BLACK belt with a red rank patch. Copy their faces, hair, gis, belt colours and body proportions exactly, and keep the size relation exactly as shown. The finished shot contains exactly 3 characters and nobody else: draw each of them EXACTLY ONCE, no duplicates, no extra fighters, no second gorilla, no background people. Image 2 is the exact reference for the location and props. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, cold morning light in pale blue and grey with warm copper lantern accents, 16:9 widescreen, no text, no letters. Wide reveal shot of the whole throne: the gigantic throne of thousands of woven Jiu-Jitsu belts fills the center, and on it sits Vitali in his open black gi with a BLACK belt and red rank patch, calm and upright, hands on the armrests. Baby Mo stands at the left, huge, pointing at him; Morilla stands at the far left, much smaller than Baby Mo. Quarry courtyard, stone arches, lanterns, mist. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: Baby Mo is the tallest figure at 3.0 m and fills about 78% of the image height; Morilla is 2.2 m and fills about 57%; Vitali is 1.9 m and fills about 50%. Morilla's head reaches only to Baby Mo's chest, Vitali is the shortest. Never change these proportions, never make Baby Mo small or the same size as Morilla. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Morilla, Baby Mo and Vitali appear in this shot, Vitali sitting on the throne. Image 3 is the approved storyboard for this shot. Use ONLY its camera angle, framing and background composition. The figures in it are rough placeholders: do NOT copy them and do NOT add anyone from it. The characters and their exact count come exclusively from image 1. ",
+    "negative_prompt": "text, letters, watermark, signature, frame, border, blurry, lowres, deformed, extra limbs, extra fingers, cropped, photo, 3d render",
+    "resolution": 1024,
+    "vae": [
+     "vae",
+     0
+    ],
+    "images.image_1": [
+     "ref1",
+     0
+    ],
+    "images.image_2": [
+     "ref2",
+     0
+    ],
+    "images.image_3": [
+     "ref3",
+     0
+    ]
+   }
+  },
+  "latent": {
+   "class_type": "EmptyLatentImage",
+   "inputs": {
+    "width": 1344,
+    "height": 768,
+    "batch_size": 1
+   }
+  },
+  "ks": {
+   "class_type": "KSampler",
+   "inputs": {
+    "model": [
+     "cache",
+     0
+    ],
+    "positive": [
+     "enc",
+     0
+    ],
+    "negative": [
+     "enc",
+     1
+    ],
+    "latent_image": [
+     "latent",
+     0
+    ],
+    "seed": 11704,
+    "steps": 25,
+    "cfg": 1.0,
+    "sampler_name": "euler",
+    "scheduler": "simple",
+    "denoise": 1.0
+   }
+  },
+  "dec": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "ks",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "save": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "images": [
+     "dec",
+     0
+    ],
+    "filename_prefix": "morilla_rumble/gen"
+   }
+  },
+  "ref1": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "4_thron_enthuellung.png"
+   }
+  },
+  "ref2": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "belt_throne.png"
+   }
+  },
+  "ref3": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "4_thron_enthuellung.png"
+   }
+  }
+ }
+}

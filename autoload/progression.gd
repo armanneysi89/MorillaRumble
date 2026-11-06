@@ -12,7 +12,10 @@ const BELT_PATH := "res://resources/belts/%s.tres"
 const ABILITY_PATH := "res://resources/abilities/%s.tres"
 const BASE_HP := 5
 const MAIN_GOAL := "Suche alle Coaches auf und verfolge die Spur des Schattenmeisters."
-const TASKS := {"find_arman": "Finde Coach Arman im Mondbambus-Hain."}
+const TASKS := {
+	"find_arman": "Finde Coach Arman im Mondbambus-Hain.",
+	"find_vitali": "Suche Coach Vitali im Steinbruch über dem Hain.",
+}
 
 var belt := "white"
 var abilities: Array[String] = []

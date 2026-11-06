@@ -64,6 +64,7 @@ func _init() -> void:
 	level_title = "MONDBAMBUS-HAIN"
 	level_subtitle = "Region 2 – Coach Armans Technik"
 	music = "dojo"
+	next_scene = Game.QUARRY_SCENE
 
 
 func _build_extras() -> void:
@@ -84,7 +85,9 @@ func _build_extras() -> void:
 
 	_gate = ExitGate.new()
 	_gate.position = ($Gate as Node2D).position
-	_gate.reached.connect(func() -> void: complete_level("BAMBUSHAIN GEMEISTERT", "Der Oktopus-Geist gehorcht dir. Die Jagd geht weiter ..."))
+	_gate.reached.connect(func() -> void:
+		Progression.set_task("find_vitali")
+		complete_level("BAMBUSHAIN GEMEISTERT", "Der Oktopus-Geist gehorcht dir. Über dem Hain liegt der Steinbruch ..."))
 	add_child(_gate)
 
 	var arena_marker := $Arena as LevelArena
