@@ -34,7 +34,8 @@ MORILLA_DIRS = {
     "idle": "idle", "walk": "walk", "run": "run", "jump": "jump", "fall": "jump",
     "light_attack": "attacks", "heavy_attack": "attacks", "dash": "attacks", "block": "attacks",
     "jab": "attacks", "cross": "attacks", "hook": "attacks", "lowkick": "attacks", "kick": "attacks",
-    "grab": "grappling", "kimura": "grappling", "summon": "grappling", "hurt": "hurt", "death": "hurt",
+    "grab": "grappling", "kimura": "grappling", "suplex": "grappling", "summon": "grappling",
+    "hurt": "hurt", "death": "hurt",
 }
 CHARACTERS = {
     "morilla": (OUT / "characters/morilla", (640, 480), 470, 400, "ref/morilla_ref", MORILLA_DIRS),

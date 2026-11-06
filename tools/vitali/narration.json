@@ -1,0 +1,29 @@
+{
+ "voice_prompt": "Audio: an off-screen narrator with a deep, calm, warm male storytelling voice speaks slowly in German: \"{text}\" Soft ambient night sounds in the background, no music.",
+ "model": "minimax_h3_fl2va_pruned_int8_convrot.safetensors + minimax_h3_audio_vae_fp32.safetensors",
+ "frames": 107,
+ "fps": 24,
+ "shots": [
+  {
+   "shot": "1_vorhof",
+   "voice": "res://assets/cutscenes/vitali/1_vorhof.ogg",
+   "text": "Der Steinbruch. Zwischen den Bögen wartet ein Riese namens Baby Mo.",
+   "seed": 9401,
+   "source": "tools/raw/quarry/clip_1_vorhof_voiced.mp4"
+  },
+  {
+   "shot": "4_thron_enthuellung",
+   "voice": "res://assets/cutscenes/vitali/4_thron_enthuellung.ogg",
+   "text": "Auf dem Thron aus tausend Gürteln sitzt Coach Vitali.",
+   "seed": 9404,
+   "source": "tools/raw/quarry/clip_4_thron_enthuellung_voiced.mp4"
+  },
+  {
+   "shot": "6_vor_dem_thron",
+   "voice": "res://assets/cutscenes/vitali/6_vor_dem_thron.ogg",
+   "text": "Vitali erhebt sich. Die Lektion beginnt.",
+   "seed": 9406,
+   "source": "tools/raw/quarry/clip_6_vor_dem_thron_voiced.mp4"
+  }
+ ]
+}

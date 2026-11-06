@@ -235,6 +235,11 @@ def _cycle(prefix, seed0, phases, ref, txt):
     return [(f"{prefix}_{i:03d}", txt + p + " " + SPRITE, 1024, 1024, seed0 + i, [ref]) for i, p in enumerate(phases, 1)]
 
 
+## Greift für alle Einzelposen: exakt eine Figur, kein zweiter Kämpfer im Bild.
+SOLO = ("EXACTLY ONE character in the image: only this single fighter, alone. No opponent, no second person, no "
+        "training partner, no arms or legs of another fighter, no silhouette of another body. ") + SPRITE
+
+
 CHARS = [
     # --- Baby Mo ---
     *_cycle("baby_mo_idle", 11201, [
@@ -287,15 +292,17 @@ CHARS = [
      "position to standing, one hand pushing off his own knee, mid motion. "
      + SPRITE, 1024, 1024, 11322, [VITALI_REF]),
     *_cycle("vitali_suplex", 11331, [
-        "Suplex demonstration, clinch: both arms wrapped forward around an unseen opponent's torso, low wide stance, gripping "
-        "tight.",
-        "Suplex demonstration, lift: lifting an unseen opponent up over the shoulder, back arched, straining with full strength.",
-        "Suplex demonstration, throw: arching backwards and throwing the unseen opponent over the shoulder behind him, body "
-        "bent back.",
-        "Suplex demonstration, impact: standing up from the throw, arms opening, calm recovered posture.",
+        "Suplex demonstration, clinch: low wide stance, both arms wrapped forward around an empty space at chest height "
+        "as if gripping an opponent's torso, elbows tight, shoulders hunched.",
+        "Suplex demonstration, lift: back arched, both arms raised high over his own shoulder as if hoisting a heavy "
+        "opponent up, knees bent, straining with full strength.",
+        "Suplex demonstration, throw: body bent far backwards in a deep arch, both arms sweeping down and behind over "
+        "his own shoulder as if hurling a heavy opponent to the floor behind him, one leg braced forward, head thrown "
+        "back, powerful follow-through.",
+        "Suplex demonstration, impact: standing up out of the throw, arms opening, calm recovered posture.",
     ], VITALI_REF, "Use image 1 as the exact character reference: the same coach Vitali with identical short dark hair, full "
        "well-trimmed dark beard, strong natural features, open black Brazilian Jiu-Jitsu gi over a black rashguard with dark "
-       "red chevron stripes, BLACK belt with a red rank patch, bare feet. Side view facing left. "),
+       "red chevron stripes, BLACK belt with a red rank patch, bare feet. Side view facing left. " + SOLO),
 
     # --- Eisenrücken ---
     *_cycle("ironback_idle", 11401, [
@@ -339,12 +346,19 @@ CHARS = [
      + SPRITE, 1280, 768, 11427, [IRONBACK_REF]),
 
     # --- Morilla: Suplex-Frames ---
+    # Der Gegner ist im Spiel eine eigene Figur und darf NICHT mitgezeichnet werden. Deshalb wird die Pose rein
+    # körperlich beschrieben (Arme über der Schulter, Hohlkreuz, Stemmschritt) und eine zweite Person ausdrücklich
+    # verboten: sonst malt das Modell einen Gegner mit, der im Spiel doppelt erscheint.
     *_cycle("morilla_suplex", 11501, [
-        "Suplex clinch: both arms wrapped forward around an unseen opponent's torso, low wide stance, gripping tight.",
-        "Suplex lift: lifting an unseen opponent up over the shoulder, back arched, straining with full strength.",
-        "Suplex throw: arching backwards and throwing the unseen opponent over the shoulder behind him, body bent back.",
-        "Suplex impact: standing up from the throw, arms opening, calm recovered posture.",
-    ], MORILLA, MORILLA_TXT + "Side view facing right. "),
+        "Suplex clinch: low wide stance, both arms wrapped forward around an empty space at chest height as if gripping "
+        "an opponent's torso, elbows tight, shoulders hunched, straining.",
+        "Suplex lift: back arched, both arms raised high over his own shoulder as if hoisting a heavy opponent up, knees "
+        "bent, chest open, straining with full strength, mouth closed in effort.",
+        "Suplex throw: body bent far backwards in a deep arch, both arms sweeping down and behind over his own shoulder "
+        "as if hurling a heavy opponent to the floor behind him, one leg braced forward, head thrown back, powerful "
+        "follow-through.",
+        "Suplex impact: standing up out of the throw, arms opening wide, chest out, calm recovered posture.",
+    ], MORILLA, MORILLA_TXT + "Side view facing right. " + SOLO),
 
     # --- Porträts ---
     ("baby_mo_portrait",
@@ -545,8 +559,11 @@ if __name__ == "__main__":
                 make_image(name, out, prompt, w, h, seed, refs, force)
     elif mode == "chars":
         for name, prompt, w, h, seed, refs in CHARS:
-            if not only or name.split("_")[0] in only or name in only:
-                make_image(name, OUT / f"{name}.png", prompt, w, h, seed, refs, force)
+            # Filter akzeptiert Figuren-Präfix ("morilla"), Animationspräfix ("morilla_suplex") und vollen Namen.
+            if only and not (name.split("_")[0] in only or name in only
+                             or any(name.startswith(o + "_") for o in only)):
+                continue
+            make_image(name, OUT / f"{name}.png", prompt, w, h, seed, refs, force)
     elif mode == "panels":
         for name, refs, seed, prompt, _motion, _loop in PANELS:
             if not only or name.split("_")[0] in only:

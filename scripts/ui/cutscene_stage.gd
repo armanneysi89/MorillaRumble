@@ -6,16 +6,21 @@ extends CanvasLayer
 
 signal skip_requested
 signal video_finished
+signal voice_finished
 
 const RATIO := 1344.0 / 768.0
 const STILL_ZOOM := 1.06
 const STILL_TIME := 5.0
+## Kurze Pause, bevor der Erzähler einsetzt (die Schwarzblende soll noch laufen).
+const VOICE_DELAY := 0.45
 
 var _root: Control
 var _video: VideoStreamPlayer
 var _still: TextureRect
 var _veil: ColorRect
 var _caption: Label
+var _voice: AudioStreamPlayer
+var _voice_token := 0
 var _zoom: Tween
 
 
@@ -45,6 +50,14 @@ func _ready() -> void:
 	_video.finished.connect(func() -> void: video_finished.emit())
 	_video.hide()
 	box.add_child(_video)
+
+	# Erzählerstimme (ComfyUI/MiniMax H3, siehe tools/gen_narration.py). Läuft unabhängig vom Clip,
+	# damit sie auch über einem Standbild oder einer Schleife sprechen kann.
+	_voice = AudioStreamPlayer.new()
+	_voice.bus = &"SFX"
+	_voice.volume_db = 2.0
+	_voice.finished.connect(func() -> void: voice_finished.emit())
+	add_child(_voice)
 
 	_caption = Label.new()
 	_caption.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -91,10 +104,11 @@ func _input(event: InputEvent) -> void:
 
 
 ## Zeigt einen Schuss: Video (wenn vorhanden und ladbar), sonst das Standbild mit langsamem Zoom.
-## shot: {video, still, loop}. Gibt zurück, ob ein Video läuft.
+## shot: {video, still, loop, voice}. Gibt zurück, ob ein Video läuft.
 func show_shot(shot: Dictionary) -> bool:
 	_video.stop()
 	_video.hide()
+	_play_voice(str(shot.get("voice", "")))
 	if _zoom and _zoom.is_valid():
 		_zoom.kill()
 	_still.scale = Vector2.ONE
@@ -130,8 +144,44 @@ func fade(alpha: float, time := 0.45) -> void:
 ## Blendet aus dem Schwarz zurück ins Spiel; die Bühne selbst ist dann schon unsichtbar.
 func close(time := 0.7) -> void:
 	_video.stop()
+	stop_voice()
 	_root.modulate.a = 0.0
 	await fade(0.0, time)
+
+
+## Erzählerstimme zur aktuellen Einstellung. Fehlt die Datei, bleibt es still (kein Fehler).
+## Der Start wird kurz verzögert, damit die Stimme nicht schon während der Schwarzblende einsetzt.
+func _play_voice(path: String) -> void:
+	stop_voice()
+	if path == "" or not ResourceLoader.exists(path):
+		return
+	var stream := load(path) as AudioStream
+	if stream == null:
+		return
+	_voice_token += 1
+	var token := _voice_token
+	_voice.stream = stream
+	await get_tree().create_timer(VOICE_DELAY, false).timeout
+	if token == _voice_token and is_inside_tree():
+		_voice.play()
+
+
+func stop_voice() -> void:
+	_voice_token += 1
+	if _voice and _voice.playing:
+		_voice.stop()
+
+
+## Länge der aktuellen Erzählerstimme in Sekunden (0, wenn keine läuft).
+func voice_length() -> float:
+	if _voice == null or _voice.stream == null:
+		return 0.0
+	return _voice.stream.get_length()
+
+
+## Läuft noch eine Erzählerstimme? Die Sequenzen warten darauf, damit kein Satz abgeschnitten wird.
+func is_voice_playing() -> bool:
+	return _voice != null and _voice.playing
 
 
 ## Zwischentitel auf Schwarz ("Wenig später ...").

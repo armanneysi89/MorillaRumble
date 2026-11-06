@@ -14,8 +14,8 @@ Du spielst Morilla, einen muskulösen Gorilla im Gi, der als Weißgurt startet u
 | Level | Inhalt |
 |-------|--------|
 | 1 – Morilla Dojo | Intro-Film mit Erzähler, Gespräch mit Mo, Bewegungs-Tutorial, Kimura-Lektion, Arena-Kampf |
-| 2 – Mondbambus-Hain | Sauna-Begegnung mit Coach Arman (Zwischensequenz, mit Tab überspringbar), danach führt er den Oktopus-Geist vor und lehrt ihn Morilla; Gruppen aus Rekruten und blauen Rivalen, Bambus-Aufstieg zur Schriftrolle, Arena in zwei Wellen |
-| 3 – Vitalis Steinbruch | Heller Bergsteinbruch über dem Hain: Begegnung mit dem riesenhaften Baby Mo und dem Gürtelthron von Coach Vitali (Zwischensequenz), Suplex-Lektion, markierte Bruchplatte, Boss-Arena des Eisenrückens |
+| 2 – Mondbambus-Hain | Sauna-Begegnung mit Coach Arman (Zwischensequenz mit Erzählerstimme, mit Tab überspringbar), danach führt er den Oktopus-Geist vor und lehrt ihn Morilla; Gruppen aus Rekruten und blauen Rivalen, Bambus-Aufstieg zur Schriftrolle, Arena in zwei Wellen |
+| 3 – Vitalis Steinbruch | Heller Bergsteinbruch über dem Hain: Begegnung mit dem riesenhaften Baby Mo und dem Gürtelthron von Coach Vitali (Zwischensequenz mit Erzählerstimme), Suplex-Lektion, markierte Bruchplatte, Boss-Arena des Eisenrückens |
 
 Sammelobjekte: **Schriftrollen** erhöhen dauerhaft das maximale Leben um 1, **Heiltee** heilt sofort 2 Leben. Beides liegt einmalig im Level; im Mondbambus-Hain erreichst du die Schriftrolle über die Bambusstämme, im Steinbruch den Heiltee über den Plankensteg.
 
@@ -34,6 +34,22 @@ Morilla reicht Baby Mo nur bis zur Brust; Vitali ist der Kleinste. Baby Mo ist t
 Mensch im Spiel – der Spitzname ist geblieben.
 
 Der **Suplex** (Coach Vitalis Technik, Taste **F / G**) beginnt im Klinch und wirft auch große Gegner. Nach einem Fehlschlag (z. B. dem Ansturm des Eisenrückens) ist der Gegner benommen – das ist das Fenster für den Wurf. Mit dem Suplex zerbricht Morilla außerdem die markierte Bruchplatte im Steinbruch und öffnet den Weg zum Boss.
+
+## Ton
+
+Alle Soundeffekte entstehen synthetisch in `tools/gen_audio.py` (numpy/scipy, keine Fremdsamples). Jeder Effekt ist
+mehrschichtig aufgebaut – Transient, modale Resonanzen als Klangkörper, Sub-Sweep, gefiltertes Rauschen und
+Faltungshall – und läuft durch weiche Sättigung. Dadurch klingen Treffer nach Aufprall statt nach Signalgenerator.
+
+Die Zwischensequenzen in Level 2 und 3 haben denselben **Erzähler** wie das Intro: eine tiefe, ruhige Männerstimme,
+die MiniMax H3 zusammen mit dem Bild erzeugt (`tools/gen_narration.py`). Vertont sind nur die Einstellungen ohne
+Dialog – läuft eine Dialogbox, schweigt der Erzähler. Die Stimme wird als eigene `.ogg` neben dem Clip abgelegt und
+von der Bühne abgespielt; die Sequenz wartet auf ihr Ende, damit kein Satz abgeschnitten wird.
+
+```bash
+python3 tools/gen_narration.py clips            # Stimmen erzeugen (ComfyUI muss laufen)
+python3 tools/gen_narration.py export sauna     # Tonspur als .ogg nach assets/cutscenes/sauna/
+```
 
 Der Oktopus-Geist (Taste **Q / R**, Gamepad: rechter Trigger) erscheint nach kurzer Konzentration, fesselt bis zu sechs Gegner gleichzeitig und setzt sie mit einer Tintenwelle für einige Sekunden außer Gefecht. Danach braucht er neun Sekunden Abklingzeit.
 
@@ -83,7 +99,7 @@ Der Pfad zur Godot-Binary lässt sich über die Umgebungsvariable `GODOT` setzen
 | `autoload/`   | Globale Systeme (Game, Progression, Sound, Savegame) |
 | `scenes/`     | Spieler, Gegner, Trainer, Level, UI            |
 | `scripts/`    | GDScript-Logik (u. a. Zustandsmaschine des Spielers) |
-| `tools/`      | Asset-/Audio-Generierung und Build-Skripte (`gen_assets.py`, `gen_level2.py`, `gen_sauna.py`, `gen_quarry.py`, `process_assets.py`, `gen_audio.py`); `tools/sauna/` und `tools/quarry/` dokumentieren Workflows, Prompts und Seeds der Zwischensequenzen |
+| `tools/`      | Asset-/Audio-Generierung und Build-Skripte (`gen_assets.py`, `gen_level2.py`, `gen_sauna.py`, `gen_quarry.py`, `gen_narration.py`, `process_assets.py`, `gen_audio.py`); `tools/sauna/` und `tools/quarry/` dokumentieren Workflows, Prompts und Seeds der Zwischensequenzen |
 | `concept/`    | Konzeptbilder und Design-Dokument              |
 
 ## Tests

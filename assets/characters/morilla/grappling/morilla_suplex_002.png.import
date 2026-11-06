@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://uxfu4bghjknj"
-path="res://.godot/imported/morilla_suplex_004.png-c7c5a9edb256484b69cffe2f6adf93b7.ctex"
+uid="uid://onc5uodvjubu"
+path="res://.godot/imported/morilla_suplex_002.png-1285c54a506ab99b3f2f4654062f1602.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/morilla/morilla_suplex_004.png"
-dest_files=["res://.godot/imported/morilla_suplex_004.png-c7c5a9edb256484b69cffe2f6adf93b7.ctex"]
+source_file="res://assets/characters/morilla/grappling/morilla_suplex_002.png"
+dest_files=["res://.godot/imported/morilla_suplex_002.png-1285c54a506ab99b3f2f4654062f1602.ctex"]
 
 [params]
 

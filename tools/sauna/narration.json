@@ -1,0 +1,29 @@
+{
+ "voice_prompt": "Audio: an off-screen narrator with a deep, calm, warm male storytelling voice speaks slowly in German: \"{text}\" Soft ambient night sounds in the background, no music.",
+ "model": "minimax_h3_fl2va_pruned_int8_convrot.safetensors + minimax_h3_audio_vae_fp32.safetensors",
+ "frames": 107,
+ "fps": 24,
+ "shots": [
+  {
+   "shot": "1_anreise",
+   "voice": "res://assets/cutscenes/sauna/1_anreise.ogg",
+   "text": "Der Pfad führt Morilla tief in den Mondbambus-Hain. Vor ihm liegt die Sauna.",
+   "seed": 9301,
+   "source": "tools/raw/sauna/clip_1_anreise_voiced.mp4"
+  },
+  {
+   "shot": "4_trainingsplatz",
+   "voice": "res://assets/cutscenes/sauna/4_trainingsplatz.ogg",
+   "text": "Im Hof wartet Morilla. Der Coach hat ihn hierher bestellt.",
+   "seed": 9304,
+   "source": "tools/raw/sauna/clip_4_trainingsplatz_voiced.mp4"
+  },
+  {
+   "shot": "6_oktopus",
+   "voice": "res://assets/cutscenes/sauna/6_oktopus.ogg",
+   "text": "Arman kniet nieder und ruft den Geist des Oktopus.",
+   "seed": 9306,
+   "source": "tools/raw/sauna/clip_6_oktopus_voiced.mp4"
+  }
+ ]
+}
