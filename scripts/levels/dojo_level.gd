@@ -30,8 +30,8 @@ const MO_REPEAT: Array[String] = [
 	"Blocke im letzten Moment, dann greife zu. Geduld ist die stärkste Technik.",
 ]
 
-var _arena: ArenaEncounter
-var _gate: ExitGate
+
+
 var _mo: CoachNpc
 
 
@@ -51,27 +51,12 @@ func _build_extras() -> void:
 	_mo.lesson_finished.connect(_on_lesson_finished)
 	add_child(_mo)
 
-	_gate = ExitGate.new()
-	_gate.position = ($Gate as Node2D).position
-	_gate.reached.connect(func() -> void: complete_level("DOJO GEMEISTERT", "Der erste Schritt zur Rache ist getan."))
-	add_child(_gate)
-
-	var arena_marker := $Arena as LevelArena
-	_arena = ArenaEncounter.new()
-	_arena.encounter_id = "dojo_arena"
-	_arena.arena_rect = arena_marker.rect
-	_arena.waves = arena_marker.waves()
-	_arena.position = arena_marker.position
-	arena_marker.queue_free()
-	_arena.cleared.connect(func() -> void:
-		_gate.open = true
-		hud.show_banner("ARENA GESCHAFFT", "Das Tor zum Ausgang ist offen.", 2.5))
-	add_child(_arena)
-	_gate.open = _arena.is_done()
+	build_arena_and_gate("dojo_arena",
+		func() -> void: complete_level("DOJO GEMEISTERT", "Der erste Schritt zur Rache ist getan."))
 
 
 func _after_ready() -> void:
-	_arena.camera = camera
+	arena.camera = camera
 	if Progression.get_flag("intro_seen"):
 		return
 	Progression.set_flag("intro_seen")
@@ -87,8 +72,4 @@ func _after_ready() -> void:
 
 
 func _on_lesson_finished(_coach: CoachNpc) -> void:
-	if Progression.has_ability("kimura"):
-		return
-	Progression.unlock_ability("kimura")
-	Sound.sfx("learn")
-	hud.show_banner("NEUE TECHNIK: KIMURA", "Greifen mit F / G  –  nah am Gegner", 3.5)
+	unlock_lesson("kimura", "NEUE TECHNIK: KIMURA", "Greifen mit F / G  –  nah am Gegner")

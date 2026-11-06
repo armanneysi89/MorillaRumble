@@ -6,7 +6,8 @@ extends CanvasLayer
 const BELT_BAR := Vector2(220, 20)
 ## Ladungsanzeige des schweren Schlags unterhalb des Lebens.
 const CHARGE_BAR := Vector2(300, 14)
-const CHARGE_FULL_AT := 0.94
+## Volle Ladung: zentrale Schwelle der Spielfigur.
+const CHARGE_FULL_AT = Morilla.CHARGE_FULL
 
 var player: Morilla
 var title := ""

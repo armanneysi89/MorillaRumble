@@ -98,6 +98,24 @@ script = ExtResource("1")
 kind = 6
 width = 260.0
 
+[node name="Steg5" type="Node2D" parent="Plattformen"]
+position = Vector2(4560, 250)
+script = ExtResource("1")
+kind = 6
+width = 240.0
+
+[node name="Steg6" type="Node2D" parent="Plattformen"]
+position = Vector2(4900, 160)
+script = ExtResource("1")
+kind = 6
+width = 260.0
+
+[node name="Aussicht" type="Node2D" parent="Plattformen"]
+position = Vector2(5200, 160)
+script = ExtResource("1")
+kind = 6
+width = 480.0
+
 [node name="Steg4" type="Node2D" parent="Plattformen"]
 position = Vector2(6400, 620)
 script = ExtResource("1")
@@ -382,6 +400,11 @@ position = Vector2(7150, 800)
 script = ExtResource("3")
 text = "Hinter der Treppe wartet der Eisenrücken. Weiche seinem Ansturm aus – danach taumelt er. Das ist dein Fenster."
 
+[node name="Hinweis6" type="Node2D" parent="Hinweise"]
+position = Vector2(4400, 340)
+script = ExtResource("3")
+text = "Die Planken führen über die Schlucht hinaus bis zur Aussicht. Von dort siehst du die ganze Arena."
+
 [node name="Gegner" type="Node2D" parent="."]
 
 [node name="Gegner1" type="Node2D" parent="Gegner"]
@@ -455,6 +478,12 @@ id = "hp_scroll_quarry"
 position = Vector2(6530, 540)
 script = ExtResource("6")
 id = "tea_quarry"
+kind = "tea"
+
+[node name="tea_quarry_aussicht" type="Node2D" parent="Sammelobjekte"]
+position = Vector2(5440, 90)
+script = ExtResource("6")
+id = "tea_quarry_aussicht"
 kind = "tea"
 
 [node name="Puppen" type="Node2D" parent="."]

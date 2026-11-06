@@ -111,6 +111,24 @@ script = ExtResource("1")
 kind = 4
 width = 240.0
 
+[node name="Bambus11" type="Node2D" parent="Plattformen" unique_id=1113226836]
+position = Vector2(6500, 250)
+script = ExtResource("1")
+kind = 4
+width = 220.0
+
+[node name="Bambus12" type="Node2D" parent="Plattformen" unique_id=1113226837]
+position = Vector2(6800, 160)
+script = ExtResource("1")
+kind = 4
+width = 240.0
+
+[node name="Wipfel" type="Node2D" parent="Plattformen" unique_id=1113226838]
+position = Vector2(7100, 160)
+script = ExtResource("1")
+kind = 4
+width = 460.0
+
 [node name="Moos10" type="Node2D" parent="Plattformen" unique_id=1691552215]
 position = Vector2(7050, 800)
 script = ExtResource("1")
@@ -325,6 +343,11 @@ position = Vector2(7150, 800)
 script = ExtResource("3")
 text = "Die Arena kommt in zwei Wellen. Beschwöre den Geist, wenn du umzingelt bist, und warte seine Abklingzeit ab."
 
+[node name="Hinweis6" type="Node2D" parent="Hinweise" unique_id=1771728963]
+position = Vector2(6250, 800)
+script = ExtResource("3")
+text = "Die Bambusstämme tragen dich bis in die Wipfel. Oben wartet ein Heiltee."
+
 [node name="Gegner" type="Node2D" parent="." unique_id=1426469592]
 
 [node name="Gegner1" type="Node2D" parent="Gegner" unique_id=1278492519]
@@ -373,6 +396,11 @@ script = ExtResource("4")
 enemy_type = "rival"
 patrol_range = 90.0
 
+[node name="Gegner8" type="Node2D" parent="Gegner" unique_id=414653274]
+position = Vector2(6900, 800)
+script = ExtResource("4")
+patrol_range = 130.0
+
 [node name="Checkpoints" type="Node2D" parent="." unique_id=641439346]
 
 [node name="cp_clearing" type="Node2D" parent="Checkpoints" unique_id=527158397]
@@ -396,6 +424,12 @@ id = "cp_arena"
 position = Vector2(6150, 250)
 script = ExtResource("6")
 id = "hp_scroll_bamboo"
+
+[node name="tea_bamboo_wipfel" type="Node2D" parent="Schriftrollen" unique_id=1865511441]
+position = Vector2(7300, 90)
+script = ExtResource("6")
+id = "tea_bamboo_wipfel"
+kind = "tea"
 
 [node name="Puppen" type="Node2D" parent="." unique_id=271071216]
 

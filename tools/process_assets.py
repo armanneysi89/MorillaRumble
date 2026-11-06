@@ -31,7 +31,7 @@ def raw_path(name: str) -> Path:
 
 # Figur: (Präfix, Zielordner, Leinwand, anchor_y, Zielhöhe der Referenzpose, Referenzbild, Ordner je Animation)
 MORILLA_DIRS = {
-    "idle": "idle", "walk": "walk", "run": "run", "jump": "jump", "fall": "jump",
+    "idle": "idle", "walk": "walk", "run": "run", "jump": "jump", "fall": "jump", "land": "jump",
     "light_attack": "attacks", "heavy_attack": "attacks", "dash": "attacks", "block": "attacks",
     "jab": "attacks", "cross": "attacks", "hook": "attacks", "lowkick": "attacks", "kick": "attacks",
     "grab": "grappling", "kimura": "grappling", "suplex": "grappling", "summon": "grappling",

@@ -75,10 +75,11 @@ func _on_hit_received(info: HitInfo) -> void:
 	var health := player.health
 	if health.is_dead():
 		return
+	# Unverwundbarkeit zuerst: Während der i-frames darf ein Treffer weder Schaden noch Parade auslösen.
+	if health.is_invulnerable():
+		return
 	if blocking and player.facing == -info.direction and not info.unblockable:
 		_on_blocked(info)
-		return
-	if health.is_invulnerable():
 		return
 	player.last_hit = info
 	if health.take_damage(info.damage) and not health.is_dead():
@@ -102,3 +103,5 @@ func _on_blocked(info: HitInfo) -> void:
 		Effects.burst(parent, pos, Color(0.8, 0.85, 1.0), 6, 260.0, 0.25, 5.0)
 		player.velocity.x = -player.facing * 260.0
 		Game.shake(0.1)
+		# Treffer-Pose der Deckung: Frame 2 zeigt, dass der Block die Last aufnimmt.
+		player.visual.show_frame(&"block", 1)

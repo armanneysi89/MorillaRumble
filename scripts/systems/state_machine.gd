@@ -19,12 +19,19 @@ func setup(actor: Node) -> void:
 
 
 func start(state_name: StringName, msg: Dictionary = {}) -> void:
+	if not _states.has(state_name):
+		push_error("Unbekannter Zustand: %s" % state_name)
+		return
 	_enter(state_name, msg)
 
 
+## Wechselt den Zustand. Ein Wechsel in denselben Zustand wird ignoriert: Sonst liefen exit() und
+## enter() erneut und würden Lande-Effekte, Squash und Puffer doppelt auslösen.
 func change(state_name: StringName, msg: Dictionary = {}) -> void:
 	if not _states.has(state_name):
 		push_error("Unbekannter Zustand: %s" % state_name)
+		return
+	if state_name == current_name:
 		return
 	var from := current_name
 	if current:

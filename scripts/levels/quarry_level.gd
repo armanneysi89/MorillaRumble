@@ -55,7 +55,7 @@ const BABY_MO_REPEAT: Array[String] = [
 	"Mein Coach ist streng, aber gerecht. Zeig ihm, dass du zuhörst.",
 ]
 
-var _gate: ExitGate
+
 var _baby_mo: CoachNpc
 var _vitali: CoachNpc
 var _throne: BeltThrone
@@ -74,10 +74,10 @@ func _init() -> void:
 
 
 func _build_extras() -> void:
-	_gate = ExitGate.new()
-	_gate.position = ($Gate as Node2D).position
-	_gate.reached.connect(func() -> void: complete_level("STEINBRUCH BEZWUNGEN", "Der Suplex sitzt. Die Spur führt weiter ..."))
-	add_child(_gate)
+	gate = ExitGate.new()
+	gate.position = ($Gate as Node2D).position
+	gate.reached.connect(func() -> void: complete_level("STEINBRUCH BEZWUNGEN", "Der Suplex sitzt. Die Spur führt weiter ..."))
+	add_child(gate)
 
 	_build_quarry()
 
@@ -130,7 +130,7 @@ func _build_quarry() -> void:
 	_boss.position = boss_marker.position
 	boss_marker.queue_free()
 	_boss.cleared.connect(func() -> void:
-		_gate.open = true
+		gate.open = true
 		hud.show_banner("EISENRÜCKEN BESIEGT", "Das Tor zum Ausgang ist offen.", 3.0))
 	add_child(_boss)
 
@@ -151,7 +151,7 @@ func _build_quarry() -> void:
 
 func _after_ready() -> void:
 	_boss.camera = camera
-	_gate.open = _boss.is_done()
+	gate.open = _boss.is_done()
 	if _vitali_met():
 		# Nach der Begegnung steht Vitali neben dem Thron statt darauf zu sitzen – weit genug links,
 		# damit er nicht in der Gürtelkaskade steht.
@@ -159,13 +159,7 @@ func _after_ready() -> void:
 		_vitali.position = _throne.position + Vector2(-420.0, 0.0)
 		_vitali.z_index = 0
 		_vitali.sprite().play_anim(&"idle")
-	if Progression.get_flag("intro_quarry_seen"):
-		return
-	Progression.set_flag("intro_quarry_seen")
-	player.freeze()
-	var portrait: Texture2D = load("res://assets/ui/morilla_portrait.png") if ResourceLoader.exists("res://assets/ui/morilla_portrait.png") else null
-	await dialogue.play("Morilla", portrait, INTRO)
-	player.unfreeze()
+	await play_intro_once("intro_quarry_seen", INTRO)
 
 
 ## Begegnung mit Baby Mo und Vitali. Läuft nur einmal; danach ist der Vorhof frei begehbar.
@@ -206,12 +200,9 @@ func _on_vitali_lesson(_coach: CoachNpc) -> void:
 		return
 	player.freeze()
 	await _demonstrate_suplex()
-	var portrait: Texture2D = load(VITALI_PORTRAIT) if ResourceLoader.exists(VITALI_PORTRAIT) else null
-	await dialogue.play("Coach Vitali", portrait, VITALI_LESSON)
+	await dialogue.play("Coach Vitali", _portrait(VITALI_PORTRAIT), VITALI_LESSON)
 	player.unfreeze()
-	Progression.unlock_ability(SUPLEX_ID)
-	Sound.sfx("learn")
-	hud.show_banner("NEUE TECHNIK: SUPLEX", "Greifen mit F / G  –  wirft auch große Gegner", 4.0)
+	unlock_lesson(SUPLEX_ID, "NEUE TECHNIK: SUPLEX", "Greifen mit F / G  –  wirft auch große Gegner")
 
 
 ## Vitali steht auf, greift eine Trainingspuppe und wirft sie mit dem Suplex.

@@ -71,6 +71,22 @@ Der Oktopus-Geist (Taste **Q / R**, Gamepad: rechter Trigger) erscheint nach kur
 
 Der leichte Schlag ist eine Kombo: Wer innerhalb kurzer Zeit weiterdrückt, schlägt Jab, Cross, Hook, Lowkick und zum Abschluss einen Kick (doppelter Schaden, starker Rückstoß).
 
+### Bewegungsgefühl
+
+Die Steuerung ist auf Reaktion ausgelegt, nicht auf Trägheit:
+
+| Mechanik | Verhalten |
+|---|---|
+| Coyote Time | 0,12 s nach Verlassen des Bodens springt die Figur noch |
+| Sprung-Puffer | 0,14 s vor der Landung gedrückt zählt der Sprung |
+| Variable Sprunghöhe | Loslassen kappt den Aufstieg, aber nie unter eine Mindesthöhe |
+| Apex-Schweben | Am Scheitel ist die Gravitation kurz reduziert |
+| Landung | Weiche und harte Landung haben eigene Frames; harte Landungen dämpfen die Steuerung kurz |
+| Richtungswechsel | Die Figur dreht sich sichtbar, statt sofort umzuklappen |
+| Dash | Unverwundbar nur im Fenster der ersten 0,11 s, nicht im ganzen Schritt |
+
+Jeder Angriff zeigt im Anlauf einen anderen Frame als im Treffer – der Gegner kann den Schlag lesen.
+
 ## Starten
 
 1. [Godot 4.7](https://godotengine.org/) installieren.
@@ -108,10 +124,16 @@ Prüfskripte laufen headless mit eigenem Spielstand (`XDG_DATA_HOME=/tmp/x`), da
 
 ```bash
 XDG_DATA_HOME=/tmp/x godot --path . --script tools/level_chain_test.gd
+XDG_DATA_HOME=/tmp/x godot --path . --script tools/level_content_test.gd
+XDG_DATA_HOME=/tmp/x godot --path . --script tools/sprite_frames_test.gd
 XDG_DATA_HOME=/tmp/x godot --path . --resolution 1280x720 --script tools/quarry_test.gd -- layout
 XDG_DATA_HOME=/tmp/x godot --path . --resolution 1280x720 --script tools/quarry_test.gd -- flow
 XDG_DATA_HOME=/tmp/x godot --path . --resolution 1280x720 --script tools/sauna_test.gd -- flow
 ```
+
+`level_content_test.gd` prüft, dass jede Kletterstufe erreichbar ist, jedes Sammelobjekt an einer Plattform
+hängt, jede Pickup-ID weltweit eindeutig ist und die Gegnerdichte spielbar bleibt. `sprite_frames_test.gd`
+stellt sicher, dass jede Angriffsanimation Anlauf und Treffer in zwei unterscheidbaren Frames zeigt.
 
 `quarry_test.gd` kennt die Modi `load`, `layout`, `flow`, `skip`, `slab`, `boss` und `old`; Screenshots landen in `/tmp/quarry_shots`.
 

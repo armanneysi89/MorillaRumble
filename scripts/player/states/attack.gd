@@ -20,7 +20,8 @@ const CHARGE_SHAKE := 0.5
 ## Voll geladener Schlag holt schneller aus als unaufgeladener.
 const CHARGE_WINDUP := 0.58
 ## Ab dieser Ladung wird der Treffer als maximal hart behandelt (KO-Text, Schockwelle).
-const CHARGE_FULL := 0.94
+## Zentrale Schwelle der Spielfigur – HUD und Charge-Zustand lesen denselben Wert.
+const CHARGE_FULL = Morilla.CHARGE_FULL
 
 ## Leichter Angriff: Jab, Cross, Hook, Lowkick, Kick. Jeder weitere Druck innerhalb des Kombo-Fensters startet die nächste Stufe.
 const COMBO := [
@@ -56,6 +57,14 @@ const HEAVY := {
 	"reach": Vector2(270, 165), "offset": Vector2(180, -155), "lunge": 420.0, "sfx": "heavy_whoosh",
 }
 const COMBO_WINDOW := 0.6
+## Anteil der Laufgeschwindigkeit, den ein Luftangriff zulässt.
+const AIR_ATTACK_SPEED := 0.6
+## Abstand zwischen zwei Afterimages während der aktiven Phase.
+const GHOST_INTERVAL := 0.035
+## Ab dieser Kombo-Stufe hinterlässt der Angriff ein zusätzliches Afterimage.
+const GHOST_COMBO_STEP := 4
+## Anteil der Erholung, ab dem der nächste Angriff angenommen wird.
+const COMBO_CANCEL_AT := 0.6
 
 var p: Morilla
 var _data: Dictionary
@@ -105,8 +114,12 @@ func physics_update(delta: float) -> void:
 	var total: float = windup + active + float(_data["recover"])
 
 	p.apply_gravity(delta)
+	# Der Luftangriff gilt nur, solange die Figur wirklich in der Luft ist. Wird sie während des
+	# Angriffs wieder festen Boden, gelten sofort die Bodenregeln (Reibung, Lunge, kein Schweben).
+	if p.is_on_floor():
+		_air = false
 	if _air:
-		p.velocity.x = move_toward(p.velocity.x, p.input_dir * Morilla.SPEED * 0.6, Morilla.AIR_ACCEL * delta)
+		p.velocity.x = move_toward(p.velocity.x, p.input_dir * Morilla.SPEED * AIR_ATTACK_SPEED, Morilla.AIR_ACCEL * delta)
 	else:
 		p.velocity.x = move_toward(p.velocity.x, 0.0, Morilla.FRICTION * delta)
 	p.move_and_slide()
@@ -120,7 +133,7 @@ func physics_update(delta: float) -> void:
 				_begin_active()
 		Phase.ACTIVE:
 			_ghost_t += delta
-			if _ghost_t >= 0.035:
+			if _ghost_t >= GHOST_INTERVAL:
 				_ghost_t = 0.0
 				p.visual.spawn_ghost(Color(1.0, 0.75, 0.45, 0.32))
 			if _t >= windup + active:
@@ -147,7 +160,7 @@ func _begin_active() -> void:
 	var reach: Vector2 = _data["reach"]
 	Effects.slash(p.get_parent(), p.global_position + Vector2(off.x * p.facing * 0.8, off.y), p.facing, heavy, reach.x)
 	p.visual.squash(Vector2(1.16, 0.86) if heavy else Vector2(1.08, 0.93))
-	if heavy or p.combo_step >= 4:
+	if heavy or p.combo_step >= GHOST_COMBO_STEP:
 		p.visual.spawn_ghost(Color(1.0, 0.6, 0.3, 0.5))
 	if _charge >= CHARGE_FULL:
 		p.visual.spawn_ghost(Color(1.0, 0.7, 0.35, 0.6))
@@ -187,7 +200,7 @@ func _check_cancels(recover_t: float, recover_total: float) -> bool:
 	if p.is_on_floor() and Input.is_action_pressed("block"):
 		machine.change(&"block")
 		return true
-	if recover_t >= recover_total * 0.6:
+	if recover_t >= recover_total * COMBO_CANCEL_AT:
 		if p.consume("heavy_attack"):
 			# Aufgeladener Schlag: erst laden, dann losschlagen.
 			machine.change(&"charge")

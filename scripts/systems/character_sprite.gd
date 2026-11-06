@@ -33,9 +33,23 @@ func setup(spec_key: String, belt_key := false) -> void:
 	_mat.shader = SHADER
 	_mat.set_shader_parameter("key_enabled", belt_key)
 	material = _mat
-	_mat.set_shader_parameter("belt_color", Color.WHITE)
-	frame_changed.connect(_on_frame_changed)
+	# Ohne diese Verbindung blieb der Gürtel immer weiß, obwohl die Progression eine Farbe kennt.
+	if not frame_changed.is_connected(_on_frame_changed):
+		frame_changed.connect(_on_frame_changed)
+	if belt_key:
+		Progression.belt_changed.connect(_on_belt_changed)
+		_on_belt_changed(Progression.belt)
+	else:
+		_mat.set_shader_parameter("belt_color", Color.WHITE)
 	play_anim(&"idle")
+
+
+## Färbt den Schlüsselgürtel passend zur aktuellen Gürtelstufe.
+func _on_belt_changed(_belt_id: String) -> void:
+	if _mat == null:
+		return
+	var belt := Progression.belt_data()
+	_mat.set_shader_parameter("belt_color", belt.color if belt else Color.WHITE)
 
 
 ## dir ist die Blickrichtung im Spiel; der Sprite blickt von Haus aus in Richtung spec.faces.
@@ -62,9 +76,9 @@ func play_timed(anim: StringName, duration: float) -> void:
 		return
 	var count := sprite_frames.get_frame_count(anim)
 	var fps := sprite_frames.get_animation_speed(anim)
-	animation = anim
-	speed_scale = float(count) / maxf(fps * duration, 0.01)
+	# Erst play(), dann speed_scale: play() setzt den Frame auf 0 zurück und würde die Skalierung sonst überschreiben.
 	play(anim)
+	speed_scale = float(count) / maxf(fps * duration, 0.01)
 
 
 func show_frame(anim: StringName, index: int) -> void:
@@ -91,7 +105,14 @@ func set_tint(color: Color) -> void:
 	modulate = color
 
 
+## Afterimage für schnelle Bewegungen. Ohne gültige Animation oder Szene passiert nichts,
+## damit Tests und Sub-Szenen nicht abstürzen.
 func spawn_ghost(color := Color(1.0, 0.8, 0.4, 0.55)) -> void:
+	if sprite_frames == null or animation == &"" or not sprite_frames.has_animation(animation):
+		return
+	var host := get_tree().current_scene
+	if host == null:
+		return
 	var ghost := Sprite2D.new()
 	ghost.texture = sprite_frames.get_frame_texture(animation, frame)
 	ghost.centered = true
@@ -101,7 +122,7 @@ func spawn_ghost(color := Color(1.0, 0.8, 0.4, 0.55)) -> void:
 	ghost.scale = scale
 	ghost.modulate = color
 	ghost.z_index = z_index - 1
-	get_tree().current_scene.add_child(ghost)
+	host.add_child(ghost)
 	var tw := ghost.create_tween()
 	tw.tween_property(ghost, "modulate:a", 0.0, 0.25)
 	tw.tween_callback(ghost.queue_free)
@@ -126,6 +147,17 @@ func _process(delta: float) -> void:
 	rotation = _lean + sway
 
 
+## Fußschritt auf halber Strecke der Lauf-Animation, unabhängig von der Frame-Anzahl.
 func _on_frame_changed() -> void:
-	if (animation == &"walk" or animation == &"run") and (frame == 0 or frame == 4):
+	if animation != &"walk" and animation != &"run":
+		return
+	var count := sprite_frames.get_frame_count(animation)
+	if count <= 0:
+		return
+	if frame == 0 or frame == count / 2:
 		footstep.emit()
+
+
+func _exit_tree() -> void:
+	if Progression.belt_changed.is_connected(_on_belt_changed):
+		Progression.belt_changed.disconnect(_on_belt_changed)

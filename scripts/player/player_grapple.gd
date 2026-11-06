@@ -7,6 +7,18 @@ extends Node
 const ABILITY_ID := "kimura"
 const PIN_DISTANCE := 96.0
 const DEFAULT_REACH := 150.0
+## Der Sensor ist etwas größer als die Reichweite, damit Ziele am Rand nicht durchrutschen.
+const SENSOR_PADDING := 80.0
+## Höhe des Sensors: die Körperhöhe der Spielfigur.
+const SENSOR_HEIGHT := 238.0
+## Toleranz um die eigene Position, in der die Blickrichtung nicht geprüft wird.
+const FACING_TOLERANCE := 40.0
+## Ab dieser Größenklasse gilt ein Ziel als „groß" und ist nur per Suplex greifbar.
+const LARGE_SIZE_CLASS := 2
+## Abklingzeit, wenn keine Technik geladen ist (Sicherheitsnetz).
+const FALLBACK_COOLDOWN := 0.8
+## Anteil der Abklingzeit, den ein kompletter Fehlversuch kostet.
+const WHIFF_COOLDOWN_SHARE := 0.35
 
 var player: Morilla
 var target: Node2D
@@ -17,16 +29,22 @@ var active: AbilityData
 
 func setup(p: Morilla) -> void:
 	player = p
-	var ab := ability()
-	var reach := ab.reach if ab else DEFAULT_REACH
-	var shape := (player.grab_sensor.get_node("Shape") as CollisionShape2D).shape as RectangleShape2D
-	shape.size = Vector2(reach + 80.0, 238.0)
+	_sync_sensor()
 
 
 func _physics_process(delta: float) -> void:
 	cooldown = maxf(cooldown - delta, 0.0)
-	var reach := ability().reach if ability() else DEFAULT_REACH
-	player.grab_sensor.position = Vector2(player.facing * (reach * 0.5 + 10.0), -119.0)
+	_sync_sensor()
+
+
+## Größe und Lage des Sensors folgen der aktiven Technik. Vorher wurde die Form einmalig mit der
+## Kimura-Reichweite gebaut, während die Position pro Frame wanderte – der Suplex griff dadurch zu weit.
+func _sync_sensor() -> void:
+	var ab := ability()
+	var reach := ab.reach if ab else DEFAULT_REACH
+	var shape := (player.grab_sensor.get_node("Shape") as CollisionShape2D).shape as RectangleShape2D
+	shape.size = Vector2(reach + SENSOR_PADDING, SENSOR_HEIGHT)
+	player.grab_sensor.position = Vector2(player.facing * (reach * 0.5 + 10.0), -SENSOR_HEIGHT * 0.5)
 
 
 func ability() -> AbilityData:
@@ -45,11 +63,9 @@ func find_target(ab: AbilityData) -> Node2D:
 	var best: Node2D = null
 	var best_d := INF
 	for body in player.grab_sensor.get_overlapping_bodies():
-		if not body.has_method("can_be_grappled") or not body.can_be_grappled(ab):
+		if not _is_valid_target(body, ab):
 			continue
 		var dx: float = body.global_position.x - player.global_position.x
-		if signf(dx) != float(player.facing) and absf(dx) > 40.0:
-			continue
 		if absf(dx) < best_d:
 			best_d = absf(dx)
 			best = body
@@ -57,11 +73,23 @@ func find_target(ab: AbilityData) -> Node2D:
 
 
 ## Gibt es in Reichweite ein Ziel, das nur der Suplex greifen kann (große Gegner)?
+## Die Blickrichtung zählt mit: Ein großer Gegner hinter der Figur darf die Technikwahl nicht bestimmen,
+## sonst greift Morilla ins Leere, obwohl ein kleiner Gegner direkt vor ihm steht.
 func has_large_target(ab: AbilityData) -> bool:
 	for body in player.grab_sensor.get_overlapping_bodies():
-		if body.has_method("can_be_grappled") and body.can_be_grappled(ab) and int(body.get("size_class")) >= 2:
+		if _is_valid_target(body, ab) and int(body.get("size_class")) >= LARGE_SIZE_CLASS:
 			return true
 	return false
+
+
+## Ein Ziel ist gültig, wenn es greifbar ist und vor der Figur steht.
+func _is_valid_target(body: Node2D, ab: AbilityData) -> bool:
+	if not is_instance_valid(body) or not body.has_method("can_be_grappled"):
+		return false
+	if not body.can_be_grappled(ab):
+		return false
+	var dx: float = body.global_position.x - player.global_position.x
+	return absf(dx) <= FACING_TOLERANCE or signf(dx) == float(player.facing)
 
 
 func bind(enemy: Node2D) -> void:
@@ -81,9 +109,12 @@ func is_bound() -> bool:
 
 
 ## Löst das Ziel in jedem Fall wieder – auch wenn der Griff unterbrochen wurde.
-func release(submitted := false) -> void:
+## `started` unterscheidet einen echten Griff von einem kompletten Fehlversuch: Nur wer tatsächlich
+## gebunden hat, zahlt die volle Abklingzeit. Ein danebengegangener Griff kostet nur einen Bruchteil.
+func release(submitted := false, started := true) -> void:
 	if is_instance_valid(target):
 		target.end_grapple(submitted)
 	target = null
 	var ab := ability()
-	cooldown = ab.cooldown if ab else 0.8
+	var full := ab.cooldown if ab else FALLBACK_COOLDOWN
+	cooldown = full if started else full * WHIFF_COOLDOWN_SHARE

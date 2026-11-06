@@ -52,8 +52,8 @@ const SAUNA_FLAG := "sauna_met"
 ## Morillas Platz auf dem Trainingsplatz, links von Arman.
 const YARD_OFFSET := -130.0
 
-var _arena: ArenaEncounter
-var _gate: ExitGate
+
+
 var _arman: CoachNpc
 var _sauna: SaunaHouse
 var _sauna_busy := false
@@ -83,36 +83,14 @@ func _build_extras() -> void:
 	if _sauna_done():
 		add_child(_arman)
 
-	_gate = ExitGate.new()
-	_gate.position = ($Gate as Node2D).position
-	_gate.reached.connect(func() -> void:
+	build_arena_and_gate("bamboo_arena", func() -> void:
 		Progression.set_task("find_vitali")
 		complete_level("BAMBUSHAIN GEMEISTERT", "Der Oktopus-Geist gehorcht dir. Über dem Hain liegt der Steinbruch ..."))
-	add_child(_gate)
-
-	var arena_marker := $Arena as LevelArena
-	_arena = ArenaEncounter.new()
-	_arena.encounter_id = "bamboo_arena"
-	_arena.arena_rect = arena_marker.rect
-	_arena.waves = arena_marker.waves()
-	_arena.position = arena_marker.position
-	arena_marker.queue_free()
-	_arena.cleared.connect(func() -> void:
-		_gate.open = true
-		hud.show_banner("ARENA GESCHAFFT", "Das Tor zum Ausgang ist offen.", 2.5))
-	add_child(_arena)
-	_gate.open = _arena.is_done()
 
 
 func _after_ready() -> void:
-	_arena.camera = camera
-	if Progression.get_flag("intro_bamboo_seen"):
-		return
-	Progression.set_flag("intro_bamboo_seen")
-	player.freeze()
-	var portrait: Texture2D = load("res://assets/ui/morilla_portrait.png") if ResourceLoader.exists("res://assets/ui/morilla_portrait.png") else null
-	await dialogue.play("Morilla", portrait, INTRO)
-	player.unfreeze()
+	arena.camera = camera
+	await play_intro_once("intro_bamboo_seen", INTRO)
 
 
 ## Auch ältere Spielstände zählen: Wer Arman schon gesprochen oder die Technik hat, überspringt die Sauna.
@@ -162,12 +140,9 @@ func _on_lesson_finished(_coach: CoachNpc) -> void:
 		return
 	player.freeze()
 	await _demonstrate()
-	var portrait: Texture2D = load(ARMAN_PORTRAIT) if ResourceLoader.exists(ARMAN_PORTRAIT) else null
-	await dialogue.play("Coach Arman", portrait, ARMAN_AFTER)
+	await dialogue.play("Coach Arman", _portrait(ARMAN_PORTRAIT), ARMAN_AFTER)
 	player.unfreeze()
-	Progression.unlock_ability(Morilla.SUMMON_ID)
-	Sound.sfx("learn")
-	hud.show_banner("NEUE TECHNIK: OKTOPUS-GEIST", "Q / R  –  fesselt mehrere Gegner gleichzeitig", 4.0)
+	unlock_lesson(Morilla.SUMMON_ID, "NEUE TECHNIK: OKTOPUS-GEIST", "Q / R  –  fesselt mehrere Gegner gleichzeitig")
 
 
 ## Arman beschwört den Geist und lässt ihn die Übungspuppen fesseln und wegschleudern.

@@ -21,6 +21,10 @@ var _aura_t := 0.0
 func enter(_msg: Dictionary = {}) -> void:
 	p = actor as Morilla
 	ab = p.summon_ability()
+	# Ohne Technik gibt es nichts zu beschwören: sauber zurück statt Absturz auf `ab.charge_time`.
+	if ab == null:
+		machine.change(&"locomotion")
+		return
 	_phase = Phase.CHARGE
 	_t = 0.0
 	_aura_t = 0.0

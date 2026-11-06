@@ -26,6 +26,26 @@ const INPUT_BUFFER := 0.16
 const DASH_COOLDOWN := 0.5
 const BUFFERED_ACTIONS: Array[String] = ["jump", "light_attack", "heavy_attack", "dash", "grab", "summon"]
 const SUMMON_ID := "octopus"
+## Ab dieser Ladung gilt der schwere Schlag als voll aufgeladen (HUD, Effekte, Schaden).
+## Einzige Quelle der Wahrheit – Charge-Zustand, Attack-Zustand und HUD lesen diesen Wert.
+const CHARGE_FULL := 0.94
+## Unverwundbarkeit nach einem Treffer (Sekunden).
+const HURT_IFRAMES := 1.2
+## Unverwundbarkeit nach einem Respawn am Checkpoint.
+const RESPAWN_IFRAMES := 1.5
+## Ab dieser Fallgeschwindigkeit löst die Landung Staub, Klang und Erschütterung aus.
+const HARD_LAND_SPEED := 350.0
+## Ab dieser Geschwindigkeit läuft die Figur, darunter geht sie.
+const RUN_THRESHOLD := 380.0
+const WALK_THRESHOLD := 40.0
+## Variable Sprunghöhe: Beim Loslassen wird der Aufstieg gekappt, aber nie unter diese Mindesthöhe.
+const JUMP_CUT_SPEED := -300.0
+const JUMP_CUT_FACTOR := 0.5
+## Wie lange die Landung die Steuerung dämpft (Sekunden) und wie stark.
+const LAND_LAG_TIME := 0.09
+const LAND_LAG_SPEED := 0.45
+## Dauer der Dreh-Animation beim Richtungswechsel.
+const TURN_TIME := 0.08
 
 @onready var visual: CharacterSprite = $Visual
 @onready var health: Health = $Health
@@ -54,6 +74,7 @@ var last_hit: HitInfo
 var _buffers := {}
 var _interactables: Array[Area2D] = []
 var _prompt := ""
+var _falling := false
 
 
 func _ready() -> void:
@@ -197,10 +218,25 @@ func unfreeze() -> void:
 		machine.change(&"locomotion")
 
 
+## Setzt die Figur an einen Checkpoint zurück und räumt dabei jeden Zwischenzustand auf.
+## Ohne diesen Reset schleppt ein Respawn alte Puffer, Kombo-Stufen und Abklingzeiten mit.
 func respawn_at(pos: Vector2) -> void:
 	global_position = pos
 	velocity = Vector2.ZERO
-	health.make_invulnerable(1.5)
+	coyote = 0.0
+	dash_cooldown = 0.0
+	summon_cooldown = 0.0
+	air_dash_available = true
+	combo_step = 0
+	combo_timer = 0.0
+	charge_level = 0.0
+	last_hit = null
+	clear_buffers()
+	grapple.release(false)
+	grapple.cooldown = 0.0
+	combat.blocking = false
+	combat.counter_window = 0.0
+	health.make_invulnerable(RESPAWN_IFRAMES)
 	if not machine.is_in(&"locomotion"):
 		machine.change(&"locomotion")
 
@@ -234,9 +270,13 @@ func _update_prompt() -> void:
 		interactable_changed.emit(text)
 
 
+## Sturz ins Leere: kostet ein Leben und setzt an den Spawnpunkt zurück.
+## Der Aufruf läuft jeden Frame unterhalb des Fall-Limits, deshalb schützt `_falling` vor Mehrfachschaden.
 func _fall_reset() -> void:
-	Sound.sfx("hurt")
-	if not health.take_damage(1, true):
+	if _falling:
 		return
-	if not health.is_dead():
+	_falling = true
+	Sound.sfx("hurt")
+	if health.take_damage(1, true) and not health.is_dead():
 		respawn_at(spawn_point)
+	_falling = false

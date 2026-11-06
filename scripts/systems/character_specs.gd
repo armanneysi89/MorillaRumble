@@ -19,7 +19,8 @@ const MORILLA := {
 		"run": ["run", 16.0, true],
 		"jump": ["jump", 8.0, false],
 		"fall": ["jump", 8.0, false],
-		"light_attack": ["attacks", 8.0, false],
+		# Landung: Frame 1 weich, Frame 2 hart. Der Zustand zeigt je nach Fallgeschwindigkeit einen davon.
+		"land": ["jump", 8.0, false],
 		"jab": ["attacks", 8.0, false],
 		"cross": ["attacks", 8.0, false],
 		"hook": ["attacks", 8.0, false],

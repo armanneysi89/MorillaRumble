@@ -70,6 +70,24 @@ position = Vector2(3900, 340)
 kind = 2
 width = 240.0
 
+[node name="Regal6" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(4230, 250)
+kind = 2
+width = 220.0
+
+[node name="Regal7" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(4560, 160)
+kind = 2
+width = 240.0
+
+[node name="Geheimdach" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(4700, 160)
+kind = 2
+width = 520.0
+
 [node name="Stein6" type="Node2D" parent="Plattformen"]
 script = ExtResource("1")
 position = Vector2(5600, 800)
@@ -312,6 +330,11 @@ script = ExtResource("3")
 position = Vector2(5150, 800)
 text = "Block im allerletzten Moment pariert den Angriff. Danach greifst du zu: F / G (Kimura)."
 
+[node name="Hinweis8" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(4300, 250)
+text = "Die Regale führen weiter nach oben. Wer klettert, findet etwas für den nächsten Kampf."
+
 [node name="Gegner" type="Node2D" parent="."]
 
 [node name="Gegner1" type="Node2D" parent="Gegner"]
@@ -328,6 +351,12 @@ patrol_range = 160.0
 script = ExtResource("4")
 position = Vector2(4950, 800)
 patrol_range = 120.0
+
+[node name="Gegner4" type="Node2D" parent="Gegner"]
+script = ExtResource("4")
+position = Vector2(5350, 800)
+patrol_range = 180.0
+enemy_type = "rival"
 
 [node name="Checkpoints" type="Node2D" parent="."]
 
@@ -347,6 +376,12 @@ id = "cp_hall"
 script = ExtResource("6")
 position = Vector2(4020, 250)
 id = "hp_scroll_dojo"
+
+[node name="tea_dojo_dach" type="Node2D" parent="Schriftrollen"]
+script = ExtResource("6")
+position = Vector2(5140, 90)
+id = "tea_dojo_dach"
+kind = "tea"
 
 [node name="Puppen" type="Node2D" parent="."]
 

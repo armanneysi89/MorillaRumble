@@ -7,7 +7,8 @@ extends State
 ## Zeit bis zur vollen Ladung; danach folgt das Überladen (kein zusätzlicher Schaden, nur mehr Druck).
 const HOLD_MAX := 1.0
 const OVERHOLD_TIME := 0.3
-const FULL_AT := 0.94
+## Volle Ladung: zentrale Schwelle der Spielfigur, damit HUD und Effekte nie auseinanderlaufen.
+const FULL_AT = Morilla.CHARGE_FULL
 ## Ab dieser Haltedauer zeigt das Aufladen erst Ton und Partikel (ein kurzer Tipp bleibt ein normaler Schlag).
 const HOLD_CUE := 0.14
 ## Bewegung ist während des Ladens stark gedämpft.
@@ -86,7 +87,8 @@ func physics_update(delta: float) -> void:
 		machine.change(&"dash")
 		return
 	if p.buffered("jump") and p.coyote > 0.0:
-		p.consume("jump")
+		# Der Puffer bleibt stehen: locomotion springt im nächsten Frame. Würde er hier konsumiert,
+		# ginge die Eingabe verloren und die Figur bliebe stehen.
 		machine.change(&"locomotion")
 		return
 	if p.is_on_floor() and Input.is_action_pressed("block"):

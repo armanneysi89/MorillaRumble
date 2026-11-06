@@ -1,14 +1,23 @@
 extends State
 
 ## Laufen, Springen und Fallen. Verzweigt in alle anderen Zustände.
+## Landung und Richtungswechsel haben eigene, kurze Übergänge: Die Figur federt nach einem Sturz ein
+## und dreht sich sichtbar, statt sofort umzuklappen.
 
 var p: Morilla
 var _was_on_floor := true
+## Restzeit der Lande-Verzögerung (Steuerung gedämpft, Figur federt ein).
+var _land_lag := 0.0
+## Restzeit der Dreh-Animation.
+var _turn_t := 0.0
+var _turn_from := 1
 
 
 func enter(_msg: Dictionary = {}) -> void:
 	p = actor as Morilla
 	_was_on_floor = p.is_on_floor()
+	_land_lag = 0.0
+	_turn_t = 0.0
 
 
 func physics_update(delta: float) -> void:
@@ -23,23 +32,49 @@ func physics_update(delta: float) -> void:
 		p.visual.squash(Vector2(0.82, 1.2))
 		Sound.sfx("jump")
 		Effects.dust(p.get_parent(), p.global_position)
-	# Variable Sprunghöhe: Loslassen kappt den Aufstieg.
-	if Input.is_action_just_released("jump") and p.velocity.y < -300.0:
-		p.velocity.y *= 0.5
+	# Variable Sprunghöhe: Loslassen kappt den Aufstieg, aber nie unter die Mindesthöhe.
+	if Input.is_action_just_released("jump") and p.velocity.y < Morilla.JUMP_CUT_SPEED:
+		p.velocity.y *= Morilla.JUMP_CUT_FACTOR
 
+	_land_lag = maxf(_land_lag - delta, 0.0)
+	_turn_t = maxf(_turn_t - delta, 0.0)
 	p.apply_gravity(delta)
-	p.apply_horizontal(delta)
+	# Während der Landeverzögerung reagiert die Figur träger: Der Aufprall hat Gewicht.
+	var speed_mult := Morilla.LAND_LAG_SPEED if _land_lag > 0.0 else 1.0
+	p.apply_horizontal(delta, speed_mult)
+	_track_turn()
 	var fall_speed := p.velocity.y
 	p.move_and_slide()
 
 	if p.is_on_floor() and not _was_on_floor:
-		p.visual.squash(Vector2(1.22, 0.8))
-		if fall_speed > 350.0:
-			Sound.sfx("land", remap(minf(fall_speed, Morilla.MAX_FALL), 350.0, Morilla.MAX_FALL, -10.0, 0.0))
-			Effects.dust(p.get_parent(), p.global_position)
-			Game.shake(remap(minf(fall_speed, Morilla.MAX_FALL), 350.0, Morilla.MAX_FALL, 0.04, 0.2))
+		_on_landed(fall_speed)
 	_was_on_floor = p.is_on_floor()
 	_animate()
+
+
+## Landung: Squash, Staub, Klang und Erschütterung skalieren mit der Fallgeschwindigkeit.
+## Harte Landungen dämpfen kurz die Steuerung, damit der Aufprall spürbar ist.
+## Frame 1 der Lande-Animation ist die weiche, Frame 2 die harte Landung.
+func _on_landed(fall_speed: float) -> void:
+	var hard := fall_speed > Morilla.HARD_LAND_SPEED
+	p.visual.squash(Vector2(1.22, 0.8) if hard else Vector2(1.1, 0.92))
+	p.visual.show_frame(&"land", 1 if hard else 0)
+	if not hard:
+		return
+	var t := clampf((fall_speed - Morilla.HARD_LAND_SPEED) / (Morilla.MAX_FALL - Morilla.HARD_LAND_SPEED), 0.0, 1.0)
+	Sound.sfx("land", remap(t, 0.0, 1.0, -10.0, 0.0))
+	Effects.dust(p.get_parent(), p.global_position)
+	Game.shake(remap(t, 0.0, 1.0, 0.04, 0.2))
+	_land_lag = Morilla.LAND_LAG_TIME * (0.5 + t)
+
+
+## Richtungswechsel: Die Figur dreht sich über eine kurze Zeit, statt sofort zu kippen.
+func _track_turn() -> void:
+	if p.facing == _turn_from or _turn_t > 0.0:
+		return
+	_turn_from = p.facing
+	_turn_t = Morilla.TURN_TIME
+	p.visual.squash(Vector2(0.9, 1.08))
 
 
 func _check_transitions(on_floor: bool) -> bool:
@@ -97,9 +132,9 @@ func _animate() -> void:
 	var anim := &"idle"
 	if not p.is_on_floor():
 		anim = &"jump" if p.velocity.y < 0.0 else &"fall"
-	elif absf(p.velocity.x) > 380.0:
+	elif absf(p.velocity.x) > Morilla.RUN_THRESHOLD:
 		anim = &"run"
-	elif absf(p.velocity.x) > 40.0:
+	elif absf(p.velocity.x) > Morilla.WALK_THRESHOLD:
 		anim = &"walk"
 	p.visual.play_anim(anim)
 	p.visual.face(p.facing)

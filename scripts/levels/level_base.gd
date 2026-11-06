@@ -61,6 +61,9 @@ var dialogue: DialogueBox
 ## Vom Levelskript nutzbare Referenzen auf die aus Markern gebauten Objekte.
 var throne_node: BeltThrone
 var slab_nodes: Array[BreakSlab] = []
+## Ausgangstor und Arena, gebaut von build_arena_and_gate().
+var gate: ExitGate
+var arena: ArenaEncounter
 
 var _completed := false
 
@@ -290,3 +293,56 @@ func complete_level(banner: String, sub: String) -> void:
 	hud.show_banner(banner, sub, 3.5)
 	await get_tree().create_timer(5.0).timeout
 	Game.change_scene(next_scene, 0.8)
+
+
+## Intro-Dialog beim ersten Betreten des Levels. Setzt das Flag selbst, damit der Dialog nur einmal läuft.
+## `flag` ist der Fortschritts-Schlüssel (z. B. "intro_bamboo_seen"), `lines` die [Sprecher, Text]-Paare.
+func play_intro_once(flag: String, lines: Array) -> void:
+	if Progression.get_flag(flag):
+		return
+	Progression.set_flag(flag)
+	player.freeze()
+	var portrait := _portrait("res://assets/ui/morilla_portrait.png")
+	await dialogue.play("Morilla", portrait, lines)
+	player.unfreeze()
+
+
+## Abschluss einer Coach-Lektion: Technik freischalten, Klang und Banner.
+## Die Vorführung selbst bleibt im Levelskript, weil sie je Coach anders aussieht.
+func unlock_lesson(ability_id: String, banner: String, sub: String) -> void:
+	if Progression.has_ability(ability_id):
+		return
+	Progression.unlock_ability(ability_id)
+	Sound.sfx("learn")
+	hud.show_banner(banner, sub, 4.0)
+
+
+## Lädt ein Porträt, wenn es existiert – sonst null (die Dialogbox zeigt dann nur den Namen).
+func _portrait(path: String) -> Texture2D:
+	return load(path) as Texture2D if ResourceLoader.exists(path) else null
+
+
+## Baut Ausgangstor und Arena aus den Editor-Platzhaltern `Gate` und `Arena`.
+## Beide Level mit Arena benutzten dafür 15 identische Zeilen; hier steht der Aufbau einmal.
+## `on_reached` läuft, wenn der Spieler das Tor berührt, `on_cleared` nach der letzten Welle.
+func build_arena_and_gate(encounter_id: String, on_reached: Callable, on_cleared: Callable = Callable()) -> void:
+	gate = ExitGate.new()
+	gate.position = ($Gate as Node2D).position
+	gate.reached.connect(on_reached)
+	add_child(gate)
+
+	var arena_marker := $Arena as LevelArena
+	arena = ArenaEncounter.new()
+	arena.encounter_id = encounter_id
+	arena.arena_rect = arena_marker.rect
+	arena.waves = arena_marker.waves()
+	arena.position = arena_marker.position
+	arena_marker.queue_free()
+	arena.cleared.connect(func() -> void:
+		gate.open = true
+		if on_cleared.is_valid():
+			on_cleared.call()
+		else:
+			hud.show_banner("ARENA GESCHAFFT", "Das Tor zum Ausgang ist offen.", 2.5))
+	add_child(arena)
+	gate.open = arena.is_done()

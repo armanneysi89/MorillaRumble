@@ -20,6 +20,8 @@ var _phase := Phase.APPROACH
 var _t := 0.0
 var _lift := 0.0
 var _throw_from := Vector2.ZERO
+## Wurde ein Ziel tatsächlich gebunden? Nur dann kostet der Griff die volle Abklingzeit.
+var _bound := false
 
 
 func enter(_msg: Dictionary = {}) -> void:
@@ -29,6 +31,7 @@ func enter(_msg: Dictionary = {}) -> void:
 	_phase = Phase.APPROACH
 	_t = 0.0
 	_lift = 0.0
+	_bound = false
 	p.velocity.x = p.facing * 240.0
 	p.visual.show_frame(&"grab", 0)
 	p.visual.face(p.facing)
@@ -36,7 +39,7 @@ func enter(_msg: Dictionary = {}) -> void:
 
 
 func exit() -> void:
-	p.grapple.release(false)
+	p.grapple.release(false, _bound)
 	p.grapple.active = null
 
 
@@ -111,6 +114,7 @@ func _establish_clinch() -> void:
 		_to(Phase.WHIFF)
 		return
 	p.grapple.bind(target)
+	_bound = true
 	p.visual.show_frame(&"suplex", 0)
 	Sound.sfx("grab")
 	Game.hit_stop(0.06)
@@ -157,8 +161,14 @@ func _arc_target() -> void:
 
 
 ## Aufprall: Schaden, Betäubung, Staub und Erschütterung.
+## Das Ziel kann zwischen Halten und Aufprall freigegeben worden sein (Tod, Unterbrechung) – dann
+## gibt es keinen Aufprall, aber der Zustand läuft sauber weiter.
 func _impact() -> void:
 	var target := p.grapple.target
+	if not is_instance_valid(target):
+		p.grapple.release(false, _bound)
+		_to(Phase.RECOVER)
+		return
 	var info := HitInfo.new()
 	info.source = p
 	info.direction = -p.facing
@@ -168,7 +178,7 @@ func _impact() -> void:
 	info.heavy = true
 	var pos := target.global_position + Vector2(0, -60)
 	target.apply_suplex_hit(info)
-	p.grapple.release(true)
+	p.grapple.release(true, _bound)
 	p.visual.show_frame(&"suplex", 3)
 	Sound.sfx("submit")
 	Sound.sfx("land", -4.0)

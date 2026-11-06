@@ -11,6 +11,8 @@ var p: Morilla
 var ab: AbilityData
 var _phase := Phase.LUNGE
 var _t := 0.0
+## Wurde ein Ziel tatsächlich gebunden? Nur dann kostet der Griff die volle Abklingzeit.
+var _bound := false
 
 
 func enter(_msg: Dictionary = {}) -> void:
@@ -19,6 +21,7 @@ func enter(_msg: Dictionary = {}) -> void:
 	ab = p.grapple.ability()
 	_phase = Phase.LUNGE
 	_t = 0.0
+	_bound = false
 	p.velocity.x = p.facing * 260.0
 	p.visual.show_frame(&"grab", 0)
 	p.visual.face(p.facing)
@@ -26,7 +29,7 @@ func enter(_msg: Dictionary = {}) -> void:
 
 
 func exit() -> void:
-	p.grapple.release(false)
+	p.grapple.release(false, _bound)
 	p.grapple.active = null
 
 
@@ -72,8 +75,17 @@ func _to(phase: Phase) -> void:
 	_t = 0.0
 
 
+## Das Ziel muss noch existieren, gebunden und am Leben sein. Ohne die Instanzprüfung greift der
+## Zugriff auf `health` ins Leere, wenn das Ziel zwischen zwei Frames freigegeben wurde.
 func _target_ok() -> bool:
-	return p.grapple.is_bound() and not p.grapple.target.health.is_dead()
+	if not p.grapple.is_bound():
+		return false
+	var target := p.grapple.target
+	if not is_instance_valid(target):
+		return false
+	if target is Enemy:
+		return not (target as Enemy).health.is_dead()
+	return true
 
 
 ## Schritte 2 und 3: Reichweite und Eignung prüfen, dann Kontrolle herstellen.
@@ -83,6 +95,7 @@ func _establish_control() -> void:
 		_to(Phase.WHIFF)
 		return
 	p.grapple.bind(target)
+	_bound = true
 	p.visual.show_frame(&"kimura", 0)
 	Sound.sfx("grab")
 	Game.hit_stop(0.05)
