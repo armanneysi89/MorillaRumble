@@ -1,0 +1,134 @@
+{
+ "server": "http://127.0.0.1:8188",
+ "meta": {
+  "prompt": "Use the character reference for Morilla: the muscular anthropomorphic gorilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use the character reference for Arman: a lean athletic young man, short dark wavy voluminous hair, thick dark eyebrows, short well-trimmed dark full beard, olive skin, wearing a black Brazilian Jiu-Jitsu gi with a black belt, bare feet. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: the Shadow Fighter is the tallest at 2.4 m and fills about 72% of the image height; Morilla is 2.2 m and fills about 66%; Arman is 1.85 m and fills about 56%. Never change these proportions. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Medium shot in a moonlit bamboo grove at night: tall bamboo stalks, a stone lantern with warm orange light, mossy stone slabs, drifting purple mist, a huge full moon behind the bamboo. Arman kneels beside Morilla and holds his forearm to pull him up, the other hand on Morilla's shoulder. Morilla is still on one knee, exhausted, his torn white gi dusty, looking at Arman with relief. The stone lantern glows warm behind them, purple mist still hangs low over the stones.",
+  "seed": 12206,
+  "size": [
+   1344,
+   768
+  ],
+  "steps": 25,
+  "refs": [
+   "tools/raw/ref/charts/6_aufhelfen.png"
+  ],
+  "output": "tools/raw/rescue/panel_6_aufhelfen.png"
+ },
+ "api_graph": {
+  "unet": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+    "weight_dtype": "default"
+   }
+  },
+  "cache": {
+   "class_type": "QwenImage21Cache",
+   "inputs": {
+    "model": [
+     "unet",
+     0
+    ],
+    "device": "auto",
+    "dtype": "default"
+   }
+  },
+  "clip": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+    "type": "qwen_image",
+    "device": "default"
+   }
+  },
+  "vae": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+   }
+  },
+  "enc": {
+   "class_type": "TextEncodeQwenImage21",
+   "inputs": {
+    "clip": [
+     "clip",
+     0
+    ],
+    "prompt": "Use the character reference for Morilla: the muscular anthropomorphic gorilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use the character reference for Arman: a lean athletic young man, short dark wavy voluminous hair, thick dark eyebrows, short well-trimmed dark full beard, olive skin, wearing a black Brazilian Jiu-Jitsu gi with a black belt, bare feet. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: the Shadow Fighter is the tallest at 2.4 m and fills about 72% of the image height; Morilla is 2.2 m and fills about 66%; Arman is 1.85 m and fills about 56%. Never change these proportions. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Medium shot in a moonlit bamboo grove at night: tall bamboo stalks, a stone lantern with warm orange light, mossy stone slabs, drifting purple mist, a huge full moon behind the bamboo. Arman kneels beside Morilla and holds his forearm to pull him up, the other hand on Morilla's shoulder. Morilla is still on one knee, exhausted, his torn white gi dusty, looking at Arman with relief. The stone lantern glows warm behind them, purple mist still hangs low over the stones.",
+    "negative_prompt": "text, letters, watermark, signature, frame, border, blurry, lowres, deformed, extra limbs, extra fingers, cropped, photo, 3d render",
+    "resolution": 1024,
+    "vae": [
+     "vae",
+     0
+    ],
+    "images.image_1": [
+     "ref1",
+     0
+    ]
+   }
+  },
+  "latent": {
+   "class_type": "EmptyLatentImage",
+   "inputs": {
+    "width": 1344,
+    "height": 768,
+    "batch_size": 1
+   }
+  },
+  "ks": {
+   "class_type": "KSampler",
+   "inputs": {
+    "model": [
+     "cache",
+     0
+    ],
+    "positive": [
+     "enc",
+     0
+    ],
+    "negative": [
+     "enc",
+     1
+    ],
+    "latent_image": [
+     "latent",
+     0
+    ],
+    "seed": 12206,
+    "steps": 25,
+    "cfg": 1.0,
+    "sampler_name": "euler",
+    "scheduler": "simple",
+    "denoise": 1.0
+   }
+  },
+  "dec": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "ks",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "save": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "images": [
+     "dec",
+     0
+    ],
+    "filename_prefix": "morilla_rumble/gen"
+   }
+  },
+  "ref1": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "6_aufhelfen.png"
+   }
+  }
+ }
+}

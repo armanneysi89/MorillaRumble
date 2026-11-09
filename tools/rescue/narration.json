@@ -1,0 +1,29 @@
+{
+ "voice_prompt": "Audio: an off-screen narrator with a deep, calm, warm male storytelling voice speaks slowly in German: \"{text}\" Soft ambient night sounds in the background, no music.",
+ "model": "minimax_h3_fl2va_pruned_int8_convrot.safetensors + minimax_h3_audio_vae_fp32.safetensors",
+ "frames": 107,
+ "fps": 24,
+ "shots": [
+  {
+   "shot": "1_zu_boden",
+   "voice": "res://assets/cutscenes/rescue/1_zu_boden.ogg",
+   "text": "Der Schattenkämpfer hat Morilla zu Boden geworfen.",
+   "seed": 9501,
+   "source": "tools/raw/rescue/clip_1_zu_boden_voiced.mp4"
+  },
+  {
+   "shot": "3_kampf",
+   "voice": "res://assets/cutscenes/rescue/3_kampf.ogg",
+   "text": "Arman tritt zwischen sie. Und der Kampf beginnt.",
+   "seed": 9503,
+   "source": "tools/raw/rescue/clip_3_kampf_voiced.mp4"
+  },
+  {
+   "shot": "5_schatten_loest_sich",
+   "voice": "res://assets/cutscenes/rescue/5_schatten_loest_sich.ogg",
+   "text": "Der Schattenkämpfer löst sich auf. Nur Rauch bleibt zurück.",
+   "seed": 9505,
+   "source": "tools/raw/rescue/clip_5_schatten_loest_sich_voiced.mp4"
+  }
+ ]
+}

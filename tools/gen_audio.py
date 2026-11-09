@@ -413,6 +413,30 @@ def sfx_spirit_vanish():
     return fade(reverb(x, 0.7, 0.3, 5000), r=0.1)
 
 
+def sfx_bear_roar():
+    """Tiefes, kehliges Brüllen des Bär-Geists: Formanten weit unten, viel Rauschen, langer Hall."""
+    t = tt(1.1)
+    growl = glide(96, 62, 1.1) * (1.0 + 0.35 * np.sin(TAU * 23.0 * t))
+    src = growl * 0.55 + noise(1.1) * 0.45
+    out = np.zeros(len(t))
+    for i, f in enumerate((320, 640, 1180, 2300)):
+        out += bp(src, f * 0.75, f * 1.35) / (i + 1)
+    out *= np.minimum(t / 0.09, 1.0) * np.exp(-np.maximum(t - 0.35, 0.0) / 0.45)
+    x = mix(saturate(out, 2.0) * 0.9,
+            sub(78, 40, 0.9, 0.30) * 0.7,
+            air(0.9, 180, 1600, 0.28) * 0.35)
+    return fade(reverb(x, 1.0, 0.3, 2200), r=0.16)
+
+
+def sfx_bear_slam():
+    """Doppelter Prankenhieb auf den Boden: sehr tiefer Druck, breite Moden, viel Staub."""
+    x = mix(click(0.016, 1200, 0.003) * 0.4,
+            modal([48, 82, 132, 214], 0.7, [0.22, 0.16, 0.11, 0.07], [1.0, 0.8, 0.55, 0.3]),
+            sub(86, 28, 0.7, 0.22) * 1.25,
+            air(0.5, 140, 1500, 0.16) * 0.6)
+    return fade(reverb(saturate(x, 2.0), 0.7, 0.26, 1600), r=0.1)
+
+
 def sfx_menu_start():
     x = mix(sub(85, 40, 0.55, 0.22),
             modal([hz(60), hz(67), hz(72)], 0.9, [0.4, 0.35, 0.3], [1.0, 0.6, 0.4]) * 0.4,
@@ -428,6 +452,7 @@ SFX = {
     "learn": sfx_learn, "arena_start": sfx_arena_start, "arena_clear": sfx_arena_clear, "fanfare": sfx_fanfare,
     "ui": sfx_ui, "summon_charge": sfx_summon_charge, "summon": sfx_summon, "tentacle": sfx_tentacle,
     "ink_blast": sfx_ink_blast, "spirit_vanish": sfx_spirit_vanish, "menu_start": sfx_menu_start,
+    "bear_roar": sfx_bear_roar, "bear_slam": sfx_bear_slam,
 }
 
 

@@ -13,7 +13,8 @@ var _done := false
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	Sound.stop_music(0.8)
+	# Eigene Intromusik statt Stille: dunkler Bordun mit Taiko-Puls (tools/gen_music.py).
+	Sound.play_music("intro", 1.2)
 	var bg := ColorRect.new()
 	bg.color = Color.BLACK
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -67,4 +68,6 @@ func _finish() -> void:
 	_done = true
 	if _player:
 		_player.stop()
+	# Das Dojo setzt seine eigene Musik (level_base.gd); hier nur sauber überblenden.
+	Sound.stop_music(0.8)
 	Game.change_scene(Game.DOJO_SCENE, 0.6)

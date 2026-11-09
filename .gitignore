@@ -7,3 +7,6 @@
 /tools/__pycache__/
 *.log
 .vscode/
+
+# Piper-TTS-Modelle (Sprachausgabe entfernt, nur lokal)
+/tools/piper/

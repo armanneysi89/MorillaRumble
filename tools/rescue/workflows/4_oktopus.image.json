@@ -1,0 +1,167 @@
+{
+ "server": "http://127.0.0.1:8188",
+ "meta": {
+  "prompt": "Use the character reference for Morilla: the muscular anthropomorphic gorilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use the character reference for Arman: a lean athletic young man, short dark wavy voluminous hair, thick dark eyebrows, short well-trimmed dark full beard, olive skin, wearing a black Brazilian Jiu-Jitsu gi with a black belt, bare feet. Use the character reference for the Shadow Fighter: a tall imposing figure in tattered black robes with a deep hood that hides the face completely, only two glowing violet eyes visible in the darkness of the hood, dark grey clawed hands, wisps of purple shadow smoke trailing from the sleeves and the hem, no visible skin, no face. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: the Shadow Fighter is the tallest at 2.4 m and fills about 72% of the image height; Morilla is 2.2 m and fills about 66%; Arman is 1.85 m and fills about 56%. Never change these proportions. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Wide side view in a moonlit bamboo grove at night: tall bamboo stalks, a stone lantern with warm orange light, mossy stone slabs, drifting purple mist, a huge full moon behind the bamboo. Use the last reference image for the octopus spirit: a huge translucent violet ghost octopus with eight long smoky tentacles, glowing red eyes and a glowing red sigil on its forehead. The spirit is the most important element of this shot and must be clearly visible and large. Arman stands with both palms pressed together in front of his chest, eyes closed, the huge octopus spirit rising behind him with its tentacles spread wide. Two smoky tentacles have wrapped around the Shadow Fighter's arms and chest, lifting it off the ground. Morilla kneels at the left, staring. Purple light floods the grove.",
+  "seed": 12204,
+  "size": [
+   1344,
+   768
+  ],
+  "steps": 25,
+  "refs": [
+   "tools/raw/ref/morilla_ref.png",
+   "tools/raw/ref/arman_ref.png",
+   "tools/raw/ref/shadow_ref.png",
+   "tools/raw/ref/octopus_ref.png"
+  ],
+  "output": "tools/raw/rescue/panel_4_oktopus.png"
+ },
+ "api_graph": {
+  "unet": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "qwen_image_2.1_int8_convrot.safetensors",
+    "weight_dtype": "default"
+   }
+  },
+  "cache": {
+   "class_type": "QwenImage21Cache",
+   "inputs": {
+    "model": [
+     "unet",
+     0
+    ],
+    "device": "auto",
+    "dtype": "default"
+   }
+  },
+  "clip": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+    "type": "qwen_image",
+    "device": "default"
+   }
+  },
+  "vae": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+   }
+  },
+  "enc": {
+   "class_type": "TextEncodeQwenImage21",
+   "inputs": {
+    "clip": [
+     "clip",
+     0
+    ],
+    "prompt": "Use the character reference for Morilla: the muscular anthropomorphic gorilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use the character reference for Arman: a lean athletic young man, short dark wavy voluminous hair, thick dark eyebrows, short well-trimmed dark full beard, olive skin, wearing a black Brazilian Jiu-Jitsu gi with a black belt, bare feet. Use the character reference for the Shadow Fighter: a tall imposing figure in tattered black robes with a deep hood that hides the face completely, only two glowing violet eyes visible in the darkness of the hood, dark grey clawed hands, wisps of purple shadow smoke trailing from the sleeves and the hem, no visible skin, no face. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: the Shadow Fighter is the tallest at 2.4 m and fills about 72% of the image height; Morilla is 2.2 m and fills about 66%; Arman is 1.85 m and fills about 56%. Never change these proportions. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Wide side view in a moonlit bamboo grove at night: tall bamboo stalks, a stone lantern with warm orange light, mossy stone slabs, drifting purple mist, a huge full moon behind the bamboo. Use the last reference image for the octopus spirit: a huge translucent violet ghost octopus with eight long smoky tentacles, glowing red eyes and a glowing red sigil on its forehead. The spirit is the most important element of this shot and must be clearly visible and large. Arman stands with both palms pressed together in front of his chest, eyes closed, the huge octopus spirit rising behind him with its tentacles spread wide. Two smoky tentacles have wrapped around the Shadow Fighter's arms and chest, lifting it off the ground. Morilla kneels at the left, staring. Purple light floods the grove.",
+    "negative_prompt": "text, letters, watermark, signature, frame, border, blurry, lowres, deformed, extra limbs, extra fingers, cropped, photo, 3d render",
+    "resolution": 1024,
+    "vae": [
+     "vae",
+     0
+    ],
+    "images.image_1": [
+     "ref1",
+     0
+    ],
+    "images.image_2": [
+     "ref2",
+     0
+    ],
+    "images.image_3": [
+     "ref3",
+     0
+    ],
+    "images.image_4": [
+     "ref4",
+     0
+    ]
+   }
+  },
+  "latent": {
+   "class_type": "EmptyLatentImage",
+   "inputs": {
+    "width": 1344,
+    "height": 768,
+    "batch_size": 1
+   }
+  },
+  "ks": {
+   "class_type": "KSampler",
+   "inputs": {
+    "model": [
+     "cache",
+     0
+    ],
+    "positive": [
+     "enc",
+     0
+    ],
+    "negative": [
+     "enc",
+     1
+    ],
+    "latent_image": [
+     "latent",
+     0
+    ],
+    "seed": 12204,
+    "steps": 25,
+    "cfg": 1.0,
+    "sampler_name": "euler",
+    "scheduler": "simple",
+    "denoise": 1.0
+   }
+  },
+  "dec": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "ks",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "save": {
+   "class_type": "SaveImage",
+   "inputs": {
+    "images": [
+     "dec",
+     0
+    ],
+    "filename_prefix": "morilla_rumble/gen"
+   }
+  },
+  "ref1": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "morilla_ref.png"
+   }
+  },
+  "ref2": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "arman_ref.png"
+   }
+  },
+  "ref3": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "shadow_ref.png"
+   }
+  },
+  "ref4": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "octopus_ref.png"
+   }
+  }
+ }
+}

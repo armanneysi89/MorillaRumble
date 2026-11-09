@@ -14,8 +14,8 @@ Du spielst Morilla, einen muskulösen Gorilla im Gi, der als Weißgurt startet u
 | Level | Inhalt |
 |-------|--------|
 | 1 – Morilla Dojo | Intro-Film mit Erzähler, Gespräch mit Mo, Bewegungs-Tutorial, Kimura-Lektion, Arena-Kampf |
-| 2 – Mondbambus-Hain | Sauna-Begegnung mit Coach Arman (Zwischensequenz mit Erzählerstimme, mit Tab überspringbar), danach führt er den Oktopus-Geist vor und lehrt ihn Morilla; Gruppen aus Rekruten und blauen Rivalen, Bambus-Aufstieg zur Schriftrolle, Arena in zwei Wellen |
-| 3 – Vitalis Steinbruch | Heller Bergsteinbruch über dem Hain: Begegnung mit dem riesenhaften Baby Mo und dem Gürtelthron von Coach Vitali (Zwischensequenz mit Erzählerstimme), Suplex-Lektion, markierte Bruchplatte, Boss-Arena des Eisenrückens |
+| 2 – Mondbambus-Hain | Sauna-Begegnung mit Coach Arman (Zwischensequenz mit Text, mit Tab überspringbar), danach führt er den Oktopus-Geist vor und lehrt ihn Morilla; Gruppen aus Rekruten und blauen Rivalen, Bambus-Aufstieg zur Schriftrolle, Arena in zwei Wellen |
+| 3 – Vitalis Steinbruch | Heller Bergsteinbruch über dem Hain: Begegnung mit dem riesenhaften Baby Mo und dem Gürtelthron von Coach Vitali (Zwischensequenz mit Text), Suplex-Lektion, markierte Bruchplatte, Boss-Arena des Eisenrückens |
 
 Sammelobjekte: **Schriftrollen** erhöhen dauerhaft das maximale Leben um 1, **Heiltee** heilt sofort 2 Leben. Beides liegt einmalig im Level; im Mondbambus-Hain erreichst du die Schriftrolle über die Bambusstämme, im Steinbruch den Heiltee über den Plankensteg.
 
@@ -35,22 +35,17 @@ Mensch im Spiel – der Spitzname ist geblieben.
 
 Der **Suplex** (Coach Vitalis Technik, Taste **F / G**) beginnt im Klinch und wirft auch große Gegner. Nach einem Fehlschlag (z. B. dem Ansturm des Eisenrückens) ist der Gegner benommen – das ist das Fenster für den Wurf. Mit dem Suplex zerbricht Morilla außerdem die markierte Bruchplatte im Steinbruch und öffnet den Weg zum Boss.
 
+Beim Wurf fährt ein **sibirischer Bär-Geist** aus Morillas Körper. Er steigt über ihm auf und schlägt genau in dem Moment zu, in dem der geworfene Gegner auf dem Boden aufkommt: Ein bernsteinfarbener Schockwellen-Schlag reißt bis zu fünf weitere Gegner im Umkreis um und betäubt sie. Der geworfene Gegner selbst wird dabei nicht doppelt getroffen; bei statischen Zielen (Bruchplatte) erscheint kein Geist.
+
 ## Ton
 
 Alle Soundeffekte entstehen synthetisch in `tools/gen_audio.py` (numpy/scipy, keine Fremdsamples). Jeder Effekt ist
 mehrschichtig aufgebaut – Transient, modale Resonanzen als Klangkörper, Sub-Sweep, gefiltertes Rauschen und
 Faltungshall – und läuft durch weiche Sättigung. Dadurch klingen Treffer nach Aufprall statt nach Signalgenerator.
 
-Die Zwischensequenzen in Level 2 und 3 haben denselben **Erzähler** wie das Intro: eine tiefe, ruhige Männerstimme,
-die MiniMax H3 zusammen mit dem Bild erzeugt (`tools/gen_narration.py`). Vertont sind nur die Einstellungen ohne
-Dialog – läuft eine Dialogbox, schweigt der Erzähler. Die Stimme wird als eigene `.ogg` neben dem Clip abgelegt und
-von der Bühne abgespielt; die Sequenz wartet auf ihr Ende, damit kein Satz abgeschnitten wird.
-
-```bash
-python3 tools/gen_narration.py clips            # Stimmen erzeugen (ComfyUI muss laufen)
-python3 tools/gen_narration.py export sauna     # Tonspur als .ogg nach assets/cutscenes/sauna/
-```
-
+Gesprochen ist **nur der Intro-Film** nach „Neues Spiel“ (Erzählerstimme, `tools/gen_intro.py`). Alle
+Zwischensequenzen im Level und alle Gespräche mit den Coaches erzählen mit **Text in der Dialogbox**; die Bühne
+spielt dort nur Musik und Soundeffekte. Die Dialogzeilen stehen in den Levelskripten (`scripts/levels/*.gd`).
 Der Oktopus-Geist (Taste **Q / R**, Gamepad: rechter Trigger) erscheint nach kurzer Konzentration, fesselt bis zu sechs Gegner gleichzeitig und setzt sie mit einer Tintenwelle für einige Sekunden außer Gefecht. Danach braucht er neun Sekunden Abklingzeit.
 
 ## Steuerung
@@ -115,7 +110,7 @@ Der Pfad zur Godot-Binary lässt sich über die Umgebungsvariable `GODOT` setzen
 | `autoload/`   | Globale Systeme (Game, Progression, Sound, Savegame) |
 | `scenes/`     | Spieler, Gegner, Trainer, Level, UI            |
 | `scripts/`    | GDScript-Logik (u. a. Zustandsmaschine des Spielers) |
-| `tools/`      | Asset-/Audio-Generierung und Build-Skripte (`gen_assets.py`, `gen_level2.py`, `gen_sauna.py`, `gen_quarry.py`, `gen_narration.py`, `process_assets.py`, `gen_audio.py`); `tools/sauna/` und `tools/quarry/` dokumentieren Workflows, Prompts und Seeds der Zwischensequenzen |
+| `tools/`      | Asset-/Audio-Generierung und Build-Skripte (`gen_assets.py`, `gen_level2.py`, `gen_sauna.py`, `gen_quarry.py`, `gen_rescue.py`, `gen_music.py`, `process_assets.py`, `gen_audio.py`); `tools/sauna/`, `tools/quarry/` und `tools/rescue/` dokumentieren Workflows, Prompts und Seeds der Zwischensequenzen |
 | `concept/`    | Konzeptbilder und Design-Dokument              |
 
 ## Tests
@@ -129,6 +124,7 @@ XDG_DATA_HOME=/tmp/x godot --path . --script tools/sprite_frames_test.gd
 XDG_DATA_HOME=/tmp/x godot --path . --resolution 1280x720 --script tools/quarry_test.gd -- layout
 XDG_DATA_HOME=/tmp/x godot --path . --resolution 1280x720 --script tools/quarry_test.gd -- flow
 XDG_DATA_HOME=/tmp/x godot --path . --resolution 1280x720 --script tools/sauna_test.gd -- flow
+XDG_DATA_HOME=/tmp/x godot --path . --resolution 1280x720 --script tools/rescue_test.gd -- play
 ```
 
 `level_content_test.gd` prüft, dass jede Kletterstufe erreichbar ist, jedes Sammelobjekt an einer Plattform
@@ -136,6 +132,30 @@ hängt, jede Pickup-ID weltweit eindeutig ist und die Gegnerdichte spielbar blei
 stellt sicher, dass jede Angriffsanimation Anlauf und Treffer in zwei unterscheidbaren Frames zeigt.
 
 `quarry_test.gd` kennt die Modi `load`, `layout`, `flow`, `skip`, `slab`, `boss` und `old`; Screenshots landen in `/tmp/quarry_shots`.
+`rescue_test.gd` kennt die Modi `assets`, `play`, `skip` und `level`; Screenshots landen in `/tmp/rescue_shots`.
+
+## Musik und Ton
+
+Jede Szene hat einen eigenen Musiktitel unter `assets/audio/music/`:
+
+| Titel    | Wo                                        |
+|----------|-------------------------------------------|
+| `menu`   | Hauptmenü                                 |
+| `intro`  | Intro-Film nach „Neues Spiel“             |
+| `dojo`   | Level 1 (Dojo)                            |
+| `bamboo` | Level 2 (Mondbambus-Hain)                 |
+| `quarry` | Level 3 (Bergsteinbruch)                  |
+| `sauna`  | Sauna-Zwischensequenz                     |
+| `rescue` | Rettungsszene nach der Bambus-Arena       |
+
+`menu` und `dojo` stammen aus `tools/get_music.sh` (CC0, OpenGameArt), die übrigen erzeugt
+`tools/gen_music.py` synthetisch (Pad, Bass, Melodie, Perkussion, Faltungshall). Die Stücke sind nahtlos
+schleifend: Der Hall hinter dem Schleifenpunkt wird auf den Anfang gefaltet, die Naht wird kurz aus- und
+eingefadet.
+
+Zwischensequenzen setzen in `CutsceneSequence.music` ihren Titel; die Levelmusik wird gemerkt und nach der
+Szene (auch beim Überspringen) wieder eingesetzt. Jede Einstellung kann zusätzlich einen Soundeffekt aus
+`assets/audio/sfx/` auslösen (`SHOTS`-Eintrag `[Datei, loop, sfx]`).
 
 ## Screenshots neu erstellen
 

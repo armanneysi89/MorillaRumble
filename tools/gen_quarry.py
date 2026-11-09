@@ -56,6 +56,7 @@ CHART_DIR = REF / "charts"
 ## Körpergrößen in Metern – die einzige Quelle der Wahrheit für alle Prompts und Sprites.
 HEIGHTS = {"morilla": 2.2, "baby_mo": 3.0, "vitali": 1.9}
 ## Vom Nutzer übergebenes Szenenblatt, in sechs Panels zerlegt (nur als Kompositions-Referenz).
+SHEET_SRC = DOC / "refs" / "sheet.png"
 SHEET = REF / "sheet"
 THRONE = OUT / "belt_throne.png"
 BG = OUT / "bg_quarry.png"
@@ -375,7 +376,9 @@ CHARS = [
 ]
 
 ## Panels, bei denen das Storyboard-Bild zusätzliche Figuren beisteuert und deshalb nicht als Referenz dient.
-NO_BOARD = {"4_thron_enthuellung", "6_vor_dem_thron"}
+## Das freigegebene Szenenblatt zeigt inzwischen in jedem Panel genau die richtige Besetzung, deshalb dient es
+## überall als Kompositionsvorgabe.
+NO_BOARD = set()
 
 ## Maßstab je Panel: nur die Figuren, die in der Szene vorkommen.
 CHARTS = {
@@ -384,7 +387,7 @@ CHARTS = {
     "3_thron_zeigen": ["morilla", "baby_mo"],
     "4_thron_enthuellung": ["morilla", "baby_mo", "vitali"],
     "5_vitali_hut": ["vitali"],
-    "6_vor_dem_thron": ["morilla", "vitali"],
+    "6_vor_dem_thron": ["morilla", "baby_mo", "vitali"],
 }
 
 ## Besetzung je Panel: verhindert, dass der Maßstab Figuren in Szenen "schmuggelt", in denen sie nicht vorkommen.
@@ -394,13 +397,15 @@ CAST = {
     "3_thron_zeigen": "ONLY Morilla and Baby Mo appear in this shot. The throne is empty. Vitali is NOT in this shot.",
     "4_thron_enthuellung": "Morilla, Baby Mo and Vitali appear in this shot, Vitali sitting on the throne.",
     "5_vitali_hut": "ONLY Vitali appears in this shot, sitting on the throne. Morilla and Baby Mo are NOT in this shot.",
-    "6_vor_dem_thron": "ONLY Morilla and Vitali appear in this shot. Baby Mo is NOT in this shot.",
+    "6_vor_dem_thron": "Morilla, Baby Mo and Vitali appear in this shot, Vitali sitting on the throne.",
 }
 
 ## Kompositionsvorgabe aus dem Szenenblatt: wird als letztes Referenzbild mitgegeben.
-COMPOSE = ("Image {n} is the approved storyboard for this shot. Use ONLY its camera angle, framing and background "
-           "composition. The figures in it are rough placeholders: do NOT copy them and do NOT add anyone from it. The "
-           "characters and their exact count come exclusively from image 1. ")
+## Das Blatt ist die verbindliche Vorlage für Kamera, Bildausschnitt, Standlinie, Blickrichtungen und Posen.
+COMPOSE = ("Image {n} is the approved storyboard panel for this exact shot. Reproduce its camera angle, framing, "
+           "horizon, ground line, background composition and the body poses of the figures as closely as possible. "
+           "The figures in it are rough placeholders: take their POSES and PLACEMENT from it, but take their faces, "
+           "clothes, belt colours and exact sizes exclusively from image 1. Do not add anyone who is not named above. ")
 
 
 ## Jedes Panel bekommt genau drei Referenzen: den Größenmaßstab der Szene (enthält die Figuren bereits in der
@@ -420,47 +425,80 @@ LOC_TXT = "Image 2 is the exact reference for the location and props. "
 
 PANELS = [
     ("1_vorhof", [BG], 11701,
-     CHART_TXT + LOC_TXT + STYLE + "Wide side view of the quarry courtyard: Morilla walks in from the left, full-body, and "
-     "stops in front of Baby Mo, who stands calmly in the center. Baby Mo is a giant: his head is far above Morilla's head "
-     "and Morilla reaches only to his chest. Stone arches, hanging training bags, warm lanterns, misty gorge behind them. "
-     + SCALE_TXT,
-     "Slow tracking camera follows Morilla as he walks in and stops in front of Baby Mo. Baby Mo breathes calmly and turns his "
-     "head slightly toward Morilla. Lantern light flickers, mist drifts. Both characters keep their exact size relation, no "
-     "cuts.", False),
+     CHART_TXT + LOC_TXT + STYLE + "Wide side view of the quarry courtyard, both figures full-body on the same ground line: "
+     "Morilla stands at the left, facing right, seen from the side; Baby Mo stands at the center-right, facing left, both "
+     "arms open wide in a calm welcoming gesture. Baby Mo is a giant: Morilla's head reaches only to his chest. Behind them "
+     "monumental stone arches, a waterfall, a hanging training bag on a wooden frame at the left, a wooden crane, a dark red "
+     "banner with a pale emblem at the right and stone stairs rising to the right. " + SCALE_TXT,
+     "Slow static camera with a tiny drift. Baby Mo holds his open welcoming gesture and breathes calmly, Morilla stands and "
+     "breathes, lantern light flickers, mist drifts. Both characters keep their exact size relation, no cuts.", False),
     ("2_baby_mo", [BG], 11702,
-     CHART_TXT + LOC_TXT + STYLE + "Medium shot: Baby Mo in the center, huge and towering, speaking calmly with one open hand "
-     "raised in a friendly gesture, his clearly visible BLUE belt in frame; Morilla at the left, much smaller, his head at "
-     "Baby Mo's chest height, listening. Quarry courtyard with stone arches and lanterns behind them. " + SCALE_TXT,
+     CHART_TXT + LOC_TXT + STYLE + "Medium shot from a slightly low angle: Baby Mo fills the right half of the frame, huge and "
+     "towering, facing left, one open hand raised in a friendly explaining gesture, his clearly visible BLUE belt in frame; "
+     "Morilla stands at the lower left, seen from behind and from the side, much smaller, his head at Baby Mo's chest height, "
+     "looking up at him. Stone arches and a misty gorge behind them. " + SCALE_TXT,
      "Slow subtle push-in. Baby Mo speaks with a calm open-hand gesture, Morilla listens and breathes, lantern light flickers, "
      "mist drifts. Faces, clothes, belt colors and the size relation never change.", True),
     ("3_thron_zeigen", [THRONE], 11703,
-     CHART_TXT + LOC_TXT + STYLE + "Wide shot: Baby Mo stands at the left, huge, pointing forward and up with one outstretched "
-     "arm toward a gigantic throne built entirely from thousands of woven Jiu-Jitsu belts in white, blue, purple, brown and "
-     "black, which rises in the center-right of the quarry courtyard. Morilla stands at the far left, much smaller than Baby "
-     "Mo, looking up at the throne. " + SCALE_TXT,
+     CHART_TXT + LOC_TXT + STYLE + "Wide shot: Baby Mo stands at the left, huge, seen from behind and from the side, pointing "
+     "forward and up with one outstretched arm toward a gigantic throne built entirely from thousands of woven Jiu-Jitsu belts "
+     "in white, blue, purple, brown and black, which rises in the center-right of the quarry courtyard. Morilla stands at the "
+     "far left, seen from behind, much smaller than Baby Mo, looking up at the throne. " + SCALE_TXT,
      "Slow push-in toward the throne. Baby Mo holds his pointing arm steady, Morilla looks up, lantern light flickers, mist "
      "drifts around the base of the throne. The throne stays identical, the size relation stays identical, no cuts.", True),
     ("4_thron_enthuellung", [THRONE], 11704,
      CHART_TXT + LOC_TXT + STYLE + "Wide reveal shot of the whole throne: the gigantic throne of thousands of woven Jiu-Jitsu "
      "belts fills the center, and on it sits Vitali in his open black gi with a BLACK belt and red rank patch, calm and "
-     "upright, hands on the armrests. Baby Mo stands at the left, huge, pointing at him; Morilla stands at the far left, much "
-     "smaller than Baby Mo. Quarry courtyard, stone arches, lanterns, mist. " + SCALE_TXT,
+     "upright, hands on the armrests. Baby Mo stands at the left, huge, seen from behind, pointing at him; Morilla stands at "
+     "the far left, seen from behind, much smaller than Baby Mo. Warm sunbeams fall through the arches onto the throne, "
+     "quarry courtyard, lanterns, mist. " + SCALE_TXT,
      "Slow dramatic push-in toward the throne. Vitali sits perfectly still and only breathes, Baby Mo lowers his pointing arm, "
      "Morilla looks up, lantern light flickers, mist drifts. Faces, clothes, the throne and the size relation never change.",
      False),
     ("5_vitali_hut", [THRONE], 11705,
-     CHART_TXT + LOC_TXT + STYLE + "Closer shot of Vitali sitting on the belt throne: he is calm and upright in his open black "
-     "gi with a BLACK belt and red rank patch, hands on the armrests, and beside him on the throne step lies a grey felt sauna "
-     "hat. The woven belts of the throne fill the background.",
+     CHART_TXT + LOC_TXT + STYLE + "Close shot of Vitali sitting on the belt throne: he is calm and upright in his open black "
+     "gi with a BLACK belt and red rank patch, both hands resting on the armrests, looking straight at the viewer. Beside him "
+     "on the belts at the right lies a grey felt sauna hat. The woven belts of the throne fill the whole background.",
      "Slow subtle push-in. Vitali sits still and only breathes, his eyes calm and direct, lantern light flickers, mist drifts. "
      "The grey sauna hat stays in place. Faces and clothes never change.", True),
     ("6_vor_dem_thron", [THRONE], 11706,
-     CHART_TXT + LOC_TXT + STYLE + "Wide side view: Morilla stands in the foreground at the left, full-body, facing the "
-     "throne; Vitali sits on the gigantic belt throne at the right, calm and upright in his open black gi with a BLACK belt "
-     "and red rank patch. Quarry courtyard, stone arches, lanterns, mist. " + SCALE_TXT,
-     "Slow static camera with a tiny drift. Morilla stands and breathes, Vitali sits still and only breathes, lantern light "
-     "flickers, mist drifts. Consistent characters and sizes, no cuts.", False),
+     CHART_TXT + LOC_TXT + STYLE + "Wide side view: Morilla stands in the foreground at the left, full-body, facing right "
+     "toward the throne; Baby Mo stands just behind him at the center-left, huge, seen from behind, facing right; Vitali sits "
+     "on the gigantic belt throne at the right, calm and upright in his open black gi with a BLACK belt and red rank patch, "
+     "one open hand raised in a calm explaining gesture. Quarry courtyard, stone arches, waterfall, lanterns, mist. "
+     + SCALE_TXT,
+     "Slow static camera with a tiny drift. Morilla stands and breathes, Baby Mo stands still, Vitali speaks with a calm open "
+     "hand, lantern light flickers, mist drifts. Consistent characters and sizes, no cuts.", False),
 ]
+
+
+## Szenenblatt: 2 Spalten x 3 Reihen, randlos. Die Zellen sind 768x341 (2,25:1) – genau das Format der Panels.
+SHEET_COLS = 2
+SHEET_ROWS = 3
+## Reihenfolge der Zellen im Szenenblatt (links oben nach rechts unten).
+SHEET_ORDER = ["1_vorhof", "2_baby_mo", "3_thron_zeigen", "4_thron_enthuellung", "5_vitali_hut", "6_vor_dem_thron"]
+
+
+def split_sheet(force: bool) -> None:
+    """Zerlegt das freigegebene Szenenblatt (tools/quarry/refs/sheet.png) in die sechs Kompositions-Panels.
+
+    Das Blatt ist eine randlose 2x3-Collage; jede Zelle ist ein Panel. Die Ausschnitte landen unter
+    tools/raw/ref/sheet/<name>.png und dienen `panels` als Kompositionsvorgabe (COMPOSE).
+    """
+    from PIL import Image
+    if not SHEET_SRC.exists():
+        sys.exit(f"Szenenblatt fehlt: {SHEET_SRC}")
+    sheet = Image.open(SHEET_SRC).convert("RGB")
+    cw, ch = sheet.width // SHEET_COLS, sheet.height // SHEET_ROWS
+    SHEET.mkdir(parents=True, exist_ok=True)
+    for i, name in enumerate(SHEET_ORDER):
+        out = SHEET / f"{name}.png"
+        if out.exists() and not force:
+            continue
+        col, row = i % SHEET_COLS, i // SHEET_COLS
+        cell = sheet.crop((col * cw, row * ch, (col + 1) * cw, (row + 1) * ch))
+        cell.save(out)
+        print("sheet", out, cell.size, flush=True)
 
 
 def dump(name: str, kind: str, graph: dict, meta: dict) -> None:
@@ -546,6 +584,8 @@ if __name__ == "__main__":
     force = "--force" in sys.argv
     OUT.mkdir(parents=True, exist_ok=True)
     if mode == "refs":
+        # Szenenblatt zuerst zerlegen: die Ausschnitte sind die Kompositionsvorgabe der Panels.
+        split_sheet(force)
         for name, out, prompt, w, h, seed, refs in REFS:
             if not only or name.split("/")[-1] in only:
                 make_image(name, out, prompt, w, h, seed, refs, force)

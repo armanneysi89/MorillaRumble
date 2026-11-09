@@ -14,6 +14,9 @@ const LIFT_HEIGHT := 150.0
 const THROW_DISTANCE := 210.0
 const THROW_ARC := 120.0
 
+## Höhe über dem Fußpunkt, auf der der Bär-Geist aus Morillas Körper austritt (Brusthöhe).
+const SPIRIT_HEIGHT := 170.0
+
 var p: Morilla
 var ab: AbilityData
 var _phase := Phase.APPROACH
@@ -22,6 +25,8 @@ var _lift := 0.0
 var _throw_from := Vector2.ZERO
 ## Wurde ein Ziel tatsächlich gebunden? Nur dann kostet der Griff die volle Abklingzeit.
 var _bound := false
+## Bär-Geist, der während des Wurfs aus Morilla fährt und beim Aufprall zuschlägt.
+var _spirit: BearSpirit
 
 
 func enter(_msg: Dictionary = {}) -> void:
@@ -39,6 +44,10 @@ func enter(_msg: Dictionary = {}) -> void:
 
 
 func exit() -> void:
+	# Bricht der Zustand vor dem Aufprall ab, löst sich der Geist ohne Treffer auf.
+	if is_instance_valid(_spirit):
+		_spirit.dismiss()
+	_spirit = null
 	p.grapple.release(false, _bound)
 	p.grapple.active = null
 
@@ -126,6 +135,8 @@ func _begin_lift() -> void:
 	p.visual.show_frame(&"suplex", 1)
 	Sound.sfx("strain")
 	Game.shake(0.18)
+	# Der Geist fährt schon beim Anheben aus Morilla, damit er beim Aufprall vollständig da ist.
+	_summon_spirit()
 	_to(Phase.LIFT)
 
 
@@ -147,6 +158,22 @@ func _begin_throw() -> void:
 	_to(Phase.THROW)
 
 
+## Der Bär-Geist fährt während des Wurfs aus Morillas Körper. Er wartet auf den Aufprall und schlägt dann zu.
+## Bei statischen Zielen (Bruchplatte) erscheint kein Geist – dort gibt es keine Gegner umzuwerfen.
+func _summon_spirit() -> void:
+	if ab == null or ab.spirit_targets <= 0:
+		return
+	if p.grapple.target is StaticBody2D:
+		return
+	var spot := p.global_position + Vector2(0, -SPIRIT_HEIGHT)
+	var tree := p.get_tree()
+	# Das geworfene Ziel wird gemerkt: `p.grapple.target` ist beim Aufprall bereits freigegeben und
+	# würde sonst ein zweites Mal getroffen.
+	var thrown := p.grapple.target
+	_spirit = BearSpirit.summon(p.get_parent(), spot, ab, func(at: Vector2) -> Array:
+		return BearSpirit.enemies_near(at, ab, tree, thrown))
+
+
 ## Rückwärtsbogen: Der Gegner fliegt in einem Bogen hinter den Werfer.
 func _arc_target() -> void:
 	var target := p.grapple.target
@@ -166,6 +193,10 @@ func _arc_target() -> void:
 func _impact() -> void:
 	var target := p.grapple.target
 	if not is_instance_valid(target):
+		# Ohne Aufprall gibt es keinen Schlag: Der Geist löst sich sofort auf.
+		if is_instance_valid(_spirit):
+			_spirit.dismiss()
+			_spirit = null
 		p.grapple.release(false, _bound)
 		_to(Phase.RECOVER)
 		return
@@ -178,6 +209,10 @@ func _impact() -> void:
 	info.heavy = true
 	var pos := target.global_position + Vector2(0, -60)
 	target.apply_suplex_hit(info)
+	# Der Bär-Geist schlägt genau in dem Moment zu, in dem der Gegner auf dem Boden aufkommt.
+	if is_instance_valid(_spirit):
+		_spirit.slam(target.global_position)
+		_spirit = null
 	p.grapple.release(true, _bound)
 	p.visual.show_frame(&"suplex", 3)
 	Sound.sfx("submit")

@@ -299,7 +299,8 @@ func spirit_bind(duration: float) -> void:
 	visual.modulate = INK_TINT
 
 
-func apply_spirit_hit(info: HitInfo) -> void:
+## `tint` färbt den Gegner nach dem Treffer: Violett für den Oktopus-Geist, Bernstein für den Bär-Geist.
+func apply_spirit_hit(info: HitInfo, tint := INK_TINT) -> void:
 	if not can_be_spirit_targeted() or not health.take_damage(info.damage):
 		return
 	visual.flash(0.2, Color(0.75, 0.45, 1.0))
@@ -307,7 +308,7 @@ func apply_spirit_hit(info: HitInfo) -> void:
 		return
 	velocity = Vector2(info.direction * info.knockback.x, info.knockback.y)
 	_set_state(S.STUNNED, info.stun)
-	visual.modulate = INK_TINT
+	visual.modulate = tint
 
 
 # --- Griff-Schnittstelle (siehe PlayerGrapple) ---

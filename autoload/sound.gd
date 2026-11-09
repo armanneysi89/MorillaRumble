@@ -14,6 +14,7 @@ var _voices: Array[AudioStreamPlayer] = []
 var _music: AudioStreamPlayer
 var _music_name := ""
 var _tween: Tween
+var _duck_tween: Tween
 
 
 func _ready() -> void:
@@ -79,6 +80,23 @@ func play_music(track: String, fade := 1.5) -> void:
 		_music.stream = stream
 		_music.play())
 	_tween.tween_property(_music, "volume_db", 0.0, fade)
+
+
+## Name des laufenden Musiktitels ("" wenn keine Musik läuft). Zwischensequenzen merken sich den Titel
+## des Levels und stellen ihn nach der Szene wieder her.
+func current_music() -> String:
+	return _music_name
+
+
+## Musik für Dialoge absenken, ohne den Titel zu wechseln. `amount` 0 = volle Lautstärke, 1 = stumm.
+## Nutzt einen eigenen Tween, damit ein laufendes Ein-/Ausblenden (play_music) nicht abbricht.
+func duck(amount: float, time := 0.4) -> void:
+	if _music == null:
+		return
+	if _duck_tween and _duck_tween.is_valid():
+		_duck_tween.kill()
+	_duck_tween = create_tween()
+	_duck_tween.tween_property(_music, "volume_db", lerpf(0.0, SILENT, clampf(amount, 0.0, 1.0)), time)
 
 
 func stop_music(fade := 1.0) -> void:

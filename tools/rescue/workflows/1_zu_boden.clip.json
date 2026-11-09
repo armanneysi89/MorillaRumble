@@ -1,0 +1,174 @@
+{
+ "server": "http://127.0.0.1:8188",
+ "meta": {
+  "motion_prompt": "Locked-off wide camera. Morilla stays down on one knee and only breathes, shoulders heaving. The Shadow Fighter slowly raises the clawed hand higher, purple smoke curls around the arm, mist drifts, the stone lantern flickers. No camera movement, no cuts.",
+  "seed": 12201,
+  "frames": 73,
+  "fps": 24,
+  "size": [
+   1344,
+   768
+  ],
+  "first_frame": "tools/raw/rescue/panel_1_zu_boden.png",
+  "output": "tools/raw/rescue/clip_1_zu_boden.mp4",
+  "lora": null,
+  "lora_strength": null
+ },
+ "api_graph": {
+  "clip": {
+   "class_type": "CLIPLoader",
+   "inputs": {
+    "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "type": "minimax",
+    "device": "default"
+   }
+  },
+  "vae": {
+   "class_type": "VAELoader",
+   "inputs": {
+    "vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"
+   }
+  },
+  "unet": {
+   "class_type": "UNETLoader",
+   "inputs": {
+    "unet_name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "weight_dtype": "default"
+   }
+  },
+  "img": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "panel_1_zu_boden.png"
+   }
+  },
+  "cond": {
+   "class_type": "MiniMaxH3ImageToVideo",
+   "inputs": {
+    "clip": [
+     "clip",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ],
+    "prompt": "Locked-off wide camera. Morilla stays down on one knee and only breathes, shoulders heaving. The Shadow Fighter slowly raises the clawed hand higher, purple smoke curls around the arm, mist drifts, the stone lantern flickers. No camera movement, no cuts.",
+    "width": 1344,
+    "height": 768,
+    "length": 73,
+    "first_frame": [
+     "img",
+     0
+    ]
+   }
+  },
+  "neg": {
+   "class_type": "ConditioningZeroOut",
+   "inputs": {
+    "conditioning": [
+     "cond",
+     0
+    ]
+   }
+  },
+  "shift": {
+   "class_type": "MiniMaxH3SigmaShift",
+   "inputs": {
+    "model": [
+     "unet",
+     0
+    ],
+    "shift_video": 10,
+    "shift_audio": 3
+   }
+  },
+  "attn": {
+   "class_type": "ModelAttentionBackend",
+   "inputs": {
+    "model": [
+     "shift",
+     0
+    ],
+    "attention": "comfy kitchen attention"
+   }
+  },
+  "sparse": {
+   "class_type": "BlockSparseAttention",
+   "inputs": {
+    "model": [
+     "attn",
+     0
+    ],
+    "selection": "vsa",
+    "selection.keep_percent": 10,
+    "start_percent": 0.2,
+    "end_percent": 1.0,
+    "dense_blocks": "",
+    "min_tokens": 12288,
+    "extra_tokens": 256,
+    "sink_conditioning": "exact_kv_and_rows",
+    "verbose": false
+   }
+  },
+  "ks": {
+   "class_type": "KSampler",
+   "inputs": {
+    "model": [
+     "sparse",
+     0
+    ],
+    "positive": [
+     "cond",
+     0
+    ],
+    "negative": [
+     "neg",
+     0
+    ],
+    "latent_image": [
+     "cond",
+     1
+    ],
+    "seed": 12201,
+    "steps": 8,
+    "cfg": 1.0,
+    "sampler_name": "res_multistep",
+    "scheduler": "simple",
+    "denoise": 1.0
+   }
+  },
+  "dec": {
+   "class_type": "VAEDecode",
+   "inputs": {
+    "samples": [
+     "ks",
+     0
+    ],
+    "vae": [
+     "vae",
+     0
+    ]
+   }
+  },
+  "save": {
+   "class_type": "VHS_VideoCombine",
+   "inputs": {
+    "images": [
+     "dec",
+     0
+    ],
+    "frame_rate": 24,
+    "loop_count": 0,
+    "filename_prefix": "morilla_rumble/rescue_1_zu_boden",
+    "format": "video/h264-mp4",
+    "pix_fmt": "yuv420p",
+    "crf": 17,
+    "save_metadata": false,
+    "trim_to_audio": false,
+    "pingpong": false,
+    "save_output": true
+   }
+  }
+ }
+}

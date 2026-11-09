@@ -96,14 +96,18 @@ def clip_path(name: str) -> Path:
     return OUT / f"clip_{name}.mp4"
 
 
-def video_graph(image: str, prompt: str, seed: int, prefix: str, frames: int = FRAMES, voiced: bool = False) -> dict:
+def video_graph(image: str, prompt: str, seed: int, prefix: str, frames: int = FRAMES, voiced: bool = False,
+                lora: str | None = None, lora_strength: float = 0.65,
+                width: int = W, height: int = H) -> dict:
+    """Baut den H3-Bild-zu-Video-Graph. `lora` legt ein Bewegungs-LoRA (z. B. H3 Fight Flow) auf das Modell.
+    `width`/`height` erlauben eine kleinere Auflösung für lange Clips (weniger VRAM)."""
     g = {
         "clip": {"class_type": "CLIPLoader", "inputs": {"clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors", "type": "minimax", "device": "default"}},
         "vae": {"class_type": "VAELoader", "inputs": {"vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"}},
         "unet": {"class_type": "UNETLoader", "inputs": {"unet_name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors", "weight_dtype": "default"}},
         "img": {"class_type": "LoadImage", "inputs": {"image": image}},
         "cond": {"class_type": "MiniMaxH3ImageToVideo", "inputs": {
-            "clip": ["clip", 0], "vae": ["vae", 0], "prompt": prompt, "width": W, "height": H, "length": frames, "first_frame": ["img", 0]}},
+            "clip": ["clip", 0], "vae": ["vae", 0], "prompt": prompt, "width": width, "height": height, "length": frames, "first_frame": ["img", 0]}},
         "neg": {"class_type": "ConditioningZeroOut", "inputs": {"conditioning": ["cond", 0]}},
         "shift": {"class_type": "MiniMaxH3SigmaShift", "inputs": {"model": ["unet", 0], "shift_video": 10, "shift_audio": 3}},
         "attn": {"class_type": "ModelAttentionBackend", "inputs": {"model": ["shift", 0], "attention": "comfy kitchen attention"}},
@@ -122,6 +126,11 @@ def video_graph(image: str, prompt: str, seed: int, prefix: str, frames: int = F
         g["avae"] = {"class_type": "VAELoader", "inputs": {"vae_name": "minimax_h3_audio_vae_fp32.safetensors"}}
         g["adec"] = {"class_type": "VAEDecodeAudio", "inputs": {"samples": ["ks", 0], "vae": ["avae", 0]}}
         g["save"]["inputs"]["audio"] = ["adec", 0]
+    if lora:
+        # Bewegungs-LoRA (z. B. H3 Fight Flow) liegt zwischen SigmaShift und Attention-Backend.
+        g["lora"] = {"class_type": "LoraLoaderModelOnly", "inputs": {
+            "model": ["shift", 0], "lora_name": lora, "strength_model": lora_strength}}
+        g["attn"]["inputs"]["model"] = ["lora", 0]
     return g
 
 

@@ -1,7 +1,7 @@
 {
  "server": "http://127.0.0.1:8188",
  "meta": {
-  "motion_prompt": "Slow static camera with a tiny drift. Morilla stands and breathes, Vitali sits still and only breathes, lantern light flickers, mist drifts. Consistent characters and sizes, no cuts.",
+  "motion_prompt": "Slow static camera with a tiny drift. Morilla stands and breathes, Baby Mo stands still, Vitali speaks with a calm open hand, lantern light flickers, mist drifts. Consistent characters and sizes, no cuts.",
   "seed": 11706,
   "frames": 73,
   "fps": 24,
@@ -51,7 +51,7 @@
      "vae",
      0
     ],
-    "prompt": "Slow static camera with a tiny drift. Morilla stands and breathes, Vitali sits still and only breathes, lantern light flickers, mist drifts. Consistent characters and sizes, no cuts.",
+    "prompt": "Slow static camera with a tiny drift. Morilla stands and breathes, Baby Mo stands still, Vitali speaks with a calm open hand, lantern light flickers, mist drifts. Consistent characters and sizes, no cuts.",
     "width": 1344,
     "height": 768,
     "length": 73,

@@ -1,7 +1,7 @@
 {
  "server": "http://127.0.0.1:8188",
  "meta": {
-  "prompt": "Image 1 is the exact character reference for this shot: it shows exactly 2 characters at their correct relative sizes on one ground line. WHO IS WHO, never swap them: Morilla is the black-furred GORILLA in the white gi; Baby Mo is the tall HUMAN man with short dark curly hair and the BLUE belt; Vitali is the HUMAN man with the dark beard and the BLACK belt with a red rank patch. Copy their faces, hair, gis, belt colours and body proportions exactly, and keep the size relation exactly as shown. The finished shot contains exactly 2 characters and nobody else: draw each of them EXACTLY ONCE, no duplicates, no extra fighters, no second gorilla, no background people. Image 2 is the exact reference for the location and props. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, cold morning light in pale blue and grey with warm copper lantern accents, 16:9 widescreen, no text, no letters. Wide side view: Morilla stands in the foreground at the left, full-body, facing the throne; Vitali sits on the gigantic belt throne at the right, calm and upright in his open black gi with a BLACK belt and red rank patch. Quarry courtyard, stone arches, lanterns, mist. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: Baby Mo is the tallest figure at 3.0 m and fills about 78% of the image height; Morilla is 2.2 m and fills about 57%; Vitali is 1.9 m and fills about 50%. Morilla's head reaches only to Baby Mo's chest, Vitali is the shortest. Never change these proportions, never make Baby Mo small or the same size as Morilla. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. ONLY Morilla and Vitali appear in this shot. Baby Mo is NOT in this shot. ",
+  "prompt": "Image 1 is the exact character reference for this shot: it shows exactly 3 characters at their correct relative sizes on one ground line. WHO IS WHO, never swap them: Morilla is the black-furred GORILLA in the white gi; Baby Mo is the tall HUMAN man with short dark curly hair and the BLUE belt; Vitali is the HUMAN man with the dark beard and the BLACK belt with a red rank patch. Copy their faces, hair, gis, belt colours and body proportions exactly, and keep the size relation exactly as shown. The finished shot contains exactly 3 characters and nobody else: draw each of them EXACTLY ONCE, no duplicates, no extra fighters, no second gorilla, no background people. Image 2 is the exact reference for the location and props. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, cold morning light in pale blue and grey with warm copper lantern accents, 16:9 widescreen, no text, no letters. Wide side view: Morilla stands in the foreground at the left, full-body, facing right toward the throne; Baby Mo stands just behind him at the center-left, huge, seen from behind, facing right; Vitali sits on the gigantic belt throne at the right, calm and upright in his open black gi with a BLACK belt and red rank patch, one open hand raised in a calm explaining gesture. Quarry courtyard, stone arches, waterfall, lanterns, mist. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: Baby Mo is the tallest figure at 3.0 m and fills about 78% of the image height; Morilla is 2.2 m and fills about 57%; Vitali is 1.9 m and fills about 50%. Morilla's head reaches only to Baby Mo's chest, Vitali is the shortest. Never change these proportions, never make Baby Mo small or the same size as Morilla. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Morilla, Baby Mo and Vitali appear in this shot, Vitali sitting on the throne. Image 3 is the approved storyboard panel for this exact shot. Reproduce its camera angle, framing, horizon, ground line, background composition and the body poses of the figures as closely as possible. The figures in it are rough placeholders: take their POSES and PLACEMENT from it, but take their faces, clothes, belt colours and exact sizes exclusively from image 1. Do not add anyone who is not named above. ",
   "seed": 11706,
   "size": [
    1344,
@@ -10,7 +10,8 @@
   "steps": 25,
   "refs": [
    "tools/raw/ref/charts/6_vor_dem_thron.png",
-   "tools/raw/quarry/belt_throne.png"
+   "tools/raw/quarry/belt_throne.png",
+   "tools/raw/ref/sheet/6_vor_dem_thron.png"
   ],
   "output": "tools/raw/quarry/panel_6_vor_dem_thron.png"
  },
@@ -54,7 +55,7 @@
      "clip",
      0
     ],
-    "prompt": "Image 1 is the exact character reference for this shot: it shows exactly 2 characters at their correct relative sizes on one ground line. WHO IS WHO, never swap them: Morilla is the black-furred GORILLA in the white gi; Baby Mo is the tall HUMAN man with short dark curly hair and the BLUE belt; Vitali is the HUMAN man with the dark beard and the BLACK belt with a red rank patch. Copy their faces, hair, gis, belt colours and body proportions exactly, and keep the size relation exactly as shown. The finished shot contains exactly 2 characters and nobody else: draw each of them EXACTLY ONCE, no duplicates, no extra fighters, no second gorilla, no background people. Image 2 is the exact reference for the location and props. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, cold morning light in pale blue and grey with warm copper lantern accents, 16:9 widescreen, no text, no letters. Wide side view: Morilla stands in the foreground at the left, full-body, facing the throne; Vitali sits on the gigantic belt throne at the right, calm and upright in his open black gi with a BLACK belt and red rank patch. Quarry courtyard, stone arches, lanterns, mist. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: Baby Mo is the tallest figure at 3.0 m and fills about 78% of the image height; Morilla is 2.2 m and fills about 57%; Vitali is 1.9 m and fills about 50%. Morilla's head reaches only to Baby Mo's chest, Vitali is the shortest. Never change these proportions, never make Baby Mo small or the same size as Morilla. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. ONLY Morilla and Vitali appear in this shot. Baby Mo is NOT in this shot. ",
+    "prompt": "Image 1 is the exact character reference for this shot: it shows exactly 3 characters at their correct relative sizes on one ground line. WHO IS WHO, never swap them: Morilla is the black-furred GORILLA in the white gi; Baby Mo is the tall HUMAN man with short dark curly hair and the BLUE belt; Vitali is the HUMAN man with the dark beard and the BLACK belt with a red rank patch. Copy their faces, hair, gis, belt colours and body proportions exactly, and keep the size relation exactly as shown. The finished shot contains exactly 3 characters and nobody else: draw each of them EXACTLY ONCE, no duplicates, no extra fighters, no second gorilla, no background people. Image 2 is the exact reference for the location and props. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, cold morning light in pale blue and grey with warm copper lantern accents, 16:9 widescreen, no text, no letters. Wide side view: Morilla stands in the foreground at the left, full-body, facing right toward the throne; Baby Mo stands just behind him at the center-left, huge, seen from behind, facing right; Vitali sits on the gigantic belt throne at the right, calm and upright in his open black gi with a BLACK belt and red rank patch, one open hand raised in a calm explaining gesture. Quarry courtyard, stone arches, waterfall, lanterns, mist. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: Baby Mo is the tallest figure at 3.0 m and fills about 78% of the image height; Morilla is 2.2 m and fills about 57%; Vitali is 1.9 m and fills about 50%. Morilla's head reaches only to Baby Mo's chest, Vitali is the shortest. Never change these proportions, never make Baby Mo small or the same size as Morilla. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Morilla, Baby Mo and Vitali appear in this shot, Vitali sitting on the throne. Image 3 is the approved storyboard panel for this exact shot. Reproduce its camera angle, framing, horizon, ground line, background composition and the body poses of the figures as closely as possible. The figures in it are rough placeholders: take their POSES and PLACEMENT from it, but take their faces, clothes, belt colours and exact sizes exclusively from image 1. Do not add anyone who is not named above. ",
     "negative_prompt": "text, letters, watermark, signature, frame, border, blurry, lowres, deformed, extra limbs, extra fingers, cropped, photo, 3d render",
     "resolution": 1024,
     "vae": [
@@ -67,6 +68,10 @@
     ],
     "images.image_2": [
      "ref2",
+     0
+    ],
+    "images.image_3": [
+     "ref3",
      0
     ]
    }
@@ -139,6 +144,12 @@
    "class_type": "LoadImage",
    "inputs": {
     "image": "belt_throne.png"
+   }
+  },
+  "ref3": {
+   "class_type": "LoadImage",
+   "inputs": {
+    "image": "6_vor_dem_thron.png"
    }
   }
  }

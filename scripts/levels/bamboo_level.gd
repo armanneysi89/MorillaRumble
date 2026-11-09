@@ -46,12 +46,32 @@ const ARMAN_AFTER: Array[String] = [
 const ARMAN_REPEAT: Array[String] = [
 	"Sammle dich, dann Q oder R. Warte, bis sich mehrere Gegner nähern. Timing ist alles.",
 ]
+## Rettungsszene nach der Arena: Der Schattenkämpfer hat Morilla am Boden, Arman greift ein und vertreibt ihn.
+## Die Clips stammen aus tools/gen_rescue.py (Kampf-Einstellung mit dem H3-Fight-Flow-LoRA).
+const RESCUE_FLAG := "rescue_seen"
+## Dialog der Rettungsszene, je Einstellung [Sprecher, Text]-Paare.
+const RESCUE_TALK := {
+	"save": [
+		["Schattenkämpfer", "Du bist allein, Gorilla. Der Meister hat dich längst eingeholt."],
+		["Coach Arman", "Nicht allein. Ich bin hier."],
+	],
+	"spirit": [
+		["Coach Arman", "Acht Arme, ein Gedanke. Halte ihn fest."],
+		["Schattenkämpfer", "Das ist nicht deine Kraft."],
+	],
+	"after": [
+		["Morilla", "Arman, du bist gekommen."],
+		["Coach Arman", "Ich habe dich beobachtet. Du hast zu lange allein gekämpft."],
+		["Coach Arman", "Der Schattenmeister schickt seine Kämpfer nicht ohne Grund. Er will, dass du dich verbrauchst."],
+		["Morilla", "Dann zeig mir, wie ich gegen sie bestehe."],
+		["Coach Arman", "Das habe ich gerade. Der Geist ist jetzt dein. Übe ihn, bevor du weitergehst."],
+	],
+}
 
 ## Abgeschlossene Sauna-Begegnung; getrennt von der Technik (Morilla.SUMMON_ID), damit ein Abbruch dazwischen nichts blockiert.
 const SAUNA_FLAG := "sauna_met"
 ## Morillas Platz auf dem Trainingsplatz, links von Arman.
 const YARD_OFFSET := -130.0
-
 
 
 var _arman: CoachNpc
@@ -63,7 +83,7 @@ func _init() -> void:
 	level_id = "bamboo"
 	level_title = "MONDBAMBUS-HAIN"
 	level_subtitle = "Region 2 – Coach Armans Technik"
-	music = "dojo"
+	music = "bamboo"
 	next_scene = Game.QUARRY_SCENE
 
 
@@ -83,9 +103,13 @@ func _build_extras() -> void:
 	if _sauna_done():
 		add_child(_arman)
 
-	build_arena_and_gate("bamboo_arena", func() -> void:
-		Progression.set_task("find_vitali")
-		complete_level("BAMBUSHAIN GEMEISTERT", "Der Oktopus-Geist gehorcht dir. Über dem Hain liegt der Steinbruch ..."))
+	# Nach der letzten Welle tritt der Schattenkämpfer hervor; Arman rettet Morilla. Erst danach öffnet sich der Weg.
+	build_arena_and_gate("bamboo_arena",
+		func() -> void:
+			Progression.set_task("find_vitali")
+			complete_level("BAMBUSHAIN GEMEISTERT", "Der Oktopus-Geist gehorcht dir. Über dem Hain liegt der Steinbruch ..."),
+		func() -> void:
+			await _play_rescue_once())
 
 
 func _after_ready() -> void:
@@ -162,3 +186,19 @@ func _demonstrate() -> void:
 	sprite.play_anim(&"idle")
 	sprite.face(-1)
 	_arman.locked = false
+
+
+## Rettungsszene nach der Arena: Der Schattenkämpfer hat Morilla am Boden, Arman greift ein und vertreibt ihn.
+## Läuft nur einmal (Flag RESCUE_FLAG) und nur, wenn Arman die Technik schon gelehrt hat.
+func _play_rescue_once() -> void:
+	if Progression.get_flag(RESCUE_FLAG) or not Progression.has_ability(Morilla.SUMMON_ID):
+		return
+	Progression.set_flag(RESCUE_FLAG)
+	player.freeze()
+	player.health.make_invulnerable(600.0)
+	var sequence := RescueSequence.new()
+	add_child(sequence)
+	await sequence.play(dialogue, RESCUE_TALK, func() -> void: pass)
+	sequence.queue_free()
+	player.health.invulnerable_time = 0.6
+	player.unfreeze()

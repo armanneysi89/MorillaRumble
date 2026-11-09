@@ -1,0 +1,151 @@
+{
+ "style": "Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. ",
+ "size": [
+  1344,
+  768
+ ],
+ "fps": 24,
+ "frames": {
+  "once": 73,
+  "loop": 107,
+  "fight": 217
+ },
+ "heights_m": {
+  "morilla": 2.2,
+  "arman": 1.85,
+  "shadow": 2.4
+ },
+ "image_model": "qwen_image_2.1_int8_convrot.safetensors (comfy.py)",
+ "video_model": "minimax_h3_fl2va_pruned_int8_convrot.safetensors (gen_intro.py video_graph)",
+ "fight_lora": {
+  "file": "H3_Fight_Flow_V1.safetensors",
+  "strength": 0.65,
+  "trigger": "Unarmed combat interaction.",
+  "source": "civitai.com/models/2989579 (H3 Fight Flow V1)"
+ },
+ "shots": [
+  {
+   "name": "1_zu_boden",
+   "video": "res://assets/cutscenes/rescue/1_zu_boden.ogv",
+   "still": "res://assets/cutscenes/rescue/1_zu_boden.jpg",
+   "loop": false,
+   "frames": 73,
+   "size": [
+    1344,
+    768
+   ],
+   "seed": 12201,
+   "refs": [
+    "morilla",
+    "shadow"
+   ],
+   "prompt": "Use the character reference for Morilla: the muscular anthropomorphic gorilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use the character reference for the Shadow Fighter: a tall imposing figure in tattered black robes with a deep hood that hides the face completely, only two glowing violet eyes visible in the darkness of the hood, dark grey clawed hands, wisps of purple shadow smoke trailing from the sleeves and the hem, no visible skin, no face. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: the Shadow Fighter is the tallest at 2.4 m and fills about 72% of the image height; Morilla is 2.2 m and fills about 66%; Arman is 1.85 m and fills about 56%. Never change these proportions. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Wide side view in a moonlit bamboo grove at night: tall bamboo stalks, a stone lantern with warm orange light, mossy stone slabs, drifting purple mist, a huge full moon behind the bamboo. Morilla is down on one knee on the mossy stone slabs, beaten, one arm braced on the ground, breathing hard, his white gi torn at the shoulder. The Shadow Fighter stands over him, towering, one clawed hand raised for a finishing strike, purple smoke curling from the sleeve. Morilla's face is turned up toward the raised claw.",
+   "motion": "Locked-off wide camera. Morilla stays down on one knee and only breathes, shoulders heaving. The Shadow Fighter slowly raises the clawed hand higher, purple smoke curls around the arm, mist drifts, the stone lantern flickers. No camera movement, no cuts.",
+   "lora": null,
+   "lora_strength": null
+  },
+  {
+   "name": "2_arman_einsatz",
+   "video": "res://assets/cutscenes/rescue/2_arman_einsatz.ogv",
+   "still": "res://assets/cutscenes/rescue/2_arman_einsatz.jpg",
+   "loop": false,
+   "frames": 73,
+   "size": [
+    1344,
+    768
+   ],
+   "seed": 12202,
+   "refs": [
+    "morilla",
+    "arman",
+    "shadow"
+   ],
+   "prompt": "Use the character reference for Morilla: the muscular anthropomorphic gorilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use the character reference for Arman: a lean athletic young man, short dark wavy voluminous hair, thick dark eyebrows, short well-trimmed dark full beard, olive skin, wearing a black Brazilian Jiu-Jitsu gi with a black belt, bare feet. Use the character reference for the Shadow Fighter: a tall imposing figure in tattered black robes with a deep hood that hides the face completely, only two glowing violet eyes visible in the darkness of the hood, dark grey clawed hands, wisps of purple shadow smoke trailing from the sleeves and the hem, no visible skin, no face. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: the Shadow Fighter is the tallest at 2.4 m and fills about 72% of the image height; Morilla is 2.2 m and fills about 66%; Arman is 1.85 m and fills about 56%. Never change these proportions. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Wide side view in a moonlit bamboo grove at night: tall bamboo stalks, a stone lantern with warm orange light, mossy stone slabs, drifting purple mist, a huge full moon behind the bamboo. EXACTLY THREE figures in the image and nobody else: one gorilla (Morilla), one man in a black gi (Arman) and one hooded Shadow Fighter. Arman has just dashed in from the left and stands between the Shadow Fighter and Morilla, his forearm raised in a hard block, body low and braced, a faint violet octopus-shaped aura flickering around his shoulders. The Shadow Fighter's clawed strike is caught on Arman's forearm, the impact throwing purple sparks. Morilla appears only once: he kneels on the ground behind Arman, looking up in shock. Arman wears a BLACK gi with a black belt, never a white gi.",
+   "motion": "Unarmed combat interaction. Continuous fight interaction: Arman slides in and catches the descending clawed strike on his forearm, the impact pushes him back half a step and he immediately counters with a low kick that forces the Shadow Fighter to step back. The Shadow Fighter answers at once with a second claw swipe that Arman slips. Contact, recoil and the next action flow directly into each other, nobody returns to a neutral stance. Purple sparks and smoke on every contact, mist drifts, lantern light flickers. No cuts.",
+   "lora": "H3_Fight_Flow_V1.safetensors",
+   "lora_strength": 0.65
+  },
+  {
+   "name": "3_kampf",
+   "video": "res://assets/cutscenes/rescue/3_kampf.ogv",
+   "still": "res://assets/cutscenes/rescue/3_kampf.jpg",
+   "loop": false,
+   "frames": 217,
+   "size": [
+    896,
+    512
+   ],
+   "seed": 12213,
+   "refs": [
+    "arman",
+    "shadow"
+   ],
+   "prompt": "Use the character reference for Arman: a lean athletic young man, short dark wavy voluminous hair, thick dark eyebrows, short well-trimmed dark full beard, olive skin, wearing a black Brazilian Jiu-Jitsu gi with a black belt, bare feet. Use the character reference for the Shadow Fighter: a tall imposing figure in tattered black robes with a deep hood that hides the face completely, only two glowing violet eyes visible in the darkness of the hood, dark grey clawed hands, wisps of purple shadow smoke trailing from the sleeves and the hem, no visible skin, no face. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: the Shadow Fighter is the tallest at 2.4 m and fills about 72% of the image height; Morilla is 2.2 m and fills about 66%; Arman is 1.85 m and fills about 56%. Never change these proportions. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Wide side view in a moonlit bamboo grove at night: tall bamboo stalks, a stone lantern with warm orange light, mossy stone slabs, drifting purple mist, a huge full moon behind the bamboo. EXACTLY TWO figures in the image and nobody else: one man in a black gi (Arman) and one hooded Shadow Fighter. No gorilla, no third person, no bystander, only one single hooded head. Arman and the Shadow Fighter are locked in a fast exchange in the center of the frame: Arman has just slipped inside a claw swipe and drives an elbow toward the hooded head, the Shadow Fighter twists away and its trailing sleeve whips around Arman's arm. Arman wears a BLACK gi with a black belt, never a white gi. Purple smoke trails every movement.",
+   "motion": "Unarmed combat interaction. One single continuous unarmed exchange, no cuts, no reset: the Shadow Fighter swipes, Arman slips it and lands an elbow, the Shadow Fighter staggers and immediately whips a smoke-wrapped sleeve that Arman blocks, Arman answers with a knee and a throw attempt, the Shadow Fighter breaks free and comes back with a claw. Each action starts from the position and momentum the previous one left behind, initiative keeps switching, both fighters stay in contact. Fast, fluid, readable choreography, purple smoke and sparks on impact, mist drifting, lantern light flickering.",
+   "lora": "H3_Fight_Flow_V1.safetensors",
+   "lora_strength": 0.65
+  },
+  {
+   "name": "4_oktopus",
+   "video": "res://assets/cutscenes/rescue/4_oktopus.ogv",
+   "still": "res://assets/cutscenes/rescue/4_oktopus.jpg",
+   "loop": true,
+   "frames": 107,
+   "size": [
+    1344,
+    768
+   ],
+   "seed": 12204,
+   "refs": [
+    "morilla",
+    "arman",
+    "shadow",
+    "octopus"
+   ],
+   "prompt": "Use the character reference for Morilla: the muscular anthropomorphic gorilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use the character reference for Arman: a lean athletic young man, short dark wavy voluminous hair, thick dark eyebrows, short well-trimmed dark full beard, olive skin, wearing a black Brazilian Jiu-Jitsu gi with a black belt, bare feet. Use the character reference for the Shadow Fighter: a tall imposing figure in tattered black robes with a deep hood that hides the face completely, only two glowing violet eyes visible in the darkness of the hood, dark grey clawed hands, wisps of purple shadow smoke trailing from the sleeves and the hem, no visible skin, no face. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: the Shadow Fighter is the tallest at 2.4 m and fills about 72% of the image height; Morilla is 2.2 m and fills about 66%; Arman is 1.85 m and fills about 56%. Never change these proportions. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Wide side view in a moonlit bamboo grove at night: tall bamboo stalks, a stone lantern with warm orange light, mossy stone slabs, drifting purple mist, a huge full moon behind the bamboo. Use the last reference image for the octopus spirit: a huge translucent violet ghost octopus with eight long smoky tentacles, glowing red eyes and a glowing red sigil on its forehead. The spirit is the most important element of this shot and must be clearly visible and large. Arman stands with both palms pressed together in front of his chest, eyes closed, the huge octopus spirit rising behind him with its tentacles spread wide. Two smoky tentacles have wrapped around the Shadow Fighter's arms and chest, lifting it off the ground. Morilla kneels at the left, staring. Purple light floods the grove.",
+   "motion": "Slow push-in. The octopus spirit's tentacles tighten around the Shadow Fighter and lift it higher, the Shadow Fighter struggles and its robes tear into purple smoke, the spirit's red eyes glow brighter, purple light pulses across the ground. Arman stays still with his palms together, only breathing. The giant violet octopus spirit stays clearly visible in the frame the whole time. No cuts.",
+   "lora": null,
+   "lora_strength": null
+  },
+  {
+   "name": "5_schatten_loest_sich",
+   "video": "res://assets/cutscenes/rescue/5_schatten_loest_sich.ogv",
+   "still": "res://assets/cutscenes/rescue/5_schatten_loest_sich.jpg",
+   "loop": false,
+   "frames": 73,
+   "size": [
+    1344,
+    768
+   ],
+   "seed": 12205,
+   "refs": [
+    "arman",
+    "shadow"
+   ],
+   "prompt": "Use the character reference for Arman: a lean athletic young man, short dark wavy voluminous hair, thick dark eyebrows, short well-trimmed dark full beard, olive skin, wearing a black Brazilian Jiu-Jitsu gi with a black belt, bare feet. Use the character reference for the Shadow Fighter: a tall imposing figure in tattered black robes with a deep hood that hides the face completely, only two glowing violet eyes visible in the darkness of the hood, dark grey clawed hands, wisps of purple shadow smoke trailing from the sleeves and the hem, no visible skin, no face. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: the Shadow Fighter is the tallest at 2.4 m and fills about 72% of the image height; Morilla is 2.2 m and fills about 66%; Arman is 1.85 m and fills about 56%. Never change these proportions. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Wide side view in a moonlit bamboo grove at night: tall bamboo stalks, a stone lantern with warm orange light, mossy stone slabs, drifting purple mist, a huge full moon behind the bamboo. The Shadow Fighter is dissolving: its body breaks apart into streams of purple smoke that are pulled upward and away, the hood collapsing, only the two glowing violet eyes still visible for a moment. Arman stands in front of it in a low guard, forearm raised, watching it go. Purple embers drift through the bamboo.",
+   "motion": "Locked-off camera. The Shadow Fighter's body dissolves from the feet upward into purple smoke that streams away and fades, the glowing eyes dim last, purple embers drift through the air, Arman lowers his guard slowly and exhales. Mist drifts, lantern light flickers. No cuts.",
+   "lora": null,
+   "lora_strength": null
+  },
+  {
+   "name": "6_aufhelfen",
+   "video": "res://assets/cutscenes/rescue/6_aufhelfen.ogv",
+   "still": "res://assets/cutscenes/rescue/6_aufhelfen.jpg",
+   "loop": true,
+   "frames": 107,
+   "size": [
+    1344,
+    768
+   ],
+   "seed": 12206,
+   "refs": [
+    "morilla",
+    "arman"
+   ],
+   "prompt": "Use the character reference for Morilla: the muscular anthropomorphic gorilla with black fur, strong gorilla face, swept-up black hair tuft, sleeveless white Brazilian Jiu-Jitsu gi and a plain WHITE belt (ignore the magenta color of the belt in the reference), bare feet. Use the character reference for Arman: a lean athletic young man, short dark wavy voluminous hair, thick dark eyebrows, short well-trimmed dark full beard, olive skin, wearing a black Brazilian Jiu-Jitsu gi with a black belt, bare feet. STRICT SIZE RELATION, identical in every shot, measured as a share of the image height: the Shadow Fighter is the tallest at 2.4 m and fills about 72% of the image height; Morilla is 2.2 m and fills about 66%; Arman is 1.85 m and fills about 56%. Never change these proportions. The reference image only defines these heights: it does NOT define who appears in the shot, so draw ONLY the characters named above and nobody else. Hand-painted 2D anime game cinematic, rich painterly shading, clean dark outlines, moonlit deep blue and purple night with warm orange lantern glow, 16:9 widescreen, no text, no letters. Medium shot in a moonlit bamboo grove at night: tall bamboo stalks, a stone lantern with warm orange light, mossy stone slabs, drifting purple mist, a huge full moon behind the bamboo. Arman kneels beside Morilla and holds his forearm to pull him up, the other hand on Morilla's shoulder. Morilla is still on one knee, exhausted, his torn white gi dusty, looking at Arman with relief. The stone lantern glows warm behind them, purple mist still hangs low over the stones.",
+   "motion": "Slow subtle push-in. Arman pulls Morilla up by the forearm, Morilla rises heavily and steadies himself, both breathe hard, Arman says something quietly. Purple mist drifts low, lantern light flickers, bamboo leaves sway. Faces and clothes never change, no cuts.",
+   "lora": null,
+   "lora_strength": null
+  }
+ ]
+}

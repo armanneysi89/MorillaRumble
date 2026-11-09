@@ -26,3 +26,8 @@ extends Resource
 @export var max_targets := 0
 ## Beschwörungen: Dauer der Konzentration vor dem Erscheinen (Sekunden).
 @export var charge_time := 0.5
+## Geister, die während einer Technik erscheinen (Suplex-Bär): höchstens so viele zusätzliche Gegner
+## beim Aufprall (0 = kein Geist).
+@export var spirit_targets := 0
+## Radius des Geist-Aufpralls um die Einschlagstelle (Pixel).
+@export var spirit_radius := 520.0

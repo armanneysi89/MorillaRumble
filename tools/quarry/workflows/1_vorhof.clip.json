@@ -1,7 +1,7 @@
 {
  "server": "http://127.0.0.1:8188",
  "meta": {
-  "motion_prompt": "Slow tracking camera follows Morilla as he walks in and stops in front of Baby Mo. Baby Mo breathes calmly and turns his head slightly toward Morilla. Lantern light flickers, mist drifts. Both characters keep their exact size relation, no cuts.",
+  "motion_prompt": "Slow static camera with a tiny drift. Baby Mo holds his open welcoming gesture and breathes calmly, Morilla stands and breathes, lantern light flickers, mist drifts. Both characters keep their exact size relation, no cuts.",
   "seed": 11701,
   "frames": 73,
   "fps": 24,
@@ -51,7 +51,7 @@
      "vae",
      0
     ],
-    "prompt": "Slow tracking camera follows Morilla as he walks in and stops in front of Baby Mo. Baby Mo breathes calmly and turns his head slightly toward Morilla. Lantern light flickers, mist drifts. Both characters keep their exact size relation, no cuts.",
+    "prompt": "Slow static camera with a tiny drift. Baby Mo holds his open welcoming gesture and breathes calmly, Morilla stands and breathes, lantern light flickers, mist drifts. Both characters keep their exact size relation, no cuts.",
     "width": 1344,
     "height": 768,
     "length": 73,

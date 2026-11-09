@@ -48,7 +48,8 @@ func spirit_bind(_duration: float) -> void:
 	_wobble(1, false)
 
 
-func apply_spirit_hit(info: HitInfo) -> void:
+## `tint` bleibt aus Kompatibilität optional: Der Bär-Geist übergibt seine eigene Farbe.
+func apply_spirit_hit(info: HitInfo, _tint := Color.WHITE) -> void:
 	_sprite.modulate = Color.WHITE
 	_wobble(info.direction, true)
 

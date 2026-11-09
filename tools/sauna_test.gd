@@ -44,7 +44,7 @@ func _run() -> void:
 		"done":
 			_check("done: Tür gesperrt", not level._sauna.can_interact())
 			_check("done: Arman steht im Hain", level._arman.is_inside_tree())
-			_check("done: Wiederholungszeilen", level._arman.repeat_lines == level.ARMAN_REPEAT)
+			_check("done: Wiederholungsdialog", level._arman.repeat_lines == level.ARMAN_REPEAT)
 	print("RESULT mode=%s fails=%d" % [mode, _fails])
 	quit(_fails)
 
@@ -83,8 +83,9 @@ func _enter_sauna(level: Node, skip: bool) -> void:
 		var dlg = level.dialogue
 		if dlg._active:
 			_press(dlg)
-			if skipped_sent and not level.get_children().any(_is_sequence):
-				live_yard_talk = true
+		# Nach dem Überspringen läuft der Hof-Dialog live in der Dialogbox.
+		if skipped_sent and not level.get_children().any(_is_sequence):
+			live_yard_talk = true
 		if int(t * 4) % 20 == 0:
 			_shot("seq_%03d" % int(t))
 		if skip and not skipped_sent and t > 6.0:

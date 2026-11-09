@@ -6,7 +6,7 @@
 script = ExtResource("1")
 id = "suplex"
 display_name = "Suplex"
-description = "Klinch, anheben, rückwärts werfen. Trifft auch große Gegner und öffnet nach einem Fehlschlag des Gegners ein Fenster."
+description = "Klinch, anheben, rückwärts werfen. Beim Aufprall fährt ein sibirischer Bär-Geist aus Morilla und reißt alle Gegner im Umkreis um."
 damage = 3
 stun_time = 2.2
 reach = 170.0
@@ -18,3 +18,5 @@ execute_time = 0.62
 recover_time = 0.42
 hit_stop = 0.16
 input_hint = "F"
+spirit_targets = 5
+spirit_radius = 520.0

@@ -11,13 +11,14 @@ extends CutsceneSequence
 ## on_black läuft, sobald alles schwarz ist (Spielerin umsetzen, Vitali platzieren). Gibt zurück, ob übersprungen wurde.
 func play(dialogue: DialogueBox, script: Dictionary, on_black: Callable) -> bool:
 	DIR = "res://assets/cutscenes/vitali/"
+	music = "quarry"
 	SHOTS = {
-		"yard": ["1_vorhof", false, true],
-		"baby_mo": ["2_baby_mo", true, false],
-		"throne_point": ["3_thron_zeigen", true, false],
-		"throne_reveal": ["4_thron_enthuellung", false, true],
-		"vitali_hat": ["5_vitali_hut", true, false],
-		"before_throne": ["6_vor_dem_thron", false, true],
+		"yard": ["1_vorhof", false, "step"],
+		"baby_mo": ["2_baby_mo", true, ""],
+		"throne_point": ["3_thron_zeigen", true, ""],
+		"throne_reveal": ["4_thron_enthuellung", false, "gong"],
+		"vitali_hat": ["5_vitali_hut", true, ""],
+		"before_throne": ["6_vor_dem_thron", false, ""],
 	}
 	interlude_text = "Der Gürtelthron"
 	begin(dialogue)

@@ -46,6 +46,7 @@ const VITALI_LESSON: Array[String] = [
 	"Der Suplex beginnt im Klinch. Nicht mit Kraft – mit Gleichgewicht.",
 	"Greife mit F oder G, wenn dein Gegner aus dem Gleichgewicht ist. Dann hebst du ihn an.",
 	"Wirf ihn über deine Schulter nach hinten. Der Aufprall nimmt ihm den Atem.",
+	"Und wenn er aufschlägt, fährt der Bär aus dir. Er reißt alles mit, was in der Nähe steht.",
 	"Große Gegner greifst du nur so. Und wenn einer nach einem Fehlschlag taumelt, ist das dein Fenster.",
 ]
 const VITALI_REPEAT: Array[String] = [
@@ -69,7 +70,7 @@ func _init() -> void:
 	level_id = "quarry"
 	level_title = "VITALIS STEINBRUCH"
 	level_subtitle = "Region 3 – Coach Vitalis Suplex"
-	music = "dojo"
+	music = "quarry"
 	next_scene = Game.MENU_SCENE
 
 

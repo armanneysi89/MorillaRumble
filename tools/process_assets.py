@@ -44,15 +44,16 @@ CHARACTERS = {
     "rival": (OUT / "characters/enemies/blue_belt_rival", (560, 440), 430, 340, "ref/rival_ref", {}),
     "arman": (OUT / "characters/coaches/arman", (560, 460), 450, 380, "ref/arman_ref", {}),
     "octopus": (OUT / "characters/summons/octopus", (640, 640), 320, 520, "ref/octopus_ref", {}),
+    "bear": (OUT / "characters/summons/bear", (760, 760), 380, 620, "ref/bear_ref", {}),
     # Level 2, Steinbruch-Abschnitt: Baby Mo (drei Meter groß), Vitali (Schwarzgurt) und Boss Eisenrücken.
     "baby_mo": (OUT / "characters/coaches/baby_mo", (760, 640), 620, 560, "ref/baby_mo_ref", {}),
     "vitali": (OUT / "characters/coaches/vitali", (640, 560), 540, 450, "ref/vitali_ref", {}),
     "ironback": (OUT / "characters/enemies/ironback", (760, 620), 600, 540, "ref/ironback_ref", {}),
 }
 # Schwebende Figuren werden am Schwerpunkt statt am Fußpunkt ausgerichtet.
-CENTERED = {"octopus"}
+CENTERED = {"octopus", "bear"}
 # Der Hintergrund wird auch zwischen den Tentakeln entfernt (Insel-Hintergründe).
-ENCLOSED = {"octopus", "bamboo_cluster", "bamboo_stalks", "tea_jar", "bonsai", "stone_pagoda",
+ENCLOSED = {"octopus", "bear", "bamboo_cluster", "bamboo_stalks", "tea_jar", "bonsai", "stone_pagoda",
             "quarry_arch", "quarry_crane", "quarry_rope", "quarry_waterfall", "quarry_rock", "quarry_pillar",
             "belt_throne", "belt_throne_base", "belt_throne_cascade", "break_slab"}
 

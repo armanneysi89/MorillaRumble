@@ -121,6 +121,24 @@ const OCTOPUS := {
 	},
 }
 
+## Sibirischer Bär-Geist: erscheint beim Suplex-Aufprall aus Morillas Körper. Schwebend wie der Oktopus,
+## deshalb liegt der Mittelpunkt der Leinwand im Schwerpunkt der Figur.
+const BEAR := {
+	"prefix": "bear",
+	"root": "res://assets/characters/summons/bear",
+	"canvas": Vector2(760, 760),
+	"anchor_y": 380.0,
+	# Etwas kleiner als Morilla, damit der Geist ihn nicht komplett verdeckt.
+	"scale": 0.62,
+	"faces": 1,
+	"placeholder": Color(0.35, 0.2, 0.1),
+	"anims": {
+		"idle": ["", 4.0, true],
+		"materialize": ["", 6.0, false],
+		"slam": ["", 8.0, false],
+	},
+}
+
 ## Baby Mo: Vitalis erwachsener Schüler und ein Riese – 3,0 m, also rund 1,4x Morilla (2,2 m) und deutlich größer
 ## als Vitali (1,9 m). Schwarzer Gi über schwarz-bordeauxfarbenem Rashguard mit dunkelroten Chevrons, BLAUER Gürtel.
 ## Die Größe ist verbindlich: Sie steht auch in jedem Cutscene-Prompt (tools/gen_quarry.py, SCALE_TXT).
@@ -184,6 +202,6 @@ const IRONBACK := {
 }
 
 const ALL := {"morilla": MORILLA, "recruit": RECRUIT, "mo": MO, "rival": RIVAL, "arman": ARMAN, "octopus": OCTOPUS,
-	"baby_mo": BABY_MO, "vitali": VITALI, "ironback": IRONBACK}
+	"bear": BEAR, "baby_mo": BABY_MO, "vitali": VITALI, "ironback": IRONBACK}
 static func get_spec(key: String) -> Dictionary:
 	return ALL[key]
