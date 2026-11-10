@@ -31,6 +31,8 @@ var _belt := Color.WHITE
 var _belt_name := ""
 var _cd_tenths := -1
 var _charge := 0.0
+## Zuletzt gezeichnete Kristallzahl (Neuzeichnen nur bei Änderung).
+var _gems := -1
 
 
 func _ready() -> void:
@@ -60,8 +62,9 @@ func _ready() -> void:
 	_toast.modulate.a = 0.0
 	_canvas.add_child(_toast)
 
+	# Unter der Gürtel- und Kristallanzeige, damit sich die Zeilen nicht überlagern.
 	_tech = _label(30, Color(UiTheme.TEXT, 0.85))
-	_tech.position = Vector2(48, 120)
+	_tech.position = Vector2(48, 168)
 	_canvas.add_child(_tech)
 
 	var objective := VBoxContainer.new()
@@ -131,6 +134,11 @@ func _process(_delta: float) -> void:
 	var charge := snappedf(player.charge_level, 0.02)
 	if charge != _charge:
 		_charge = charge
+		_canvas.queue_redraw()
+	# Kristalle ändern sich nur beim Einsammeln.
+	var gems := Progression.gem_count()
+	if gems != _gems:
+		_gems = gems
 		_canvas.queue_redraw()
 
 
@@ -247,6 +255,16 @@ func _draw_hud() -> void:
 	_canvas.draw_rect(Rect2(belt_pos + Vector2(3, 3), BELT_BAR - Vector2(6, 6)), _belt)
 	_canvas.draw_rect(Rect2(belt_pos, BELT_BAR), Color(UiTheme.ACCENT, 0.7), false, 2.0)
 	_canvas.draw_string(ThemeDB.fallback_font, belt_pos + Vector2(BELT_BAR.x + 14, 18), _belt_name, HORIZONTAL_ALIGNMENT_LEFT, -1, 24, UiTheme.TEXT)
+	# Kristalle: acht Punkte, gefüllt bis zur nächsten vollen Ladung (+1 maximales Leben).
+	if _gems >= 0:
+		var gem_pos := belt_pos + Vector2(0, 34)
+		var per := Progression.GEMS_PER_BELT
+		var filled := _gems % per
+		for i in per:
+			var c := gem_pos + Vector2(i * 26, 0)
+			var pts := PackedVector2Array([c + Vector2(0, -9), c + Vector2(8, 0), c + Vector2(0, 9), c + Vector2(-8, 0)])
+			_canvas.draw_colored_polygon(pts, Color("ffd166") if i < filled else Color(0.05, 0.02, 0.08, 0.8))
+			_canvas.draw_polyline(pts + PackedVector2Array([pts[0]]), Color(UiTheme.ACCENT, 0.6), 1.5)
 	# Ladung des schweren Schlags: wächst von links nach rechts, voll leuchtet gelb.
 	if _charge > 0.01:
 		var charge_pos := origin + Vector2(0, 76)

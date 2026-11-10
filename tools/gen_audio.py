@@ -444,6 +444,109 @@ def sfx_menu_start():
     return fade(reverb(x, 0.7, 0.25, 3500), r=0.1)
 
 
+# ------------------------------------------------------------------ Neue Elemente
+
+def sfx_crate_break():
+    """Holzkiste zerbricht: trockene Knackser, splitterndes Holz, kurzer Staub."""
+    t = tt(0.5)
+    cracks = np.zeros(len(t))
+    for i, delay in enumerate((0.0, 0.035, 0.08, 0.13, 0.19)):
+        seg = hp(noise(0.05), 1800) * np.exp(-tt(0.05) / 0.008) * (1.0 - i * 0.15)
+        start = int(delay * SR)
+        end = min(start + len(seg), len(cracks))
+        cracks[start:end] += seg[: end - start]
+    splinters = modal([420, 690, 980, 1450, 2100], 0.45, [0.10, 0.075, 0.055, 0.04, 0.028],
+                      [1.0, 0.7, 0.5, 0.32, 0.2], detune=2.2) * 0.55
+    x = mix(cracks * 0.8, splinters, sub(120, 55, 0.3, 0.09) * 0.7, air(0.35, 300, 2600, 0.09) * 0.5)
+    return fade(reverb(saturate(x, 1.6), 0.4, 0.2, 3000), r=0.06)
+
+
+def sfx_spring():
+    """Sprungfeder: aufsteigender Metallton mit federndem Nachschwingen."""
+    t = tt(0.45)
+    boing = glide(220, 780, 0.45) * (1.0 + 0.25 * np.sin(TAU * 26.0 * t)) * env(t, 0.22)
+    ring = modal([880, 1320, 1760], 0.45, [0.16, 0.11, 0.07], [1.0, 0.5, 0.28], detune=1.8) * 0.4
+    x = mix(boing * 0.7, ring, click(0.006, 3000, 0.0015) * 0.35, air(0.2, 800, 4000, 0.05) * 0.3)
+    return fade(reverb(saturate(x, 1.3), 0.35, 0.2, 4500), r=0.05)
+
+
+def sfx_gem():
+    """Kristall aufsammeln: heller, gläserner Doppelton mit langem Nachhall."""
+    parts = [at(bell(hz(m), 0.7, 0.28) * 0.4, 0.055 * i) for i, m in enumerate((84, 88, 91))]
+    shimmer = bp(noise(0.5), 4000, 11000) * env(tt(0.5), 0.12) * 0.25
+    return fade(reverb(mix(*parts, shimmer), 0.7, 0.32, 8000), r=0.1)
+
+
+def sfx_wind():
+    """Aufwind: breites, atmendes Rauschen, das anschwillt und wieder abfällt."""
+    t = tt(0.9)
+    body = bp(noise(0.9), 300, 2200) * np.sin(np.pi * np.clip(t / 0.9, 0.0, 1.0)) ** 1.4
+    whistle = bp(noise(0.9), 1800, 4200) * np.sin(np.pi * np.clip(t / 0.9, 0.0, 1.0)) ** 2.2 * 0.35
+    return fade(reverb(mix(body * 0.7, whistle), 0.6, 0.25, 4000), a=0.05, r=0.15)
+
+
+def sfx_spike():
+    """Stachelfalle: metallisches Klirren mit kurzem, hartem Anschlag."""
+    x = mix(click(0.008, 5000, 0.0015) * 0.6,
+            modal([1240, 1870, 2510, 3400], 0.35, [0.09, 0.065, 0.045, 0.03], [1.0, 0.65, 0.4, 0.22], detune=2.6) * 0.7,
+            sub(150, 70, 0.14, 0.04) * 0.5,
+            air(0.12, 2500, 9000, 0.03) * 0.35)
+    return fade(reverb(x, 0.3, 0.18, 6000), r=0.04)
+
+
+def sfx_checkpoint():
+    """Checkpoint: warmer Glockenklang mit aufsteigendem Nachklang."""
+    parts = [at(bell(hz(m), 1.1, 0.45) * 0.35, 0.09 * i) for i, m in enumerate((72, 76, 79, 84))]
+    x = mix(*parts, sub(110, 55, 0.4, 0.12) * 0.4)
+    return fade(reverb(x, 1.0, 0.32, 5000), r=0.15)
+
+
+# ------------------------------------------------------------------ Varianten
+
+def pitch_shift(x, semitones):
+    """Verschiebt die Tonhöhe durch Resampling und hält die Länge bei.
+
+    Ein anderer Startwert allein ändert nur das Rauschen; erst die Transposition macht aus zwei
+    Aufnahmen zwei wirklich unterschiedliche Klänge (z. B. ein tieferer und ein hellerer Treffer).
+    """
+    factor = 2.0 ** (semitones / 12.0)
+    n_out = len(x)
+    n_in = max(int(n_out * factor), 8)
+    src = np.interp(np.linspace(0, len(x) - 1, n_in), np.arange(len(x)), x)
+    out = np.interp(np.linspace(0, n_in - 1, n_out), np.arange(n_in), src)
+    return out
+
+
+def variant(fn, seed, semitones=0.0, gain=1.0):
+    """Erzeugt eine Variante: eigener Rauschstart, leichte Transposition, etwas Pegelstreuung."""
+    global rng
+    saved = rng
+    rng = np.random.default_rng(seed)
+    try:
+        x = fn()
+    finally:
+        rng = saved
+    if semitones:
+        x = pitch_shift(x, semitones)
+    return x * gain
+
+
+## Effekte, die häufig und schnell hintereinander laufen. Ohne Varianten klingt eine Schlagfolge
+## wie dieselbe Datei mehrfach; mit ihnen wie eine echte Abfolge von Treffern.
+VARIANT_SETS = {
+    "hit": (sfx_hit, [(0.0, 1.0), (-1.6, 0.92), (1.4, 1.06)]),
+    "heavy_hit": (sfx_heavy_hit, [(0.0, 1.0), (-2.0, 0.95), (1.2, 1.05)]),
+    "step": (sfx_step, [(0.0, 1.0), (-2.5, 0.85), (2.0, 0.9)]),
+    "land": (sfx_land, [(0.0, 1.0), (-1.8, 0.95), (1.5, 1.04)]),
+    "whoosh": (sfx_whoosh, [(0.0, 1.0), (-2.2, 0.9), (1.8, 1.05)]),
+    "heavy_whoosh": (sfx_heavy_whoosh, [(0.0, 1.0), (-1.5, 0.94), (1.3, 1.05)]),
+    "block": (sfx_block, [(0.0, 1.0), (-1.4, 0.95), (1.6, 1.03)]),
+    "hurt": (sfx_hurt, [(0.0, 1.0), (-1.2, 0.96), (1.1, 1.04)]),
+    "enemy_swing": (sfx_enemy_swing, [(0.0, 1.0), (-2.0, 0.92), (1.7, 1.05)]),
+    "ui": (sfx_ui, [(0.0, 1.0), (1.5, 0.9), (-1.5, 0.95)]),
+}
+
+
 SFX = {
     "jump": sfx_jump, "land": sfx_land, "step": sfx_step, "whoosh": sfx_whoosh, "heavy_whoosh": sfx_heavy_whoosh,
     "dash": sfx_dash, "hit": sfx_hit, "heavy_hit": sfx_heavy_hit, "block": sfx_block, "block_up": sfx_block_up,
@@ -453,6 +556,9 @@ SFX = {
     "ui": sfx_ui, "summon_charge": sfx_summon_charge, "summon": sfx_summon, "tentacle": sfx_tentacle,
     "ink_blast": sfx_ink_blast, "spirit_vanish": sfx_spirit_vanish, "menu_start": sfx_menu_start,
     "bear_roar": sfx_bear_roar, "bear_slam": sfx_bear_slam,
+    # Neue Elemente der Level-Erweiterung.
+    "crate_break": sfx_crate_break, "spring": sfx_spring, "gem": sfx_gem, "wind": sfx_wind,
+    "spike": sfx_spike, "checkpoint": sfx_checkpoint,
 }
 
 
@@ -476,6 +582,14 @@ def main() -> None:
         x = fn()
         write_wav(OUT / "sfx" / f"{name}.wav", x / max(np.abs(x).max(), 1e-6) * 0.8)
         print("sfx", name, flush=True)
+    # Varianten: hit_1 ... hit_3 usw. Sound.sfx() wählt beim Abspielen zufällig eine davon.
+    for name, (fn, takes) in VARIANT_SETS.items():
+        if only and name not in only:
+            continue
+        for i, (semitones, gain) in enumerate(takes, 1):
+            x = variant(fn, 9000 + i * 37 + len(name), semitones, gain)
+            write_wav(OUT / "sfx" / f"{name}_{i}.wav", x / max(np.abs(x).max(), 1e-6) * 0.8)
+            print("sfx", f"{name}_{i}", flush=True)
 
 if __name__ == "__main__":
     main()

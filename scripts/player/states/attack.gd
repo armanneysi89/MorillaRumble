@@ -75,6 +75,8 @@ var _air := false
 var _ghost_t := 0.0
 ## Übernommene Ladung (0 = unaufgeladen, 1 = voll geladen).
 var _charge := 0.0
+## Animation dieses Angriffs (Boden: Kombo-Pose, Luft: Flugpose).
+var _anim: StringName = &"jab"
 
 
 func enter(msg: Dictionary = {}) -> void:
@@ -92,7 +94,9 @@ func enter(msg: Dictionary = {}) -> void:
 		p.combo_step = 0
 		_charge = clampf(float(msg.get("charge", 0.0)), 0.0, 1.0)
 		_data = _heavy_data(_charge)
-	p.visual.show_frame(_data["anim"], 0)
+	# In der Luft greift die eigene Flugpose: Sie zeigt den Sturz nach unten statt eines Bodenhiebs.
+	_anim = &"air_attack" if _air and p.visual.has_anim(&"air_attack") else _data["anim"]
+	p.visual.show_frame(_anim, 0)
 	p.visual.face(p.facing)
 	_ghost_t = 0.0
 	if _kind == "heavy":
@@ -148,7 +152,7 @@ func physics_update(delta: float) -> void:
 
 func _begin_active() -> void:
 	_phase = Phase.ACTIVE
-	p.visual.show_frame(_data["anim"], 1)
+	p.visual.show_frame(_anim, 1)
 	p.combat.begin_attack(_data)
 	if not _air:
 		p.velocity.x = p.facing * float(_data["lunge"])

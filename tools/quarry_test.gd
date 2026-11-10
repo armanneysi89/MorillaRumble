@@ -194,7 +194,9 @@ func _run_encounter(level: Node, skip: bool) -> void:
 	var prog := root.get_node("Progression")
 	_check("Begegnung noch nicht erledigt", not level._vitali_met())
 	level.player.global_position = level._baby_mo.global_position + Vector2(-260, 0)
-	await _frames(4)
+	# Auf den Auslöser warten statt auf eine feste Frame-Zahl: Die Physik meldet den Kontakt
+	# erst im nächsten Schritt, und die Zahl der Objekte im Level ändert das Timing.
+	await _wait_until(func() -> bool: return level._vitali_busy, 1.0)
 	_check("Begegnung läuft", level._vitali_busy)
 	_check("Spielerin eingefroren", level.player.machine.is_in(&"frozen"))
 	var skipped_sent := false
@@ -264,7 +266,7 @@ func _run_boss(level: Node) -> void:
 	var prog := root.get_node("Progression")
 	_check("Boss noch nicht besiegt", not bool(prog.get_flag("boss_ironback")))
 	level.player.global_position = level._boss.global_position + Vector2(-400, 0)
-	await _frames(6)
+	await _wait_until(func() -> bool: return level._boss._active, 1.0)
 	_check("Boss-Arena aktiv", level._boss._active)
 	_check("Boss erzeugt", is_instance_valid(level._boss.boss))
 	_shot("30_boss_start")
@@ -302,6 +304,15 @@ func _press(dlg) -> void:
 func _frames(n: int) -> void:
 	for i in n:
 		await process_frame
+
+
+## Wartet bis `cond` wahr wird (oder die Zeit abläuft). Robuster als eine feste Frame-Zahl,
+## weil die Physik Kontakte erst im nächsten Schritt meldet.
+func _wait_until(cond: Callable, timeout: float) -> void:
+	var t := 0.0
+	while t < timeout and not bool(cond.call()):
+		await process_frame
+		t += 1.0 / 60.0
 
 
 func _shot(label: String) -> void:

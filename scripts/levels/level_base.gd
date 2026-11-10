@@ -53,6 +53,8 @@ var thrones := []
 var slabs := []
 ## [id, x, y (Fußpunkt), Arena-Breite]
 var bosses := []
+## [Art, id, x, y (Fußpunkt), Inhalt, Höhe] – Kisten, Federn, Stacheln, Aufwinde und freie Kristalle.
+var elements := []
 
 var player: Morilla
 var hud: Hud
@@ -123,6 +125,9 @@ func _collect_markers() -> void:
 			slabs.append([(n as LevelSlab).id, pos.x, pos.y, (n as LevelSlab).height])
 		elif n is LevelBoss:
 			bosses.append([(n as LevelBoss).boss_id, pos.x, pos.y, (n as LevelBoss).arena_width])
+		elif n is LevelElement:
+			var el := n as LevelElement
+			elements.append([el.kind, el.id, pos.x, pos.y, el.content, el.height])
 		elif n is LevelBackdrop:
 			var b := n as LevelBackdrop
 			level_width = b.level_width
@@ -227,6 +232,42 @@ func _build_props() -> void:
 		slab.height = s[3] if s.size() > 3 else BreakSlab.HEIGHT
 		add_child(slab)
 		slab_nodes.append(slab)
+	_build_elements()
+
+
+## Kisten, Federn, Stacheln, Aufwinde und freie Kristalle. Die IDs landen im Weltzustand,
+## damit zerstörte Kisten und eingesammelte Kristalle nach einem Neustart wegbleiben.
+func _build_elements() -> void:
+	for e in elements:
+		var kind: String = e[0]
+		var id: String = e[1]
+		var pos := Vector2(e[2], e[3])
+		match kind:
+			"crate":
+				var crate := BreakCrate.new()
+				crate.crate_id = id
+				crate.content = e[4]
+				crate.position = pos
+				add_child(crate)
+			"spring":
+				var pad := SpringPad.new()
+				pad.position = pos
+				add_child(pad)
+			"spike":
+				var trap := SpikeTrap.new()
+				trap.position = pos
+				add_child(trap)
+			"wind":
+				var vent := WindVent.new()
+				vent.position = pos
+				vent.height = e[5]
+				add_child(vent)
+			"gem":
+				var gem := ScrollPickup.new()
+				gem.pickup_id = id
+				gem.kind = "gem"
+				gem.position = pos
+				add_child(gem)
 
 
 func _build_enemies() -> void:
@@ -290,6 +331,8 @@ func complete_level(banner: String, sub: String) -> void:
 	Progression.set_flag("level_%s_cleared" % level_id)
 	Sound.sfx("fanfare")
 	player.freeze()
+	# Siegpose: Die Figur feiert sichtbar, statt nur dazustehen.
+	player.visual.play_anim(&"victory")
 	hud.show_banner(banner, sub, 3.5)
 	await get_tree().create_timer(5.0).timeout
 	Game.change_scene(next_scene, 0.8)

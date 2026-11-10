@@ -28,7 +28,11 @@ func enter(_msg: Dictionary = {}) -> void:
 		p.facing = 1 if p.input_dir > 0.0 else -1
 	p.hurtbox.enabled = false
 	p.velocity = Vector2(p.facing * DASH_SPEED, 0.0)
-	p.visual.show_frame(&"dash", 0)
+	# Am Boden rollt die Figur ab (eigene Roll-Posen), in der Luft bleibt es beim gestreckten Dash-Bild.
+	if p.is_on_floor() and p.visual.has_anim(&"roll"):
+		p.visual.play_timed(&"roll", DASH_TIME)
+	else:
+		p.visual.show_frame(&"dash", 0)
 	p.visual.face(p.facing)
 	Sound.sfx("dash")
 	Effects.dust(p.get_parent(), p.global_position)

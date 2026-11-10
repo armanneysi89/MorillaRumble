@@ -129,7 +129,8 @@ func _build_quarry() -> void:
 		boss_marker.arena_width, room_bottom - room_top)
 	_boss.spawn_point = boss_marker.position
 	_boss.position = boss_marker.position
-	boss_marker.queue_free()
+	# Der Platzhalter wird bereits in _collect_markers() freigegeben; ein zweites queue_free()
+	# führt zu "Children name does not match parent name".
 	_boss.cleared.connect(func() -> void:
 		gate.open = true
 		hud.show_banner("EISENRÜCKEN BESIEGT", "Das Tor zum Ausgang ist offen.", 3.0))

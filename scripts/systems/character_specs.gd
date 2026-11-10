@@ -29,6 +29,10 @@ const MORILLA := {
 		"heavy_attack": ["attacks", 8.0, false],
 		"dash": ["attacks", 8.0, false],
 		"block": ["attacks", 8.0, false],
+		# Luftangriff, Ausweichrolle und Siegpose: eigene Posen statt geliehener Frames.
+		"air_attack": ["attacks", 8.0, false],
+		"roll": ["attacks", 10.0, false],
+		"victory": ["attacks", 4.0, true],
 		"grab": ["grappling", 8.0, false],
 		"kimura": ["grappling", 8.0, false],
 		"suplex": ["grappling", 8.0, false],

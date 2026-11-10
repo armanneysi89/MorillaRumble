@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://cd6nptl8fsa4u" path="res://scripts/levels/level_arena.gd" id="9"]
 [ext_resource type="Script" uid="uid://dcc3nyaout0by" path="res://scripts/levels/bamboo_level.gd" id="10"]
 [ext_resource type="Script" uid="uid://b7ex0htvwk5oj" path="res://scripts/levels/level_backdrop.gd" id="11"]
+[ext_resource type="Script" path="res://scripts/levels/level_element.gd" id="12"]
 
 [node name="BambooLevel" type="Node2D" unique_id=1014147883]
 script = ExtResource("10")
@@ -134,6 +135,48 @@ position = Vector2(7050, 800)
 script = ExtResource("1")
 kind = 3
 width = 2350.0
+
+[node name="Federplateau" type="Node2D" parent="Plattformen"]
+position = Vector2(1500, 420)
+script = ExtResource("1")
+kind = 4
+width = 300.0
+
+[node name="Windschacht" type="Node2D" parent="Plattformen"]
+position = Vector2(3300, -60)
+script = ExtResource("1")
+kind = 4
+width = 420.0
+
+[node name="StegOst1" type="Node2D" parent="Plattformen"]
+position = Vector2(7600, 640)
+script = ExtResource("1")
+kind = 4
+width = 220.0
+
+[node name="StegOst2" type="Node2D" parent="Plattformen"]
+position = Vector2(7920, 490)
+script = ExtResource("1")
+kind = 4
+width = 220.0
+
+[node name="StegOst3" type="Node2D" parent="Plattformen"]
+position = Vector2(8240, 340)
+script = ExtResource("1")
+kind = 4
+width = 220.0
+
+[node name="StegOst4" type="Node2D" parent="Plattformen"]
+position = Vector2(8560, 200)
+script = ExtResource("1")
+kind = 4
+width = 240.0
+
+[node name="WipfelOst" type="Node2D" parent="Plattformen"]
+position = Vector2(8700, 200)
+script = ExtResource("1")
+kind = 4
+width = 300.0
 
 [node name="Dekor" type="Node2D" parent="." unique_id=1921232247]
 
@@ -348,6 +391,26 @@ position = Vector2(6250, 800)
 script = ExtResource("3")
 text = "Die Bambusstämme tragen dich bis in die Wipfel. Oben wartet ein Heiltee."
 
+[node name="Hinweis7" type="Node2D" parent="Hinweise"]
+position = Vector2(1520, 800)
+script = ExtResource("3")
+text = "Die Sprungfeder bringt dich auf das Bambusplateau. Acht Kristalle füllen eine Ladung für ein zusätzliches Leben."
+
+[node name="Hinweis8" type="Node2D" parent="Hinweise"]
+position = Vector2(3250, 800)
+script = ExtResource("3")
+text = "Der Aufwind im Schacht trägt dich bis zum Wipfelpfad. Lenke dich mit A / D im Strom."
+
+[node name="Hinweis9" type="Node2D" parent="Hinweise"]
+position = Vector2(4800, 800)
+script = ExtResource("3")
+text = "Zerschlage die Kisten. Eine davon ist schwerer als die anderen – sie enthält einen Heiltee."
+
+[node name="Hinweis10" type="Node2D" parent="Hinweise"]
+position = Vector2(6350, 800)
+script = ExtResource("3")
+text = "Stachelfeld: Springe in die Lücke oder setze den Dash ein."
+
 [node name="Gegner" type="Node2D" parent="." unique_id=1426469592]
 
 [node name="Gegner1" type="Node2D" parent="Gegner" unique_id=1278492519]
@@ -400,6 +463,61 @@ patrol_range = 90.0
 position = Vector2(6900, 800)
 script = ExtResource("4")
 patrol_range = 130.0
+
+[node name="Elemente" type="Node2D" parent="."]
+
+[node name="Feder1" type="Node2D" parent="Elemente"]
+position = Vector2(1620, 800)
+script = ExtResource("12")
+kind = "spring"
+
+[node name="Aufwind1" type="Node2D" parent="Elemente"]
+position = Vector2(3400, 800)
+script = ExtResource("12")
+kind = "wind"
+height = 900.0
+
+[node name="Kiste1" type="Node2D" parent="Elemente"]
+position = Vector2(4900, 800)
+script = ExtResource("12")
+kind = "crate"
+id = "bamboo_crate_a"
+content = "gem"
+
+[node name="Kiste2" type="Node2D" parent="Elemente"]
+position = Vector2(5050, 800)
+script = ExtResource("12")
+kind = "crate"
+id = "bamboo_crate_b"
+content = "tea"
+
+[node name="Stachel1" type="Node2D" parent="Elemente"]
+position = Vector2(6600, 800)
+script = ExtResource("12")
+kind = "spike"
+
+[node name="Stachel2" type="Node2D" parent="Elemente"]
+position = Vector2(6950, 800)
+script = ExtResource("12")
+kind = "spike"
+
+[node name="KristallFeder" type="Node2D" parent="Elemente"]
+position = Vector2(1620, 300)
+script = ExtResource("12")
+kind = "gem"
+id = "bamboo_gem_spring"
+
+[node name="KristallWind" type="Node2D" parent="Elemente"]
+position = Vector2(3500, -170)
+script = ExtResource("12")
+kind = "gem"
+id = "bamboo_gem_wind"
+
+[node name="KristallWipfelOst" type="Node2D" parent="Elemente"]
+position = Vector2(8850, 90)
+script = ExtResource("12")
+kind = "gem"
+id = "bamboo_gem_east"
 
 [node name="Checkpoints" type="Node2D" parent="." unique_id=641439346]
 

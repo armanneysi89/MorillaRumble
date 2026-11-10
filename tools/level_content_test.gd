@@ -15,6 +15,10 @@ const MAX_STEP_HEIGHT := 200.0
 const MAX_STEP_WIDTH := 420.0
 ## Obergrenze für Gegner pro 1000 px Levelbreite.
 const MAX_ENEMY_DENSITY := 2.5
+## Steighöhe einer Sprungfeder (LAUNCH_VELOCITY 2050, GRAVITY 2950, plus Apex-Bonus).
+const SPRING_HEIGHT := 1000.0
+## Waagerechter Toleranzbereich um eine Feder/einen Aufwind.
+const LIFT_WIDTH := 260.0
 
 var _fails := 0
 var _pickup_ids := {}
@@ -45,7 +49,9 @@ func _check_level(scene_path: String) -> void:
 	# Kleineres y bedeutet weiter oben. Zwei Fälle zählen als erreichbar:
 	#   dy > 0  – die andere Plattform liegt tiefer, ein Sprung trägt hinauf
 	#   dy == 0 – gleiche Höhe, aber die Flächen überlappen, man kann hinüberlaufen
+	# Zusätzlich gelten Federn und Aufwinde als Zugang: Sie tragen höher als ein Sprung.
 	var platforms: Array = level.platforms
+	var lifts := _lifts(level)
 	var reachable := true
 	for i in platforms.size():
 		var p: Array = platforms[i]
@@ -65,6 +71,9 @@ func _check_level(scene_path: String) -> void:
 			if overlap < -MAX_STEP_WIDTH:
 				continue
 			best = minf(best, dy)
+		# Feder oder Aufwind unter der Plattform macht sie erreichbar.
+		if best == INF and _lift_reaches(lifts, p):
+			best = 0.0
 		# Der Boden (größte Breite) braucht keinen Vorgänger.
 		if best == INF and float(p[3]) < 1000.0:
 			reachable = false
@@ -98,6 +107,36 @@ func _check_level(scene_path: String) -> void:
 
 	level.queue_free()
 	await process_frame
+
+
+## Sammelt alle Aufstiegshilfen als [x, Fußpunkt-y, Steighöhe].
+func _lifts(level: Node) -> Array:
+	var out := []
+	for e in level.elements:
+		var kind: String = e[0]
+		if kind == "spring":
+			out.append([float(e[2]), float(e[3]), SPRING_HEIGHT])
+		elif kind == "wind":
+			out.append([float(e[2]), float(e[3]), float(e[5])])
+	return out
+
+
+## Liegt die Plattform im Steigbereich einer Feder oder eines Aufwinds?
+func _lift_reaches(lifts: Array, platform: Array) -> bool:
+	var px: float = float(platform[1])
+	var pw: float = float(platform[3])
+	var py: float = float(platform[2])
+	for lift in lifts:
+		var lx: float = lift[0]
+		var ly: float = lift[1]
+		var reach: float = lift[2]
+		# Waagerecht: Die Plattform muss über der Hilfe liegen (mit Toleranz).
+		if px + pw < lx - LIFT_WIDTH or px > lx + LIFT_WIDTH:
+			continue
+		# Senkrecht: Die Plattform liegt über dem Fußpunkt, aber innerhalb der Steighöhe.
+		if py <= ly + 20.0 and py >= ly - reach:
+			return true
+	return false
 
 
 func _check(label: String, ok: bool) -> void:

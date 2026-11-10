@@ -11,6 +11,8 @@ const BELTS: PackedStringArray = ["white", "blue", "purple", "brown", "black"]
 const BELT_PATH := "res://resources/belts/%s.tres"
 const ABILITY_PATH := "res://resources/abilities/%s.tres"
 const BASE_HP := 5
+## So viele Kristalle füllen eine Ladung (dauerhaft +1 maximales Leben).
+const GEMS_PER_BELT := 8
 const MAIN_GOAL := "Suche alle Coaches auf und verfolge die Spur des Schattenmeisters."
 const TASKS := {
 	"find_arman": "Finde Coach Arman im Mondbambus-Hain.",
@@ -132,6 +134,23 @@ func get_ability(ability_id: String) -> AbilityData:
 func add_upgrade(key: String, amount := 1) -> void:
 	upgrades[key] = int(upgrades.get(key, 0)) + amount
 	save_progress()
+
+
+## Kristalle aus Kisten und Verstecken. Jede volle Ladung (GEMS_PER_BELT) gibt dauerhaft +1 maximales Leben.
+## Gibt die Gesamtzahl zurück, damit die Anzeige den Fortschritt zeigen kann.
+func add_gems(amount := 1) -> int:
+	var before := int(upgrades.get("gems", 0))
+	var after := before + amount
+	upgrades["gems"] = after
+	var gained := after / GEMS_PER_BELT - before / GEMS_PER_BELT
+	if gained > 0:
+		upgrades["max_hp"] = int(upgrades.get("max_hp", 0)) + gained
+	save_progress()
+	return after
+
+
+func gem_count() -> int:
+	return int(upgrades.get("gems", 0))
 
 
 func complete_boss(boss_id: String) -> void:

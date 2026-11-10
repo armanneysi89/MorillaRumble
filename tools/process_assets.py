@@ -34,6 +34,7 @@ MORILLA_DIRS = {
     "idle": "idle", "walk": "walk", "run": "run", "jump": "jump", "fall": "jump", "land": "jump",
     "light_attack": "attacks", "heavy_attack": "attacks", "dash": "attacks", "block": "attacks",
     "jab": "attacks", "cross": "attacks", "hook": "attacks", "lowkick": "attacks", "kick": "attacks",
+    "air_attack": "attacks", "roll": "attacks", "victory": "attacks",
     "grab": "grappling", "kimura": "grappling", "suplex": "grappling", "summon": "grappling",
     "hurt": "hurt", "death": "hurt",
 }
@@ -55,7 +56,8 @@ CENTERED = {"octopus", "bear"}
 # Der Hintergrund wird auch zwischen den Tentakeln entfernt (Insel-Hintergründe).
 ENCLOSED = {"octopus", "bear", "bamboo_cluster", "bamboo_stalks", "tea_jar", "bonsai", "stone_pagoda",
             "quarry_arch", "quarry_crane", "quarry_rope", "quarry_waterfall", "quarry_rock", "quarry_pillar",
-            "belt_throne", "belt_throne_base", "belt_throne_cascade", "break_slab"}
+            "belt_throne", "belt_throne_base", "belt_throne_cascade", "break_slab",
+            "crate", "spring_pad", "spike_trap", "wind_vent"}
 
 # Roh-Name -> (Zieldatei, Maximalgröße längste Seite oder None)
 PROPS = "environments/dojo/props"
@@ -65,6 +67,10 @@ PROP_SOURCES = {
     "weapon_rack": (f"{PROPS}/weapon_rack.png", 768), "dummy": (f"{PROPS}/dummy.png", 1024),
     "gong": (f"{PROPS}/gong.png", 768), "gate": (f"{PROPS}/gate.png", 1280),
     "scroll": (f"{PROPS}/scroll.png", 256),
+    # Neue Spielelemente der Level-Erweiterung.
+    "crate": (f"{PROPS}/crate.png", 512), "gem": (f"{PROPS}/gem.png", 256),
+    "spring_pad": (f"{PROPS}/spring_pad.png", 512), "spike_trap": (f"{PROPS}/spike_trap.png", 512),
+    "wind_vent": (f"{PROPS}/wind_vent.png", 768),
     "ground_wood": ("environments/dojo/terrain/ground_wood.png", 1024),
     "ground_stone": ("environments/dojo/terrain/ground_stone.png", 1024),
     "platform_wood": ("environments/dojo/terrain/platform_wood.png", 1536),

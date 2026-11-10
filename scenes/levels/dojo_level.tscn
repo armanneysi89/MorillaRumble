@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/level_platform.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/levels/level_decor.gd" id="2"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://scripts/levels/level_arena.gd" id="9"]
 [ext_resource type="Script" path="res://scripts/levels/dojo_level.gd" id="10"]
 [ext_resource type="Script" path="res://scripts/levels/level_backdrop.gd" id="11"]
+[ext_resource type="Script" path="res://scripts/levels/level_element.gd" id="12"]
 
 [node name="DojoLevel" type="Node2D"]
 script = ExtResource("10")
@@ -93,6 +94,48 @@ script = ExtResource("1")
 position = Vector2(5600, 800)
 kind = 1
 width = 3100.0
+
+[node name="FederRegal" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(1330, 430)
+kind = 2
+width = 320.0
+
+[node name="Winddach" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(5500, -80)
+kind = 2
+width = 400.0
+
+[node name="RegalOst1" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(5900, 640)
+kind = 2
+width = 220.0
+
+[node name="RegalOst2" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(6220, 490)
+kind = 2
+width = 220.0
+
+[node name="RegalOst3" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(6540, 340)
+kind = 2
+width = 220.0
+
+[node name="RegalOst4" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(6860, 200)
+kind = 2
+width = 240.0
+
+[node name="Hochgang" type="Node2D" parent="Plattformen"]
+script = ExtResource("1")
+position = Vector2(7000, 200)
+kind = 2
+width = 280.0
 
 [node name="Dekor" type="Node2D" parent="."]
 
@@ -335,6 +378,26 @@ script = ExtResource("3")
 position = Vector2(4300, 250)
 text = "Die Regale führen weiter nach oben. Wer klettert, findet etwas für den nächsten Kampf."
 
+[node name="Hinweis9" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(2130, 800)
+text = "Die Sprungfeder schleudert dich hoch. Von oben erreichst du das Regal – und den Kristall darüber."
+
+[node name="Hinweis10" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(4750, 800)
+text = "Holzkisten zerspringen unter deinen Schlägen. Manche verbergen einen Kristall oder einen Heiltee."
+
+[node name="Hinweis11" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(5850, 800)
+text = "Der Aufwind trägt dich nach oben. Halte die Richtung, dann landest du auf dem Dach."
+
+[node name="Hinweis12" type="Node2D" parent="Hinweise"]
+script = ExtResource("3")
+position = Vector2(6900, 800)
+text = "Stacheln lassen sich nicht besiegen – springe darüber oder nutze den Dash."
+
 [node name="Gegner" type="Node2D" parent="."]
 
 [node name="Gegner1" type="Node2D" parent="Gegner"]
@@ -412,6 +475,55 @@ patrol_range = 80.0
 script = ExtResource("4")
 position = Vector2(130, 0)
 patrol_range = 80.0
+
+[node name="Elemente" type="Node2D" parent="."]
+
+[node name="Kiste1" type="Node2D" parent="Elemente"]
+script = ExtResource("12")
+position = Vector2(5000, 800)
+kind = "crate"
+id = "dojo_crate_a"
+content = "gem"
+
+[node name="Kiste2" type="Node2D" parent="Elemente"]
+script = ExtResource("12")
+position = Vector2(5150, 800)
+kind = "crate"
+id = "dojo_crate_b"
+
+[node name="Feder1" type="Node2D" parent="Elemente"]
+script = ExtResource("12")
+position = Vector2(1450, 800)
+kind = "spring"
+
+[node name="Stachel1" type="Node2D" parent="Elemente"]
+script = ExtResource("12")
+position = Vector2(6500, 800)
+kind = "spike"
+
+[node name="Aufwind1" type="Node2D" parent="Elemente"]
+script = ExtResource("12")
+position = Vector2(5600, 800)
+kind = "wind"
+height = 900.0
+
+[node name="KristallFeder" type="Node2D" parent="Elemente"]
+script = ExtResource("12")
+position = Vector2(1450, 320)
+kind = "gem"
+id = "dojo_gem_spring"
+
+[node name="KristallWind" type="Node2D" parent="Elemente"]
+script = ExtResource("12")
+position = Vector2(5700, -190)
+kind = "gem"
+id = "dojo_gem_wind"
+
+[node name="KristallHochgang" type="Node2D" parent="Elemente"]
+script = ExtResource("12")
+position = Vector2(7150, 90)
+kind = "gem"
+id = "dojo_gem_high"
 
 [node name="Gegner2" type="Node2D" parent="Arena/Welle2"]
 script = ExtResource("4")

@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://scripts/levels/level_slab.gd" id="12"]
 [ext_resource type="Script" path="res://scripts/levels/level_boss.gd" id="13"]
 [ext_resource type="Script" path="res://scripts/levels/quarry_level.gd" id="14"]
+[ext_resource type="Script" path="res://scripts/levels/level_element.gd" id="15"]
 
 [node name="QuarryLevel" type="Node2D"]
 script = ExtResource("14")
@@ -127,7 +128,47 @@ position = Vector2(6900, 700)
 script = ExtResource("1")
 kind = 7
 width = 420.0
+[node name="Federplateau" type="Node2D" parent="Plattformen"]
+position = Vector2(1500, 400)
+script = ExtResource("1")
+kind = 6
+width = 300.0
 
+[node name="Windschacht" type="Node2D" parent="Plattformen"]
+position = Vector2(2700, -40)
+script = ExtResource("1")
+kind = 6
+width = 420.0
+
+[node name="StegNord1" type="Node2D" parent="Plattformen"]
+position = Vector2(7500, 620)
+script = ExtResource("1")
+kind = 6
+width = 240.0
+
+[node name="StegNord2" type="Node2D" parent="Plattformen"]
+position = Vector2(7850, 470)
+script = ExtResource("1")
+kind = 6
+width = 240.0
+
+[node name="StegNord3" type="Node2D" parent="Plattformen"]
+position = Vector2(8200, 320)
+script = ExtResource("1")
+kind = 6
+width = 240.0
+
+[node name="StegNord4" type="Node2D" parent="Plattformen"]
+position = Vector2(8550, 180)
+script = ExtResource("1")
+kind = 6
+width = 260.0
+
+[node name="Nordaussicht" type="Node2D" parent="Plattformen"]
+position = Vector2(8700, 180)
+script = ExtResource("1")
+kind = 6
+width = 300.0
 [node name="Dekor" type="Node2D" parent="."]
 
 [node name="quarry_pillar1" type="Node2D" parent="Dekor"]
@@ -391,7 +432,7 @@ script = ExtResource("3")
 text = "Der Fels ist aufgebrochen. Spring über die Schlucht – die Stege aus Planken tragen dich nach oben."
 
 [node name="Hinweis4" type="Node2D" parent="Hinweise"]
-position = Vector2(5250, 800)
+position = Vector2(4900, 800)
 script = ExtResource("3")
 text = "Eine markierte Bruchplatte versperrt den Weg. Nur der Suplex zerbricht sie – Schläge richten nichts aus."
 
@@ -440,7 +481,7 @@ enemy_type = "rival"
 patrol_range = 120.0
 
 [node name="Gegner7" type="Node2D" parent="Gegner"]
-position = Vector2(6350, 800)
+position = Vector2(6600, 800)
 script = ExtResource("4")
 patrol_range = 130.0
 
@@ -503,3 +544,86 @@ position = Vector2(5500, 800)
 script = ExtResource("12")
 id = "quarry_side"
 height = 620.0
+
+[node name="HinweiseNeu" type="Node2D" parent="."]
+
+[node name="HinweisFeder" type="Node2D" parent="HinweiseNeu"]
+position = Vector2(1500, 800)
+script = ExtResource("3")
+text = "Die Sprungfeder schleudert dich auf das Felsplateau. Von dort oben siehst du den halben Steinbruch."
+
+[node name="HinweisWind" type="Node2D" parent="HinweiseNeu"]
+position = Vector2(2650, 800)
+script = ExtResource("3")
+text = "Der Aufwind im Schacht trägt dich nach oben. Er ist der einzige Weg zum Nordsteg."
+
+[node name="HinweisKisten" type="Node2D" parent="HinweiseNeu"]
+position = Vector2(5250, 800)
+script = ExtResource("3")
+text = "Kisten zerspringen unter Schlägen und Suplex. Manche enthalten Kristalle oder einen Heiltee."
+
+[node name="HinweisStachel" type="Node2D" parent="HinweiseNeu"]
+position = Vector2(6150, 800)
+script = ExtResource("3")
+text = "Stachelfeld vor dem Boss: Springe in die Lücke, nicht hinein."
+
+[node name="Elemente" type="Node2D" parent="."]
+
+[node name="Feder1" type="Node2D" parent="Elemente"]
+position = Vector2(1620, 800)
+script = ExtResource("15")
+kind = "spring"
+
+[node name="Aufwind1" type="Node2D" parent="Elemente"]
+position = Vector2(2800, 800)
+script = ExtResource("15")
+kind = "wind"
+height = 900.0
+
+[node name="Kiste1" type="Node2D" parent="Elemente"]
+position = Vector2(5650, 800)
+script = ExtResource("15")
+kind = "crate"
+id = "quarry_crate_a"
+content = "gem"
+
+[node name="Kiste2" type="Node2D" parent="Elemente"]
+position = Vector2(5800, 800)
+script = ExtResource("15")
+kind = "crate"
+id = "quarry_crate_b"
+
+[node name="Kiste3" type="Node2D" parent="Elemente"]
+position = Vector2(5950, 800)
+script = ExtResource("15")
+kind = "crate"
+id = "quarry_crate_c"
+content = "tea"
+
+[node name="Stachel1" type="Node2D" parent="Elemente"]
+position = Vector2(6350, 800)
+script = ExtResource("15")
+kind = "spike"
+
+[node name="Stachel2" type="Node2D" parent="Elemente"]
+position = Vector2(6900, 800)
+script = ExtResource("15")
+kind = "spike"
+
+[node name="KristallFeder" type="Node2D" parent="Elemente"]
+position = Vector2(1620, 280)
+script = ExtResource("15")
+kind = "gem"
+id = "quarry_gem_spring"
+
+[node name="KristallWind" type="Node2D" parent="Elemente"]
+position = Vector2(2900, -150)
+script = ExtResource("15")
+kind = "gem"
+id = "quarry_gem_wind"
+
+[node name="KristallAussicht" type="Node2D" parent="Elemente"]
+position = Vector2(8850, 70)
+script = ExtResource("15")
+kind = "gem"
+id = "quarry_gem_view"

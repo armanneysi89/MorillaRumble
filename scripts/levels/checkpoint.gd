@@ -58,7 +58,9 @@ func _on_body_entered(body: Node2D) -> void:
 	player.spawn_point = global_position
 	player.health.heal(player.health.max_hp)
 	if first:
+		# Gong plus aufsteigender Glockenklang: Der Checkpoint soll sich nach Fortschritt anfühlen.
 		Sound.sfx("gong")
+		Sound.sfx("checkpoint", -6.0)
 		Game.toast("Checkpoint erreicht")
 		Game.shake(0.2)
 		var tw := create_tween()
