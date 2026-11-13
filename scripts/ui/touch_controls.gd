@@ -76,7 +76,7 @@ func _center(b: Array) -> Vector2:
 func _is_active(b: Array) -> bool:
 	match b[0]:
 		"grab":
-			return Progression.has_ability("kimura")
+			return Progression.has_ability("kimura") or Progression.has_ability("suplex")
 		"summon":
 			return Progression.has_ability("octopus")
 		"interact":
